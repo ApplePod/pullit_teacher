@@ -44,3 +44,10 @@ src/
     mypage/profile/
     management/centerinfo/
 ```
+
+## 배포 (Vercel)
+
+- 프로젝트: koreasomoon2023 팀 / `pullit-teacher` · 프로덕션 URL: https://pullit-teacher.vercel.app
+- GitHub `develop` 브랜치에 push 하면 자동 배포. 수동 배포는 `npx vercel --prod`
+- 환경변수는 Vercel 대시보드(Settings → Environment Variables)에 등록. `NEXT_PUBLIC_*` 는 **일반(plain) 타입**이어야 함 — Sensitive 로 넣으면 빌드 시 값이 비어 500 발생
+- 서버 코드는 Vercel-Supabase 연동이 주입하는 `SUPABASE_URL`/`SUPABASE_ANON_KEY` 도 fallback 으로 사용 (`src/lib/supabase/env.ts`)
