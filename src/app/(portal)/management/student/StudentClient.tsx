@@ -1,5 +1,7 @@
 "use client";
 
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ListTab } from "@/components/portal/ListTab";
@@ -28,7 +30,7 @@ export function StudentClient() {
       const tgt = e.target as HTMLElement; if (tgt && /INPUT|TEXTAREA/.test(tgt.tagName)) return;
       const text = e.clipboardData?.getData("text") ?? ""; if (!text.trim()) return;
       e.preventDefault(); setBigModal(false);
-      start(async () => { const r = await bulkCreateStudents(text); if (r.error) alert(r.error); else { alert(`${r.created}명 등록되었습니다.`); load(); } });
+      start(async () => { const r = await bulkCreateStudents(text); if (r.error) metaAlert(r.error); else { metaAlert(`${r.created}명 등록되었습니다.`); load(); } });
     };
     document.addEventListener("paste", onPaste); return () => document.removeEventListener("paste", onPaste);
   }, []);
@@ -36,9 +38,9 @@ export function StudentClient() {
   const toggle = (id: string) => setChecked((c) => { const n = new Set(c); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const allChecked = rows.length > 0 && checked.size === rows.length;
 
-  const onDelete = () => {
+  const onDelete = async () => {
     if (checked.size === 0) return;
-    if (!confirm(`선택한 ${checked.size}명을 삭제할까요?`)) return;
+    if (!(await metaConfirm(`선택한 ${checked.size}명을 삭제할까요?`))) return;
     start(async () => { await deleteStudents([...checked]); setChecked(new Set()); load(search); });
   };
 
@@ -73,7 +75,7 @@ export function StudentClient() {
 
       <div className="d-flex justify-content-between items-center mb-12">
         <div className="d-flex gap-2">
-          <button className="btn btn-default" onClick={() => { if (checked.size === 0) { alert("학생을 선택해주세요."); return; } setBulkModal(true); }}>일괄 레벨/학적 상태 변경</button>
+          <button className="btn btn-default" onClick={async () => { if (checked.size === 0) { await metaAlert("학생을 선택해주세요."); return; } setBulkModal(true); }}>일괄 레벨/학적 상태 변경</button>
           <button className="btn btn-default" onClick={onDelete} disabled={checked.size === 0}>삭제</button>
         </div>
         <div className="d-flex gap-2">
@@ -104,7 +106,7 @@ export function StudentClient() {
                 <td>{r.phone ?? "-"}</td><td>{r.parent_phone ?? "-"}</td><td>-</td>
                 <td>{new Date(r.created_at).toLocaleDateString("ko-KR")}</td>
                 <td><button className="btn btn-default btn-sm" onClick={() => router.push(`/management/studentform?id=${r.id}`)}>보기</button></td>
-                <td><button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { await deleteStudents([r.id]); load(search); }); }}>🗑</button></td>
+                <td><button className="icon-del" onClick={async () => { if (await metaConfirm("삭제할까요?")) start(async () => { await deleteStudents([r.id]); load(search); }); }}>🗑</button></td>
               </tr>
             ))}
             {rows.length === 0 && <tr><td colSpan={10} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "등록된 학생이 없습니다."}</td></tr>}
@@ -124,7 +126,7 @@ export function StudentClient() {
 /* 원본 student.cshtml 의 modalSetLevels 마크업 그대로 */
 function BulkLevelModal({ ids, onClose, onDone, start, pending }: { ids: string[]; onClose: () => void; onDone: () => void; start: (fn: () => Promise<void>) => void; pending: boolean }) {
   const [level, setLevel] = useState(""); const [state, setState] = useState("");
-  const apply = () => start(async () => { const r = await bulkUpdateStudents(ids, { study_level: level || undefined, state: state || undefined }); if (r.error) alert(r.error); else onDone(); });
+  const apply = () => start(async () => { const r = await bulkUpdateStudents(ids, { study_level: level || undefined, state: state || undefined }); if (r.error) metaAlert(r.error); else onDone(); });
   return (
     <>
       <div className="modal fade modal-inner-scroll max-450 show" id="modalSetLevels" tabIndex={-1} role="dialog" style={{ display: "block" }}>

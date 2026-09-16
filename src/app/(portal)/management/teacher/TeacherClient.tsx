@@ -1,5 +1,7 @@
 "use client";
 
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+
 import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
 
 import { useEffect, useState, useTransition } from "react";
@@ -20,10 +22,10 @@ export function TeacherClient() {
     const on = MENU_PERMS.filter(([k]) => m[k]).map(([, l]) => l);
     return on.length === 0 ? "-" : on.length >= MENU_PERMS.length ? "전체" : on.join(", ");
   };
-  const onDelete = () => {
+  const onDelete = async () => {
     if (checked.size === 0) return;
-    if (!confirm(`선택한 ${checked.size}명을 삭제할까요?`)) return;
-    start(async () => { const r = await deleteTeachers([...checked]); if (r.error) alert(r.error); setChecked(new Set()); load(); });
+    if (!(await metaConfirm(`선택한 ${checked.size}명을 삭제할까요?`))) return;
+    start(async () => { const r = await deleteTeachers([...checked]); if (r.error) metaAlert(r.error); setChecked(new Set()); load(); });
   };
   return (
     <div className="contens-body">
@@ -60,7 +62,7 @@ export function TeacherClient() {
                 <td>{r.role === "owner" ? "전체(원장)" : permLabel(r.access_menu)}</td>
                 <td>{new Date(r.created_at).toLocaleDateString("ko-KR")}</td>
                 <td><button className={BTN_WHITE_XS} disabled>수정</button></td>
-                <td>{r.role !== "owner" && <button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { const x = await deleteTeachers([r.id]); if (x.error) alert(x.error); load(); }); }}>🗑</button>}</td>
+                <td>{r.role !== "owner" && <button className="icon-del" onClick={async () => { if (await metaConfirm("삭제할까요?")) start(async () => { const x = await deleteTeachers([r.id]); if (x.error) metaAlert(x.error); load(); }); }}>🗑</button>}</td>
               </tr>
             ))}
             {rows.length === 0 && <tr><td colSpan={8} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "등록된 교사가 없습니다."}</td></tr>}

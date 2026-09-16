@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { searchProblems, createPaper } from "../actions";
 import { ProblemView, type Problem } from "@/components/ProblemView";
 import { STEP1_AUTO, STEP1_DIRECT, STEP1_BOOK, STEP2_TYPES } from "./steps/wizardHtml";
+import { closeLayerPopup } from "@/components/portal/LayerPopup";
 
 interface Unit { code: string; subject: string; large_name: string; middle_name: string; ord: number }
 type Method = "A" | "D" | "B";
@@ -12,7 +13,7 @@ const STEP1: Record<Method, string> = { A: STEP1_AUTO, D: STEP1_DIRECT, B: STEP1
 const STEPS = ["기본 설정", "문제지 편집", "프린트 설정", "만들기 완료"];
 
 /** 원본 문제지 만들기(makestudy) — 원본 마크업 그대로 렌더 + 직접출제 경로 동작 */
-export function MakeClient({ units }: { units: Unit[] }) {
+export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: boolean }) {
   const router = useRouter();
   const [method, setMethod] = useState<Method>("A");
   const [step, setStep] = useState(0);
@@ -56,7 +57,7 @@ export function MakeClient({ units }: { units: Unit[] }) {
     setMsg(null);
     start(async () => {
       const r = await createPaper({ name: paperName || `직접출제 ${new Date().toLocaleDateString("ko-KR")}`, subject, problem_codes: selected.map((s) => s.problem_code) });
-      if (r.error) setMsg(r.error); else router.push(`/paper/${r.id}`);
+      if (r.error) setMsg(r.error); else if (popup) { window.parent.postMessage({ ptClosePopup: true, ptGoto: `/paper/${r.id}` }, "*"); } else router.push(`/paper/${r.id}`);
     });
   };
   const totalPages = Math.ceil(result.total / 20);
@@ -65,7 +66,7 @@ export function MakeClient({ units }: { units: Unit[] }) {
     <div className="makestudy-wrap" ref={host}>
       {/* 원본 상단 바: 닫기 / 문제지명 / 처음부터·임시저장 */}
       <ul className="mark-header__top input-title">
-        <li><button type="button" onClick={() => router.push("/paper/mypaper")}><i className="fa-solid fa-angle-left"></i> 닫기</button></li>
+        <li><button type="button" onClick={() => (popup ? closeLayerPopup() : router.push("/paper/mypaper"))}><i className="fa-solid fa-angle-left"></i> 닫기</button></li>
         <li className="title-area"><span>문제지명</span>
           <input type="text" className="form-control" maxLength={50} style={{ width: "50%", minWidth: 500 }} placeholder="문제지명을 입력하세요 (미입력 시 자동 생성)" value={paperName} onChange={(e) => setPaperName(e.target.value)} /></li>
         <li>

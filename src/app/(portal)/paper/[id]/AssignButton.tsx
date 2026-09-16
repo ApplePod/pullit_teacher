@@ -1,5 +1,7 @@
 "use client";
 
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+
 import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
 
 import { useEffect, useState, useTransition } from "react";
@@ -18,7 +20,7 @@ export function AssignButton({ paperId }: { paperId: string }) {
     start(async () => {
       const r = await assignPaper(paperId, [...sel]);
       if (r.error) setMsg(r.error);
-      else { setOpen(false); setSel(new Set()); alert("배정 완료. 채점&클리닉 › 학생별 채점에서 채점하세요."); }
+      else { setOpen(false); setSel(new Set()); metaAlert("배정 완료. 채점&클리닉 › 학생별 채점에서 채점하세요."); }
     });
   };
   return (

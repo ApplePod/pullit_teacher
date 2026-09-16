@@ -1,5 +1,7 @@
 "use client";
 
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+
 import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
 
 import { useEffect, useState, useTransition } from "react";
@@ -27,7 +29,7 @@ export function BookClient() {
           <div key={r.id} className="book-card">
             <div className="book-card__head">
               <span className="badge-diff">{r.subject ? SUBJ[r.subject] ?? r.subject : "공통"}</span>
-              <button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { await deleteBook(r.id); load(); }); }}>🗑</button>
+              <button className="icon-del" onClick={async () => { if (await metaConfirm("삭제할까요?")) start(async () => { await deleteBook(r.id); load(); }); }}>🗑</button>
             </div>
             <h4 className="book-card__name">{r.name}</h4>
             <p className="book-card__pub">{r.publisher ?? "-"}</p>

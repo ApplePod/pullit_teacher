@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfileMenu } from "./ProfileMenu";
+import { useLayerPopup } from "./LayerPopup";
+import { useEffect } from "react";
 
 const GNB = [
   { href: "/paper/mypaper", label: "문제지 보관함", match: "/paper" },
@@ -13,9 +15,13 @@ const GNB = [
 
 export function TopNav({ userName }: { userName: string }) {
   const pathname = usePathname();
+  const layer = useLayerPopup();
+  useEffect(() => { const onMsg = (e: MessageEvent) => { if (e.data?.ptGoto) window.location.href = e.data.ptGoto; }; window.addEventListener("message", onMsg); return () => window.removeEventListener("message", onMsg); }, []);
   const isActive = (m: string | readonly string[]) =>
     Array.isArray(m) ? m.some((x) => pathname.startsWith(x)) : pathname.startsWith(m as string);
   return (
+    <>
+    {layer.popup}
     <div className="contents-header contents-header__new">
       <div className="contents-header__wrap">
         <div className="left-area contents-header__left">
@@ -31,9 +37,9 @@ export function TopNav({ userName }: { userName: string }) {
           </ul>
         </div>
         <div className="right-area">
-          <Link href="/paper/make" className="button__line button__fill--medium button__fill--red">
+          <button type="button" className="button__line button__fill--medium button__fill--red" onClick={() => layer.open("/popup/paper/make")}>
             <i className="fa-solid fa-pencil" aria-hidden="true"></i> 문제지 만들기
-          </Link>
+          </button>
           <div className="notification-wrap border rounded-1">
             <button type="button" className="button__alram">
               <span className="material-symbols-sharp">notifications</span>
@@ -43,5 +49,6 @@ export function TopNav({ userName }: { userName: string }) {
         </div>
       </div>
     </div>
+    </>
   );
 }

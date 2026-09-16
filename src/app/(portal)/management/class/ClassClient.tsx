@@ -1,5 +1,7 @@
 "use client";
 
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+
 import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
 
 import { useEffect, useState, useTransition } from "react";
@@ -17,9 +19,9 @@ export function ClassClient() {
   const load = () => start(async () => { setRows(await listClasses()); setTeachers(await listTeacherOptions()); });
   useEffect(() => { load(); }, []);
   const toggle = (id: string) => setChecked((c) => { const n = new Set(c); n.has(id) ? n.delete(id) : n.add(id); return n; });
-  const onDelete = () => {
+  const onDelete = async () => {
     if (checked.size === 0) return;
-    if (!confirm(`선택한 ${checked.size}개 반을 삭제할까요?`)) return;
+    if (!(await metaConfirm(`선택한 ${checked.size}개 반을 삭제할까요?`))) return;
     start(async () => { await deleteClasses([...checked]); setChecked(new Set()); load(); });
   };
   return (
@@ -56,7 +58,7 @@ export function ClassClient() {
                 <td>{r.memo ?? "-"}</td>
                 <td><button className={BTN_WHITE_XS} disabled>학생</button></td>
                 <td><button className={BTN_WHITE_XS} disabled>보기</button></td>
-                <td><button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { await deleteClasses([r.id]); load(); }); }}>🗑</button></td>
+                <td><button className="icon-del" onClick={async () => { if (await metaConfirm("삭제할까요?")) start(async () => { await deleteClasses([r.id]); load(); }); }}>🗑</button></td>
               </tr>
             ))}
             {rows.length === 0 && <tr><td colSpan={10} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "등록된 반이 없습니다."}</td></tr>}
