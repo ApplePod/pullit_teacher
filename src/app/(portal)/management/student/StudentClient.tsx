@@ -2,6 +2,7 @@
 
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 
+import { fmtShort } from "@/lib/date";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ListTab } from "@/components/portal/ListTab";
@@ -20,7 +21,7 @@ const GRADE_BY_CODE: Record<string, string> = {
 /** 원본 학적 상태 코드 ↔ 우리 state */
 const STATE_BY_CODE: Record<string, string> = { MS01: "paused", MS10: "active", MS99: "left" };
 const LEVEL_BY_CODE: Record<string, string> = Object.fromEntries(LEVELS.map((l, i) => [`SL0${i + 1}`, l]));
-const fmtD = (v: string) => { const d = new Date(v); return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
+const fmtD = fmtShort;
 const BAND: Record<string, string> = { e: "초등", m: "중등", h: "고등" };
 
 export function StudentClient() {

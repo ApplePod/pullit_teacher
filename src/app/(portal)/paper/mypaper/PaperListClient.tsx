@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { fmtShort } from "@/lib/date";
 import { ListTab } from "@/components/portal/ListTab";
 import { PAPER_TABS } from "@/lib/nav";
 import { useLayerPopup } from "@/components/portal/LayerPopup";
@@ -11,7 +12,7 @@ import { FavSubTab } from "@/components/portal/FavSubTab";
 
 const SUBJ: Record<string, string> = { math: "수학", english: "영어" };
 const PTYPE: Record<string, string> = { custom: "직접출제", level_test: "레벨테스트", achievement_test: "성취도평가", calculation: "연산" };
-const fmt = (d: string) => { const x = new Date(d); return `${String(x.getFullYear()).slice(2)}.${String(x.getMonth() + 1).padStart(2, "0")}.${String(x.getDate()).padStart(2, "0")}`; };
+const fmt = fmtShort;
 
 /** 원본 내 문제지 화면(mypaper) 마크업 그대로 + 실데이터·동작 */
 export function PaperListClient({ mode = "mine" }: { mode?: "mine" | "favorite" | "shared" | "trash" }) {

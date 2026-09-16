@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { fmtShort } from "@/lib/date";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { GRADE_LABEL } from "@/lib/mgmt-consts";
 
@@ -195,12 +196,7 @@ export function usePaging<T>(rows: T[]) {
   return { page: cur, setPage, size, setSize, view };
 }
 
-export const fmtD = (v?: string | null) => {
-  if (!v) return "-";
-  const d = new Date(v);
-  if (Number.isNaN(d.getTime())) return "-";
-  return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
-};
+export const fmtD = fmtShort;
 export const bandOf = (grade?: string | null) =>
   !grade ? "" : grade.startsWith("e") ? "초등" : grade.startsWith("m") ? "중등" : grade.startsWith("h") ? "고등" : grade === "n" ? "N수" : "기타";
 export const gradeOf = (grade?: string | null) => (grade ? GRADE_LABEL[grade] ?? grade : "");

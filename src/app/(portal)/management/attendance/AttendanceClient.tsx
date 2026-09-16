@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { fmtMonth } from "@/lib/date";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -31,7 +32,7 @@ function ymList() {
   }
   return out;
 }
-function thisMonth() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; }
+function thisMonth() { return fmtMonth(); }
 
 function buildGrid(ym: string, students: AttStudent[], records: AttRecord[]) {
   const [y, m] = ym.split("-").map(Number);

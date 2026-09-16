@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { fmtISO } from "@/lib/date";
 import { closeLayerPopup } from "@/components/portal/LayerPopup";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { assignPaper } from "@/app/(portal)/clinic/clinicActions";
@@ -15,7 +16,7 @@ export function AssignPopupClient({ paperIds }: { paperIds: string[] }) {
   const [state, setState] = useState("MS10"); const [grade, setGrade] = useState(""); const [kw, setKw] = useState(""); const [q, setQ] = useState("");
   const [chk, setChk] = useState<Set<string>>(new Set()); const [cChk, setCChk] = useState<Set<string>>(new Set());
   const [open, setOpen] = useState<Set<string>>(new Set());
-  const [send, setSend] = useState(false); const [sendDt, setSendDt] = useState(new Date().toISOString().slice(0, 10)); const [view2, setView2] = useState("N");
+  const [send, setSend] = useState(false); const [sendDt, setSendDt] = useState(fmtISO()); const [view2, setView2] = useState("N");
   const [busy, setBusy] = useState(false);
   useEffect(() => { listStudentsForAssign().then((r) => { setAll(r.students); setGroups(r.groups); setOpen(new Set(r.groups.map((g) => g.id))); }); }, []);
   const list = useMemo(() => all.filter((s) => (state === "MS10" ? s.state !== "paused" : s.state === "paused") && (!grade || s.grade === grade) && (!q || s.name.includes(q))), [all, state, grade, q]);

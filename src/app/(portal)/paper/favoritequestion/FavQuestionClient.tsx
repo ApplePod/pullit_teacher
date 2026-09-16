@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { fmtShort } from "@/lib/date";
 import { ListTab } from "@/components/portal/ListTab";
 import { PAPER_TABS } from "@/lib/nav";
 import { useLayerPopup } from "@/components/portal/LayerPopup";
@@ -10,7 +11,7 @@ import { listFavFolders, createFavFolder, renameFavFolder, deleteFavFolders, typ
 import { FAVQ_FILTER_HTML } from "./filterHtml";
 import { FavSubTab } from "@/components/portal/FavSubTab";
 
-const fmt = (d: string) => { const x = new Date(d); return `${String(x.getFullYear()).slice(2)}.${String(x.getMonth() + 1).padStart(2, "0")}.${String(x.getDate()).padStart(2, "0")}`; };
+const fmt = fmtShort;
 
 /** 원본 Paper/favoriteQuestion.cshtml — 즐겨찾는 문항 폴더 목록 */
 export function FavQuestionClient() {

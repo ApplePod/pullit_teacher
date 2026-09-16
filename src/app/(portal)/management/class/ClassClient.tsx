@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState, useTransition } from "react";
+import { fmtShort } from "@/lib/date";
 import { useRouter } from "next/navigation";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
@@ -25,7 +26,7 @@ const MM = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
 const STATE_NM: Record<string, string> = { active: "정규", paused: "휴회", left: "퇴원" };
 const stepNm = (g: string) => (g.startsWith("e") ? "초등" : g.startsWith("m") ? "중등" : g.startsWith("h") ? "고등" : g === "n" ? "N수" : "기타");
 const gradeNo = (g: string) => (/^[emh]\d$/.test(g) ? `${g[1]}학년` : GRADE_LABEL[g] ?? g);
-const shortDate = (s: string) => { const d = new Date(s); return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
+const shortDate = fmtShort;
 
 type Detail = {
   id?: string; f_group_nm: string; f_grade_cd: string; f_start_dt: string; f_room: string;

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { fmtISO } from "@/lib/date";
 import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 
@@ -446,7 +447,7 @@ export async function createAnalysisReports(input: { student_ids: string[]; code
   const { data: mk } = await c.supabase.from("marking").select("assignment_student_id,is_correct");
   const wrongBy = new Map<string, number>();
   (mk ?? []).forEach((m) => { if (m.is_correct === false) wrongBy.set(m.assignment_student_id as string, (wrongBy.get(m.assignment_student_id as string) ?? 0) + 1); });
-  const now = new Date().toISOString().slice(0, 10);
+  const now = fmtISO();
   const rows = (students ?? []).map((st) => {
     const mine = (ast ?? []).filter((a) => a.student_id === st.id
       && (!input.start || !a.marked_at || dOnly(a.marked_at as string) >= input.start)

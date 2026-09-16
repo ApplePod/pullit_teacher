@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState, useTransition } from "react";
+import { fmtShort } from "@/lib/date";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -27,7 +28,7 @@ const ID_RE = /^[a-z0-9]{4,12}$/;
 const PW_RE = /^[a-zA-Z0-9]{4,12}$/;
 const MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** 원본 등록일 표기 YY.MM.DD */
-const shortDate = (s: string) => { const d = new Date(s); return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`; };
+const shortDate = fmtShort;
 
 type Form = {
   id?: string; f_user_nm: string; p1: string; p2: string; p3: string;
