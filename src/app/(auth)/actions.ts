@@ -3,19 +3,21 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { toEmail } from "@/lib/login-id";
 
 export type ActionState = { error?: string; message?: string } | null;
 
+
 export async function login(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const email = String(formData.get("email") ?? "").trim();
+  const email = toEmail(String(formData.get("email") ?? ""));
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "") || "/dashboard";
 
-  if (!email || !password) return { error: "이메일과 비밀번호를 입력해주세요." };
+  if (!email.split("@")[0] || !password) return { error: "아이디와 비밀번호를 입력해주세요." };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: "이메일 또는 비밀번호가 올바르지 않습니다." };
+  if (error) return { error: "아이디 또는 비밀번호가 올바르지 않습니다." };
 
   redirect(next.startsWith("/") ? next : "/dashboard");
 }

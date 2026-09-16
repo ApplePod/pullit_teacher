@@ -11,8 +11,8 @@ export function LoginForm({ next }: { next: string }) {
     <form action={action} className="space-y-4">
       <input type="hidden" name="next" value={next} />
       <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">이메일</label>
-        <input id="email" name="email" type="email" autoComplete="email" required
+        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">아이디 또는 이메일</label>
+        <input id="email" name="email" type="text" autoComplete="username" required placeholder="admin"
           className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none" />
       </div>
       <div>
