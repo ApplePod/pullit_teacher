@@ -28,3 +28,8 @@ body { background-color: #f6f6f9; }
 .dropdown-menu.show { display: block; position: absolute; right: 0; top: 48px; }
 header.detail .logo { display: inline-flex !important; align-items: center; height: 72px; width: auto !important; background: none !important; }
 header.detail .logo img { height: 28px; }
+
+/* 로그인: Swiper 미사용 — 배너를 섹션 직계 자식으로 두어 좌우 동일 높이 확보 */
+.Login section { height: 830px; }
+.Login section .Benner { width: 50%; height: 100%; }
+.Login section .Form { width: 50%; height: 100%; }

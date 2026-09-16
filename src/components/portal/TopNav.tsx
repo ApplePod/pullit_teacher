@@ -7,6 +7,7 @@ import { ProfileMenu } from "./ProfileMenu";
 const GNB = [
   { href: "/paper/mypaper", label: "문제지 보관함", match: "/paper" },
   { href: "/clinic/studentmark", label: "채점&클리닉", match: "/clinic" },
+  { href: "/premium/video", label: "프리미엄", match: "/premium" },
   { href: "/management/student", label: "관리", match: ["/management", "/mypage"] },
 ] as const;
 
