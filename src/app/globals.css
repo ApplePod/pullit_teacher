@@ -196,3 +196,11 @@ header.detail .logo img { height: 28px; }
 .pv-expl-sec { margin-bottom: 12px; }
 .pv-expl-title { font-weight: 700; font-size: 13px; color: #343440; margin-bottom: 4px; padding-left: 8px; border-left: 3px solid #1e85ff; }
 .chip.chip-on { background: #1e85ff; color: #fff; border-color: #1e85ff; }
+
+/* 문제지 만들기 마법사 */
+.make-wizard .wizard-field { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.make-wizard .wizard-label { min-width: 60px; font-size: 14px; font-weight: 600; color: #343440; }
+.make-wizard .make-list { max-height: 620px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+.wizard-savebar { position: sticky; bottom: 0; margin-top: 16px; display: flex; gap: 12px; align-items: center; background: #fff; border: 1px solid #eaeaef; border-radius: 8px; padding: 14px 20px; box-shadow: 0 -2px 8px rgba(0,0,0,.04); }
+.wizard-savebar .form-control { flex: 1; }
+.ml-4 { margin-left: 12px; }
