@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 
 export type ActionState = { error?: string; message?: string } | null;
@@ -17,7 +18,7 @@ export interface CenterInput {
 /** 원본 교실설정 저장하기 — 우리 center 테이블이 가진 항목만 반영 */
 export async function saveCenter(input: CenterInput): Promise<ActionState> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   const { data: prof } = await supabase.from("profile").select("center_id,role").eq("id", user.id).maybeSingle();
   if (!prof) return { error: "교실 정보를 찾을 수 없습니다." };

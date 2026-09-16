@@ -25,13 +25,13 @@ export function TopNav({ userName }: { userName: string }) {
     <div className="contents-header contents-header__new">
       <div className="contents-header__wrap">
         <div className="left-area contents-header__left">
-          <Link href="/dashboard" className="contents-header__brand">
+          <Link href="/dashboard" prefetch={false} className="contents-header__brand">
             <img src="/assets/center/images/common/logo-title.svg" alt="풀잇 학원 포털" />
           </Link>
           <ul className="contents-header__gnb">
             {GNB.map((g) => (
               <li key={g.label}>
-                <Link href={g.href} className={isActive(g.match) ? "active" : ""}>{g.label}</Link>
+                <Link href={g.href} prefetch={false} className={isActive(g.match) ? "active" : ""}>{g.label}</Link>
               </li>
             ))}
           </ul>

@@ -27,10 +27,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // getUser() 는 토큰을 서버에서 검증하므로 getSession() 대신 사용
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // 토큰 검증은 로컬(JWKS)로 — 만료/부재일 때만 네트워크 호출(getUser)로 갱신
+  const { getUserId } = await import("@/lib/supabase/claims");
+  const userId = await getUserId(supabase);
+  const user = userId ? { id: userId } : null;
 
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));

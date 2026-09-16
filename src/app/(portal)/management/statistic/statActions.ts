@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 
+import { getAuthedUser } from "@/lib/supabase/claims";
 /** 원본 학습현황(statistic.cshtml) 표 구조에 맞춘 집계 */
 export interface StatQuad { created: number; assigned: number; marked: number; achieve: number | null }
 export interface StatRow { id: string; name: string; groups: StatQuad[] } // [원시험지, 오답1, 오답2, 오답3]
@@ -35,7 +36,7 @@ const quad = (a: Acc | undefined): StatQuad =>
 export async function loadStatistic(from?: string, to?: string): Promise<StatData> {
   const empty: StatData = { teachers: [], classes: [], teacherSummary: {}, classSummary: {}, teacherRows: {}, classRows: {}, classBooks: [] };
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return empty;
   const { data: me } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   if (!me) return empty;

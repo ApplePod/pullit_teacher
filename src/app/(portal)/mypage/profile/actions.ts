@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient as createPlainClient } from "@supabase/supabase-js";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { supabaseEnv } from "@/lib/supabase/env";
@@ -9,7 +10,7 @@ export type ActionState = { error?: string; message?: string } | null;
 
 export async function saveProfile(input: { name: string; phone: string }): Promise<ActionState> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   if (!input.name.trim()) return { error: "이름을 입력해주세요." };
   const { error } = await supabase.from("profile").update({ name: input.name.trim(), phone: input.phone.trim() || null }).eq("id", user.id);
@@ -27,7 +28,7 @@ export async function updateProfile(_p: ActionState, fd: FormData): Promise<Acti
 export async function verifyCurrentPassword(password: string): Promise<ActionState> {
   if (!password) return { error: "현재 비밀번호를 입력해주세요." };
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user?.email) return { error: "로그인이 필요합니다." };
   const { url, key } = supabaseEnv();
   const plain = createPlainClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });

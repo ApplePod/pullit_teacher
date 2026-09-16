@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 
 export interface StudentRow {
@@ -31,7 +32,7 @@ export async function createStudent(input: {
   parent_name?: string; parent_phone?: string; address?: string; memo?: string; study_level?: string; state?: string;
 }): Promise<{ error?: string; id?: string }> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   const { data: profile } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   if (!profile) return { error: "학원 정보를 찾을 수 없습니다." };
@@ -67,7 +68,7 @@ export async function deleteStudents(ids: string[]): Promise<{ error?: string }>
 
 export async function bulkUpdateStudents(ids: string[], patch: { study_level?: string; state?: string }): Promise<{ error?: string; count?: number }> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   if (ids.length === 0) return { error: "학생을 선택해주세요." };
   const upd: Record<string, string> = {};
@@ -82,7 +83,7 @@ export async function bulkUpdateStudents(ids: string[], patch: { study_level?: s
 
 export async function bulkCreateStudents(text: string): Promise<{ error?: string; created?: number; failed?: number }> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   const { data: profile } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   if (!profile) return { error: "학원 정보를 찾을 수 없습니다." };

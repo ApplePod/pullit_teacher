@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 
 export interface AssignmentRow {
@@ -41,7 +42,7 @@ export interface ClinicFilter {
 
 async function ctx() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return null;
   const { data: p } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   return p ? { supabase, user, center_id: p.center_id as string } : null;

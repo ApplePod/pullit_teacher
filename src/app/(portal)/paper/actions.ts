@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 import type { Problem } from "@/components/ProblemView";
 
@@ -38,7 +39,7 @@ export async function createPaper(input: {
   status?: "draft" | "ready";
 }): Promise<{ error?: string; id?: string }> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return { error: "로그인이 필요합니다." };
   const { data: profile } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   if (!profile) return { error: "학원 정보를 찾을 수 없습니다." };

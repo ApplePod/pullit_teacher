@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getAuthedUser } from "@/lib/supabase/claims";
 import { createClient } from "@/lib/supabase/server";
 
 export interface BookRow { id: string; name: string; publisher: string | null; subject: string | null; class_count: number; student_count: number; created_at: string }
@@ -13,7 +14,7 @@ export interface SimpleStudent { id: string; name: string }
 
 async function ctx() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getAuthedUser(supabase);
   if (!user) return null;
   const { data: p } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   return p ? { supabase, center_id: p.center_id } : null;
