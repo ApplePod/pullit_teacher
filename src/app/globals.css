@@ -118,3 +118,26 @@ header.detail .logo img { height: 28px; }
 /* 교사 메뉴권한 그리드 */
 .perm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; margin-top: 6px; }
 .perm-chk { font-size: 13px; display: flex; align-items: center; gap: 6px; }
+
+/* 출결 그리드 */
+.att-legend { display: flex; gap: 8px; }
+.att-badge { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #f1f1f2; color: #69697a; }
+.att-scroll { overflow-x: auto; border: 1px solid #eaeaef; border-radius: 8px; }
+.att-table { border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+.att-table th, .att-table td { border: 1px solid #f1f1f2; text-align: center; }
+.att-name { position: sticky; left: 0; background: #fff; min-width: 110px; padding: 8px 12px; z-index: 1; }
+.att-day { min-width: 30px; padding: 8px 4px; background: #f6f6f9; color: #69697a; font-weight: 500; }
+.att-cell { width: 30px; height: 34px; cursor: pointer; color: #fff; font-weight: 700; }
+.att-cell:hover { outline: 2px solid #1e85ff; outline-offset: -2px; }
+.att-present { background: #1e85ff; } .att-badge.att-present { background: #e9f3ff; color: #1e85ff; }
+.att-late { background: #fa8a00; } .att-badge.att-late { background: #fff3e0; color: #fa8a00; }
+.att-early { background: #8b5cf6; } .att-badge.att-early { background: #f3ecff; color: #8b5cf6; }
+.att-absent { background: #fa3158; } .att-badge.att-absent { background: #fff1f3; color: #fa3158; }
+
+/* 교재 카드 */
+.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.book-card { border: 1px solid #eaeaef; border-radius: 8px; padding: 16px; background: #fff; }
+.book-card__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.book-card__name { margin: 0 0 4px; font-size: 15px; font-weight: 700; }
+.book-card__pub { margin: 0 0 12px; font-size: 13px; color: #97979d; }
+.book-card__meta { font-size: 12px; color: #69697a; }
