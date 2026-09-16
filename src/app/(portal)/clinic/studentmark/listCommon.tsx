@@ -30,6 +30,8 @@ export function OriginalFilter({ html, storeKey, onChange }: { html: string; sto
   useEffect(() => {
     const root = ref.current; if (!root) return;
     const st: FilterState = { ...EMPTY_FILTER };
+    // 원본은 각 필터 묶음의 '전체'(value="") 가 선택된 상태로 렌더된다
+    root.querySelectorAll<HTMLInputElement>('.filter-check input[value=""]').forEach((i) => { i.checked = true; });
     const fire = () => cb.current({ ...st });
     const cleanup: (() => void)[] = [];
     const on = (el: Element | null, ev: string, fn: EventListenerOrEventListenerObject) => {

@@ -125,7 +125,7 @@ export function IBClient() {
             <div className="listFilter-items">
               <div className="filter-check">
                 <input type="checkbox" name="filtergradeAll" id="fGradeAll" value=""
-                  checked={grades.size === GRADES.length} onChange={(e) => setGrades(e.target.checked ? new Set(GRADES.map(([, , g]) => g)) : new Set())} />
+                  checked={grades.size === 0 || grades.size === GRADES.length} onChange={(e) => setGrades(e.target.checked ? new Set(GRADES.map(([, , g]) => g)) : new Set())} />
                 <label htmlFor="fGradeAll">전체</label>
               </div>
               {[GRADES.slice(0, 6), GRADES.slice(6, 9), GRADES.slice(9)].map((chunk, i) => (

@@ -14,7 +14,8 @@ export function ListTab({ tabs, className = "" }: { tabs: ReadonlyArray<readonly
   return (
     <ul className={`list-tab ${className}`} role="tablist">
       {tabs.map(([href, label]) => {
-        const active = pathname === href || pathname.startsWith(href + "/");
+        // 원본: 문항 즐겨찾기 화면도 상단 '즐겨찾기' 탭이 활성
+        const active = pathname === href || pathname.startsWith(href + "/") || (href === "/paper/favorite" && pathname === "/paper/favoritequestion");
         return (
           <li key={href} className="nav-item">
             <button className={`nav-link${active ? " active" : ""}`} type="button" role="tab" aria-selected={active}
