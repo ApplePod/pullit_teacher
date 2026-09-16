@@ -11,11 +11,21 @@ import { useEffect, useState } from "react";
 type Req = { kind: "alert" | "confirm"; title: string; message: string; resolve: (v: boolean) => void };
 let pushReq: ((r: Req) => void) | null = null;
 
+/**
+ * startTransition(async …) 안에서 부르면 React 가 상태 변경을 트랜지션으로 묶어 모달이 뜨지 않으므로,
+ * 항상 트랜지션 밖(매크로태스크)에서 큐에 넣는다.
+ */
+function enqueue(r: Omit<Req, "resolve">, resolve: (v: boolean) => void, fallback: () => boolean) {
+  setTimeout(() => {
+    if (pushReq) pushReq({ ...r, resolve });
+    else resolve(fallback());
+  }, 0);
+}
 export function metaAlert(message: string, title = "알림"): Promise<boolean> {
-  return new Promise((resolve) => { if (pushReq) pushReq({ kind: "alert", title, message, resolve }); else { window.alert(message); resolve(true); } });
+  return new Promise((resolve) => enqueue({ kind: "alert", title, message }, resolve, () => { window.alert(message); return true; }));
 }
 export function metaConfirm(message: string, title = "확인"): Promise<boolean> {
-  return new Promise((resolve) => { if (pushReq) pushReq({ kind: "confirm", title, message, resolve }); else resolve(window.confirm(message)); });
+  return new Promise((resolve) => enqueue({ kind: "confirm", title, message }, resolve, () => window.confirm(message)));
 }
 
 export function MetaModalHost() {
