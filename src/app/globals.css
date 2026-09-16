@@ -83,3 +83,34 @@ header.detail .logo img { height: 28px; }
   .paper-sheet { border: none; padding: 0; }
 }
 @media (max-width: 900px) { .make-grid { grid-template-columns: 1fr; } .make-cart { position: static; } }
+
+/* ===== 학원관리 학생/공용 ===== */
+.listFilter-wrap { border: 1px solid #eaeaef; border-radius: 8px; padding: 4px 20px; background: #fff; }
+.listFilter-wrap ul { list-style: none; margin: 0; padding: 0; }
+.listFilter-wrap > ul > li { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid #f1f1f2; }
+.listFilter-wrap > ul > li:last-child { border-bottom: none; }
+.listFilter-title { min-width: 72px; font-size: 14px; font-weight: 600; color: #343440; }
+.listFilter-title .plus { color: #1e85ff; }
+.search-select { display: flex; gap: 8px; }
+.search-select select { height: 38px; border: 1px solid #dcdcde; border-radius: 6px; padding: 0 10px; }
+.search-input { display: flex; }
+.search-input input { height: 38px; width: 280px; border: 1px solid #dcdcde; border-right: none; border-radius: 6px 0 0 6px; padding: 0 12px; }
+.search-input button { height: 38px; padding: 0 18px; background: #343440; color: #fff; border-radius: 0 6px 6px 0; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 5px 14px; border: 1px solid #dcdcde; border-radius: 99px; background: #fff; font-size: 13px; color: #69697a; }
+.chip:hover { border-color: #1e85ff; color: #1e85ff; }
+.sample-guide { font-size: 13px; color: #69697a; margin: 16px 0; }
+.sample-guide a { color: #fa8a00; text-decoration: underline; }
+.std-sub { font-size: 12px; color: #97979d; }
+.list-count { font-size: 14px; color: #69697a; } .list-count b { color: #1e85ff; }
+.icon-del { color: #c0c0c8; font-size: 16px; }
+.btn-sm { padding: 4px 12px; font-size: 13px; }
+/* 모달 */
+.pt-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.pt-modal { background: #fff; border-radius: 12px; width: 460px; max-width: 92vw; max-height: 90vh; display: flex; flex-direction: column; }
+.pt-modal__head { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #eaeaef; }
+.pt-modal__head h4 { margin: 0; font-size: 18px; font-weight: 800; }
+.pt-modal__x { font-size: 24px; color: #97979d; line-height: 1; }
+.pt-modal__body { padding: 20px 24px; overflow-y: auto; }
+.pt-modal__body .form-group { margin-bottom: 14px; }
+.pt-modal__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid #eaeaef; }

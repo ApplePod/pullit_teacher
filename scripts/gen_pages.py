@@ -2,7 +2,7 @@ import json, glob, os, re
 SRC="/Users/harry/Desktop/Claude_newlearn/mmath_복원_동적"
 APP="/Users/harry/Desktop/Claude_newlearn/pullit_teacher/src/app/(portal)"
 # 이미 기능 구현된 라우트는 건너뜀
-SKIP_ROUTES={"/paper/make"}  # 우리 자체 문제지 만들기만 보존, 나머지는 원본 그대로
+SKIP_ROUTES={"/paper/make","/management/student"}  # 기능 구현분 보존
 def path_to_route(p):
     m=re.search(r'/Pages/Center/(.+?)\.cshtml', p, re.I)
     if not m:
@@ -40,7 +40,7 @@ for rec in idx:
     inner=clean(html)
     d=f"{APP}{route}"; os.makedirs(d, exist_ok=True)
     esc=inner.replace("\\","\\\\").replace("`","\\`").replace("${","\\${")
-    page=('const HTML = `%s`;\n\nexport default function Page() {\n  return <div className="contens-body" dangerouslySetInnerHTML={{ __html: HTML }} />;\n}\n' % esc)
+    page=('const HTML = `%s`;\n\nexport default function Page() {\n  return <div dangerouslySetInnerHTML={{ __html: HTML }} />;\n}\n' % esc)
     open(f"{d}/page.tsx","w").write(page)
     count+=1
 print(f"생성 {count} · 건너뜀 {skipped}")
