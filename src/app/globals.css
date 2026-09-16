@@ -33,3 +33,53 @@ header.detail .logo img { height: 28px; }
 .Login section { height: 830px; }
 .Login section .Benner { width: 50%; height: 100%; }
 .Login section .Form { width: 50%; height: 100%; }
+
+/* ===== 문제지 만들기 ===== */
+.make-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
+.make-search, .make-cart { background: #fff; border: 1px solid #eaeaef; border-radius: 8px; padding: 20px; }
+.make-cart { position: sticky; top: 24px; }
+.make-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.make-filters .form-select { height: 40px; border: 1px solid #dcdcde; border-radius: 6px; padding: 0 10px; font-size: 14px; }
+.make-count { font-size: 13px; color: #69697a; margin: 8px 0; }
+.make-count b { color: #1e85ff; }
+.make-list { display: flex; flex-direction: column; gap: 12px; }
+.make-item { display: flex; gap: 12px; border: 1px solid #eaeaef; border-radius: 8px; padding: 14px; transition: .15s; }
+.make-item.selected { border-color: #1e85ff; background: #f5f9ff; }
+.make-check input { width: 18px; height: 18px; accent-color: #1e85ff; }
+.make-item__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; color: #97979d; }
+.make-concept { color: #69697a; }
+.make-code { margin-left: auto; font-size: 11px; color: #c0c0c8; }
+.badge-diff { min-width: 20px; text-align: center; padding: 1px 7px; border-radius: 4px; background: #e9f3ff; color: #1e85ff; font-weight: 700; }
+.make-empty { color: #97979d; font-size: 14px; padding: 24px 0; text-align: center; }
+.make-pager { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; font-size: 14px; }
+.make-pager button { padding: 6px 14px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
+.make-pager button:disabled { opacity: .4; }
+.make-cart__count { display: inline-block; min-width: 22px; padding: 0 6px; border-radius: 11px; background: #1e85ff; color: #fff; font-size: 12px; text-align: center; }
+.make-cart__list { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow-y: auto; }
+.make-cart__list li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid #f1f1f2; font-size: 13px; }
+.make-cart__no { min-width: 20px; color: #1e85ff; font-weight: 700; }
+.make-cart__code { color: #69697a; flex: 1; }
+.make-cart__del { color: #c0c0c8; font-size: 18px; line-height: 1; }
+.full-btn { width: 100%; height: 44px; background: #1e85ff; color: #fff; border-radius: 6px; font-weight: 700; }
+.full-btn:disabled { opacity: .4; }
+
+/* ===== 문항 렌더 ===== */
+.problem-view { font-size: 15px; color: #343440; line-height: 1.7; }
+.pv-q { display: flex; gap: 8px; }
+.pv-num { font-weight: 700; color: #1e85ff; }
+.pv-para { margin: 0 0 6px; }
+.pv-choices { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.pv-choice.pv-answer { color: #1e85ff; font-weight: 700; }
+
+/* ===== 문제지 미리보기 ===== */
+.paper-preview__toolbar { display: flex; justify-content: flex-end; gap: 16px; align-items: center; margin-bottom: 16px; }
+.paper-preview__toggle { font-size: 14px; }
+.paper-sheet { background: #fff; border: 1px solid #eaeaef; border-radius: 8px; padding: 40px; }
+.paper-sheet__title { font-size: 22px; font-weight: 800; text-align: center; margin: 0 0 28px; padding-bottom: 16px; border-bottom: 2px solid #343440; }
+.paper-sheet__item { padding: 16px 0; border-bottom: 1px solid #f1f1f2; }
+@media print {
+  .contents-header__new, .make-cart, .paper-preview__toolbar { display: none !important; }
+  #wrap { padding: 0 !important; }
+  .paper-sheet { border: none; padding: 0; }
+}
+@media (max-width: 900px) { .make-grid { grid-template-columns: 1fr; } .make-cart { position: static; } }

@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="/legacy/css/bootstrap.css" />
         <link rel="stylesheet" href="/legacy/css/style.css" />
         <link rel="stylesheet" href="/legacy/css/style-new.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" />
       </head>
       <body>{children}</body>
     </html>
