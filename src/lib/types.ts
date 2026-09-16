@@ -21,4 +21,6 @@ export interface Center {
   logo_url: string | null;
   slogan: string | null;
   report_style: string | null;
+  /** 학원정보 > 교실홈 학습 정보 설정 (0005_center_options) */
+  options?: Record<string, unknown> | null;
 }

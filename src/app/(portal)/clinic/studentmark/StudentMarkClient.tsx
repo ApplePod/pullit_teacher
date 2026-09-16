@@ -1,101 +1,148 @@
 "use client";
 
-import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
-
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
-import { listAssignments, loadMarkingSheet, saveMarking, type AssignmentRow, type MarkProblem } from "../clinicActions";
+import { useLayerPopup } from "@/components/portal/LayerPopup";
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+import { cancelMarking, listStudentAssignments, makeWrongPaper, trashAssignments, type StudentAsgRow } from "../clinicActions";
+import { STUDENTMARK_FILTER_HTML } from "./filterHtml";
+import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "./listCommon";
+import { MarkSheetModal } from "./MarkSheetModal";
 
-const SUBJ: Record<string, string> = { math: "수학", english: "영어" };
-const STATUS: Record<string, string> = { assigned: "미채점", submitted: "제출", marked: "채점완료" };
-
+/** 원본 Pages/Center/Clinic/studentmark.cshtml 마크업 그대로 + 실데이터·동작 */
 export function StudentMarkClient() {
-  const [rows, setRows] = useState<AssignmentRow[]>([]);
-  const [marking, setMarking] = useState<AssignmentRow | null>(null);
+  const [rows, setRows] = useState<StudentAsgRow[]>([]);
+  const [filter, setFilter] = useState<FilterState>(EMPTY_FILTER);
+  const [checked, setChecked] = useState<Set<string>>(new Set());
+  const [marking, setMarking] = useState<StudentAsgRow | null>(null);
   const [pending, start] = useTransition();
-  const load = () => start(async () => setRows(await listAssignments()));
-  useEffect(() => { load(); }, []);
+  const layer = useLayerPopup();
+  const { page, setPage, size, setSize, view } = usePaging(rows);
+
+  const load = useCallback((f: FilterState) => start(async () => {
+    setRows(await listStudentAssignments({
+      dateField: f.dateField, start: f.start, end: f.end, searchField: f.searchField, keyword: f.keyword,
+      band: f.band, markYn: f.markYn, enoteYn: f.enoteYn, tag: f.tag,
+    }));
+  }), []);
+  useEffect(() => { load(filter); }, [filter, load]);
+
+  const sel = [...checked];
+  const selRows = rows.filter((r) => checked.has(r.as_id));
+  const paperIds = [...new Set(selRows.map((r) => r.paper_id))];
+  const needSel = async () => { if (sel.length === 0) { await metaAlert("목록에서 문제지를 선택해 주세요."); return false; } return true; };
+  const reload = () => { setChecked(new Set()); load(filter); };
+  const toggle = (id: string) => setChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const enoteLabel = (r: StudentAsgRow) => (r.enote_done ? "완료" : r.status === "marked" && r.wrong_count > 0 ? "오답출제" : "불가");
+
+  const onWrong = (assign: boolean) => async () => {
+    if (!(await needSel())) return;
+    const r = await makeWrongPaper(sel, assign);
+    if (r.error) { await metaAlert(r.error); return; }
+    if (r.created === 0) { await metaAlert("채점이 완료된 문제지 중 오답이 있는 항목을 선택해 주세요."); return; }
+    await metaAlert(assign ? `오답 문제지 ${r.created}개를 만들어 학생에게 배정했습니다.` : `오답모음 문제지 ${r.created}개를 만들었습니다.`);
+    reload();
+  };
+  const onCancelMark = async () => {
+    if (!(await needSel())) return;
+    const target = selRows.filter((r) => r.status === "marked").map((r) => r.as_id);
+    if (target.length === 0) { await metaAlert("채점이 완료된 문제지를 선택해 주세요."); return; }
+    if (!(await metaConfirm("선택한 문제지의 채점을 취소하시겠습니까?"))) return;
+    const r = await cancelMarking(target);
+    if (r.error) { await metaAlert(r.error); return; }
+    reload();
+  };
+  const onDelete = async () => {
+    if (!(await needSel())) return;
+    if (!(await metaConfirm("선택한 문제지를 삭제하시겠습니까?"))) return;
+    const r = await trashAssignments({ asIds: sel });
+    if (r.error) { await metaAlert(r.error); return; }
+    reload();
+  };
+
   return (
     <div className="contens-body">
-      <ListTab tabs={CLINIC_TABS} className="mb-24" />
-      <div className="alert alert-blue fade show p-3 mb-16" role="alert">
-        <div className="d-flex gap-1"><span className="material-symbols-sharp">error</span>
-          <div className="msg">문제지를 학생에게 배정한 뒤 여기서 채점합니다. 배정은 [문제지 보관함 → 내 문제지 → 학생 배정]에서 합니다.</div></div>
-      </div>
-      <div className="table-basic">
-        <table className="table-layout-basic">
-          <thead><tr>
-            <th className="text-left">문제지명</th><th>학생</th><th>과목</th><th>문항수</th>
-            <th>배정일</th><th>정답/오답(점수)</th><th>상태</th><th>채점</th>
-          </tr></thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.as_id}>
-                <td className="text-left"><b>{r.paper_name}</b></td>
-                <td>{r.student_name}</td><td>{SUBJ[r.subject] ?? r.subject}</td><td>{r.problem_count}</td>
-                <td>{r.assigned_at ? new Date(r.assigned_at).toLocaleDateString("ko-KR") : "-"}</td>
-                <td>{r.status === "marked" ? `${r.correct_count}/${r.problem_count} (${r.score}점)` : "-"}</td>
-                <td><span className={`mark-status mark-${r.status}`}>{STATUS[r.status] ?? r.status}</span></td>
-                <td><button className={BTN_WHITE_XS} onClick={() => setMarking(r)}>{r.status === "marked" ? "재채점" : "채점"}</button></td>
-              </tr>
+      {layer.popup}
+      <ListTab tabs={CLINIC_TABS} />
+      <p className="alert-orange mt-24 mb-12">&#39;학생별 선택&#39;으로 배정한 문제지를 목록에서 선택하여 채점합니다.</p>
+      <div className="tab-content">
+        <div className="tab-pane fade active show" id="tab-pane-2-1" role="tabpanel" tabIndex={0}>
+          <OriginalFilter html={STUDENTMARK_FILTER_HTML} storeKey="studentmark" onChange={setFilter} />
+          <div className="category-btns mt-24">
+            <div className="left-area">
+              <button type="button" className="category-btns-item f-12" onClick={async () => { if (await needSel()) layer.open(`/popup/paper/assign?ids=${paperIds.join(",")}`); }}>학생 배정</button>
+              <button type="button" className="category-btns-item f-12" onClick={async () => { if (await needSel()) setMarking(selRows[0]); }}>채점</button>
+              <button type="button" className="category-btns-item f-12" onClick={onWrong(false)}>오답모음생성</button>
+              <button type="button" className="category-btns-item f-12" onClick={onWrong(true)}>오답출제</button>
+              <button type="button" className="category-btns-item f-12" onClick={onCancelMark}>채점 취소</button>
+              <button type="button" className="category-btns-item f-12" onClick={async () => { if (await needSel()) layer.open(`/popup/paper/preview?ids=${paperIds.join(",")}&print=1`); }}>인쇄</button>
+              <button type="button" className="category-btns-item f-12" onClick={onDelete}>삭제</button>
+              <button type="button" className="category-btns-item f-12" onClick={() => metaAlert("준비 중입니다.")}><i className="fa-sharp fa-solid fa-download" aria-hidden="true"></i>엑셀다운</button>
+              <button type="button" className="category-btns-item f-12" onClick={() => metaAlert("준비 중입니다.")}>학생홈발송</button>
+            </div>
+          </div>
+          <div className="list-basic-check mt-8">
+            <ul className="table-head gap-3">
+              <li style={{ maxWidth: 20 }}>
+                <input type="checkbox" className="form-check-input" id="selectAll"
+                  checked={view.length > 0 && view.every((r) => checked.has(r.as_id))}
+                  onChange={(e) => setChecked(e.target.checked ? new Set(view.map((r) => r.as_id)) : new Set())} />
+              </li>
+              <li className="title-line">문제지명</li>
+              <li className="" style={{ maxWidth: 62 }}>학생</li>
+              <li className="" style={{ maxWidth: 64 }}>학습가능기간</li>
+              <li className="" style={{ maxWidth: 56 }}> 배정일 <br /> 채점일 </li>
+              <li className="align-items-center" style={{ maxWidth: 78 }}>정/오(점수)</li>
+              <li className="align-items-center" style={{ maxWidth: 40 }}>새창</li>
+              <li className="align-items-center" style={{ maxWidth: 68 }}>오답출제</li>
+              <li className="align-items-center" style={{ maxWidth: 68 }}>학생홈발송</li>
+            </ul>
+            {view.map((r) => (
+              <ul key={r.as_id} className="table-body gap-3 table-hover-background">
+                <li className="check-block" style={{ maxWidth: 20 }}>
+                  <input type="checkbox" name="chkPaperId" className="form-check-input" value={r.as_id} checked={checked.has(r.as_id)} onChange={() => toggle(r.as_id)} />
+                </li>
+                <li className="title-line">
+                  <div className="d-flex gap-1"><div className="left">
+                    <div className="d-flex title-line">
+                      <a href="javascript:void(0)" className="line-clamp-1 title-tooltip" title={r.paper_name}
+                        onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/preview?ids=${r.paper_id}`); }}>{r.paper_name}</a>
+                      <span className="badge-alram" style={{ display: "none" }}>반</span>
+                    </div>
+                    <Tagline grade={r.student_grade} paperType={r.paper_type} tags={r.tags} count={r.problem_count} maker={r.maker} />
+                  </div></div>
+                </li>
+                <li className="bw10" style={{ maxWidth: 62 }}><span className="line-clamp-2">{r.student_name}</span></li>
+                <li className="bw10" style={{ maxWidth: 64 }}><span>{fmtD(r.assigned_at)}<br />~{fmtD(r.due_at)}</span></li>
+                <li className="bw10" style={{ maxWidth: 56 }}>{fmtD(r.assigned_at)} <br /> {r.marked_at ? fmtD(r.marked_at) : "-"}</li>
+                <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
+                  {r.status === "marked"
+                    ? <a href="javascript:;" className="btn-underline f-12" onClick={(e) => { e.preventDefault(); setMarking(r); }}>{r.correct_count}/{r.problem_count}({r.score ?? 0}점)</a>
+                    : <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => setMarking(r)}>미채점</button>}
+                </li>
+                <li className="bw10 align-items-center" style={{ maxWidth: 40 }}>
+                  <i className="fa-solid fa-arrow-up-right-from-square f-14" style={{ cursor: "pointer" }} aria-hidden="true"
+                    onClick={() => layer.open(`/popup/paper/preview?ids=${r.paper_id}`)}></i>
+                </li>
+                <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>{enoteLabel(r)}
+                  {r.status === "marked" && (
+                    <button type="button" className="button__fill button__line--xsmall button__line--white bw10" style={{ width: 60 }}
+                      onClick={async () => { if (await metaConfirm("선택한 문제지의 채점을 취소하시겠습니까?")) { await cancelMarking([r.as_id]); reload(); } }}>채점취소</button>
+                  )}
+                </li>
+                <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>
+                  <p className="d-flex align-items-center h-32">{fmtD(r.assigned_at)}</p>
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => metaAlert("준비 중입니다.")}>옵션변경</button>
+                </li>
+              </ul>
             ))}
-            {rows.length === 0 && <tr><td colSpan={8} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "배정된 문제지가 없습니다."}</td></tr>}
-          </tbody>
-        </table>
+            {rows.length === 0 && <div className="null-item">{pending ? "불러오는 중…" : "등록된 내역이 없습니다."}</div>}
+          </div>
+          <ListFoot total={rows.length} size={size} setSize={setSize} page={page} setPage={setPage} />
+        </div>
       </div>
-      {marking && <MarkModal row={marking} onClose={() => setMarking(null)} onDone={() => { setMarking(null); load(); }} />}
+      {marking && <MarkSheetModal asId={marking.as_id} studentName={marking.student_name} onClose={() => setMarking(null)} onDone={() => { setMarking(null); reload(); }} />}
     </div>
   );
-}
-
-function MarkModal({ row, onClose, onDone }: { row: AssignmentRow; onClose: () => void; onDone: () => void }) {
-  const [problems, setProblems] = useState<MarkProblem[]>([]);
-  const [correct, setCorrect] = useState<Record<string, boolean>>({});
-  const [pending, start] = useTransition();
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    start(async () => {
-      const { problems, existing } = await loadMarkingSheet(row.as_id);
-      setProblems(problems);
-      const init: Record<string, boolean> = {};
-      problems.forEach((p) => { init[p.problem_code] = existing[p.problem_code] ?? true; });
-      setCorrect(init); setLoading(false);
-    });
-  }, [row.as_id]);
-  const correctCount = problems.filter((p) => correct[p.problem_code]).length;
-  const save = () => start(async () => {
-    await saveMarking(row.as_id, problems.map((p) => ({ problem_code: p.problem_code, is_correct: !!correct[p.problem_code] })));
-    onDone();
-  });
-  return (
-    <OriginalModal id="pt-modal" title={<>채점 · {row.student_name} · {row.paper_name}</>} onClose={onClose} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onClose}>취소</button>
-          <button className={BTN_APPLY} onClick={save} disabled={pending || loading}>채점 저장</button></>}>
-        <div>
-          {loading ? <p className="make-empty">불러오는 중…</p> : (
-            <>
-              <p className="mark-summary">정답 <b>{correctCount}</b> / {problems.length} · 예상점수 <b>{problems.length ? Math.round(correctCount / problems.length * 100) : 0}</b>점</p>
-              <table className="mark-table">
-                <thead><tr><th>번호</th><th className="text-left">문항</th><th>정답</th><th>정/오</th></tr></thead>
-                <tbody>
-                  {problems.map((p) => (
-                    <tr key={p.problem_code}>
-                      <td>{p.ord}</td>
-                      <td className="text-left mark-preview">{p.question_preview}…</td>
-                      <td>{p.answer_index ? ["①","②","③","④","⑤"][p.answer_index - 1] : "-"}</td>
-                      <td>
-                        <button className={`mark-toggle ${correct[p.problem_code] ? "on-o" : "on-x"}`}
-                          onClick={() => setCorrect({ ...correct, [p.problem_code]: !correct[p.problem_code] })}>
-                          {correct[p.problem_code] ? "○" : "✕"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          )}
-        </div>
-      </OriginalModal>
-    );
 }

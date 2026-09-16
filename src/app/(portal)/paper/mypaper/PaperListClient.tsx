@@ -7,6 +7,7 @@ import { useLayerPopup } from "@/components/portal/LayerPopup";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { listPapers, togglePaperFlag, trashPapers, type PaperRow } from "./paperListActions";
 import { MYPAPER_FILTER_HTML } from "./filterHtml";
+import { FavSubTab } from "@/components/portal/FavSubTab";
 
 const SUBJ: Record<string, string> = { math: "수학", english: "영어" };
 const PTYPE: Record<string, string> = { custom: "직접출제", level_test: "레벨테스트", achievement_test: "성취도평가", calculation: "연산" };
@@ -36,7 +37,10 @@ export function PaperListClient({ mode = "mine" }: { mode?: "mine" | "favorite" 
   return (
     <div className="contens-body">
       {layer.popup}
-      <ListTab tabs={PAPER_TABS} className="mb-24" />
+      <ListTab tabs={PAPER_TABS} className={mode === "favorite" ? "" : "mb-24"} />
+      {mode === "favorite" && <><FavSubTab current="paper" /><p className="alert-orange mt-24 mb-12">내 문제지, 공유, 테마별 문제지 중 자주 사용할 문제지를 즐겨찾기로 저장합니다.</p></>}
+      {mode === "mine" && <p className="alert-orange mt-24 mb-12">내가 만든 문제지입니다. 공유, 테마별 문제지도 복제 또는 수정하여 내 문제지로 가져올 수 있습니다.</p>}
+      {mode === "shared" && <p className="alert-orange mt-24 mb-12">교실 내 공유 문제지입니다. 내 문제지, 테마별 문제지도 공유할 수 있습니다.</p>}
       <div dangerouslySetInnerHTML={{ __html: MYPAPER_FILTER_HTML }} />
       <div className="category-btns mt-24">
         <div className="left-area">
@@ -70,8 +74,8 @@ export function PaperListClient({ mode = "mine" }: { mode?: "mine" | "favorite" 
               <a href="#" className="line-clamp-1 title-tooltip" title={r.name} onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/preview?ids=${r.id}`); }}>{r.name}</a>
               <div className="d-flex tagline"><p>{SUBJ[r.subject] ?? r.subject}</p>{r.unit_names.map((u) => <p key={u}>{u}</p>)}<p>{r.problem_count}문항</p><p>{PTYPE[r.paper_type] ?? r.paper_type}</p></div>
             </li>
-            <li style={{ maxWidth: 60 }}>기본</li>
-            <li style={{ maxWidth: 42 }}>직접채점</li>
+            <li style={{ maxWidth: 60 }} className="text-center">{r.tags.length ? r.tags.join(", ") : "-"}</li>
+            <li style={{ maxWidth: 42 }}>{r.grading}</li>
             <li style={{ maxWidth: 54 }}>{fmt(r.created_at)}</li>
             <li style={{ maxWidth: 52 }}><span className="line-clamp-2 f-12">{r.maker ?? "-"}</span></li>
             <li style={{ maxWidth: 44 }}><i className={`fa-solid fa-eye on-off-visibilty${r.is_shared ? " active" : ""}`} aria-hidden="true" style={{ cursor: "pointer" }} onClick={async () => { await togglePaperFlag([r.id], "is_shared", !r.is_shared); load(); }}></i></li>

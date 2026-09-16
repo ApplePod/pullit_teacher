@@ -215,3 +215,8 @@ header.detail .logo img { height: 28px; }
   .pt-sheet-host { padding: 0; overflow: visible; }
   .pt-sheet-host .page_template { box-shadow: none; margin: 0; page-break-after: always; }
 }
+
+/* 원본 datepicker(jQuery UI) 대신 native date input — 아이콘 중복 제거 */
+.duration input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0; width: 24px; }
+/* 상단 GNB 와 함께 쓰는 상세 헤더 높이 보정 */
+.contents-header__detail { height: auto; padding: 16px 0; }

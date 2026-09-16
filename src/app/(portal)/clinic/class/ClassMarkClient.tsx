@@ -1,35 +1,163 @@
 "use client";
-import { useEffect, useState, useTransition } from "react";
+
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
-import { classMarkSummary, type ClassMarkRow } from "../clinicActions";
+import { useLayerPopup } from "@/components/portal/LayerPopup";
+import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
+import { OriginalModal, BTN_CANCEL } from "@/components/portal/OriginalModal";
+import { cancelMarking, listClassAssignments, makeWrongPaper, trashAssignments, type ClassAsgRow } from "../clinicActions";
+import { CLASS_FILTER_HTML } from "../studentmark/filterHtml";
+import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "../studentmark/listCommon";
+import { MarkSheetModal } from "../studentmark/MarkSheetModal";
+
+/** 원본 Pages/Center/Clinic/class.cshtml 마크업 그대로 + 실데이터·동작 */
 export function ClassMarkClient() {
-  const [rows, setRows] = useState<ClassMarkRow[]>([]);
+  const [rows, setRows] = useState<ClassAsgRow[]>([]);
+  const [filter, setFilter] = useState<FilterState>(EMPTY_FILTER);
+  const [checked, setChecked] = useState<Set<string>>(new Set());
+  const [openRow, setOpenRow] = useState<ClassAsgRow | null>(null);
+  const [marking, setMarking] = useState<{ asId: string; name: string } | null>(null);
   const [pending, start] = useTransition();
-  useEffect(() => { start(async () => setRows(await classMarkSummary())); }, []);
+  const layer = useLayerPopup();
+  const { page, setPage, size, setSize, view } = usePaging(rows);
+
+  const load = useCallback((f: FilterState) => start(async () => {
+    setRows(await listClassAssignments({
+      dateField: f.dateField, start: f.start, end: f.end, searchField: f.searchField, keyword: f.keyword,
+      band: f.band, markYn: f.markYn, enoteYn: f.enoteYn, tag: f.tag,
+    }));
+  }), []);
+  useEffect(() => { load(filter); }, [filter, load]);
+
+  const sel = [...checked];
+  const selRows = rows.filter((r) => checked.has(r.assignment_id));
+  const paperIds = [...new Set(selRows.map((r) => r.paper_id))];
+  const selAsIds = selRows.flatMap((r) => r.students.map((s) => s.as_id));
+  const needSel = async () => { if (sel.length === 0) { await metaAlert("목록에서 반을 선택해 주세요."); return false; } return true; };
+  const reload = () => { setChecked(new Set()); load(filter); };
+  const toggle = (id: string) => setChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const enoteLabel = (r: ClassAsgRow) => (r.enote_done ? "완료" : r.marked > 0 && r.wrong_count > 0 ? "오답출제" : "불가");
+
+  const onWrong = (assign: boolean) => async () => {
+    if (!(await needSel())) return;
+    const r = await makeWrongPaper(selAsIds, assign);
+    if (r.error) { await metaAlert(r.error); return; }
+    if (r.created === 0) { await metaAlert("채점이 완료된 문제지 중 오답이 있는 항목을 선택해 주세요."); return; }
+    await metaAlert(assign ? `오답 문제지 ${r.created}개를 만들어 학생에게 배정했습니다.` : `오답모음 문제지 ${r.created}개를 만들었습니다.`);
+    reload();
+  };
+  const onDelete = async () => {
+    if (!(await needSel())) return;
+    if (!(await metaConfirm("선택한 문제지를 삭제하시겠습니까?"))) return;
+    const r = await trashAssignments({ assignmentIds: sel });
+    if (r.error) { await metaAlert(r.error); return; }
+    reload();
+  };
+
   return (
     <div className="contens-body">
-      <ListTab tabs={CLINIC_TABS} className="mb-24" />
-      <div className="alert alert-blue fade show p-3 mb-16" role="alert">
-        <div className="d-flex gap-1"><span className="material-symbols-sharp">error</span>
-          <div className="msg">반에 배정된 문제지의 채점 현황입니다. 문제지 배정 시 반을 지정하면 여기에 반별로 집계됩니다.</div></div>
+      {layer.popup}
+      <ListTab tabs={CLINIC_TABS} />
+      <p className="alert-orange mt-24 mb-12">&#39;반별 선택&#39;으로 배정한 문제지를 목록에서 선택하여 채점합니다. </p>
+      <div className="tab-content">
+        <div className="tab-pane fade active show" id="tab-pane-2-2" role="tabpanel" tabIndex={0}>
+          <OriginalFilter html={CLASS_FILTER_HTML} storeKey="class" onChange={setFilter} />
+        </div>
+        <div className="category-btns mt-24">
+          <div className="left-area">
+            <button type="button" className="category-btns-item f-12" onClick={async () => { if (await needSel()) setOpenRow(selRows[0]); }}>채점</button>
+            <button type="button" className="category-btns-item f-12" onClick={onWrong(false)}>오답모음생성</button>
+            <button type="button" className="category-btns-item f-12" onClick={onWrong(true)}>오답출제</button>
+            <button type="button" className="category-btns-item f-12" onClick={async () => { if (await needSel()) layer.open(`/popup/paper/preview?ids=${paperIds.join(",")}&print=1`); }}>인쇄</button>
+            <button type="button" className="category-btns-item f-12" onClick={onDelete}>삭제</button>
+            <button type="button" className="category-btns-item f-12" onClick={() => metaAlert("준비 중입니다.")}><i className="fa-sharp fa-solid fa-download" aria-hidden="true"></i>엑셀다운</button>
+          </div>
+        </div>
+        <div className="list-basic-check mt-8">
+          <ul className="table-head gap-2">
+            <li style={{ maxWidth: 20 }}>
+              <input type="checkbox" className="form-check-input" id="selectAll"
+                checked={view.length > 0 && view.every((r) => checked.has(r.assignment_id))}
+                onChange={(e) => setChecked(e.target.checked ? new Set(view.map((r) => r.assignment_id)) : new Set())} />
+            </li>
+            <li className="title-line">문제지명</li>
+            <li className="" style={{ maxWidth: 94 }}>반 명</li>
+            <li className="" style={{ maxWidth: 64 }}>학습가능기간</li>
+            <li className="" style={{ maxWidth: 56 }}> 배정일 <br /> 채점일 </li>
+            <li className="align-items-center" style={{ maxWidth: 78 }}>채점/미채점</li>
+            <li className="align-items-center" style={{ maxWidth: 68 }}>오답출제</li>
+            <li className="align-items-center" style={{ maxWidth: 68 }}>학생홈발송</li>
+          </ul>
+          {view.map((r) => (
+            <ul key={r.assignment_id} className="table-body gap-2 table-hover-background">
+              <li className="check-block" style={{ maxWidth: 20 }}>
+                <input type="checkbox" name="chkPaperId" className="form-check-input" value={r.assignment_id} checked={checked.has(r.assignment_id)} onChange={() => toggle(r.assignment_id)} />
+              </li>
+              <li className="title-line">
+                <div className="d-flex gap-1"><div className="left">
+                  <div className="d-flex title-line">
+                    <a href="javascript:void(0)" className="line-clamp-1 title-tooltip" title={r.paper_name}
+                      onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/preview?ids=${r.paper_id}`); }}>{r.paper_name}</a>
+                    <span className="badge-alram">반</span>
+                  </div>
+                  <Tagline paperType={r.paper_type} tags={r.tags} count={r.problem_count} maker={r.maker} />
+                </div></div>
+              </li>
+              <li className="bw10" style={{ maxWidth: 94 }}><span className="line-clamp-2">{r.class_name}</span></li>
+              <li className="bw10" style={{ maxWidth: 64 }}><span>{fmtD(r.assigned_at)}<br />~{fmtD(r.due_at)}</span></li>
+              <li className="bw10" style={{ maxWidth: 56 }}>{fmtD(r.assigned_at)} <br /> {r.marked_at ? fmtD(r.marked_at) : "-"}</li>
+              <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
+                <a href="javascript:;" className="btn-underline f-12" onClick={(e) => { e.preventDefault(); setOpenRow(r); }}>{r.marked}/{r.total - r.marked}</a>
+              </li>
+              <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>{enoteLabel(r)}
+                {r.marked > 0 && (
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10" style={{ width: 60 }}
+                    onClick={async () => {
+                      if (!(await metaConfirm("선택한 문제지의 채점을 취소하시겠습니까?"))) return;
+                      await cancelMarking(r.students.filter((s) => s.status === "marked").map((s) => s.as_id));
+                      reload();
+                    }}>채점취소</button>
+                )}
+              </li>
+              <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>
+                <p className="d-flex align-items-center h-32">{fmtD(r.assigned_at)}</p>
+                <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => metaAlert("준비 중입니다.")}>옵션변경</button>
+              </li>
+            </ul>
+          ))}
+          {rows.length === 0 && <div className="null-item">{pending ? "불러오는 중…" : "등록된 내역이 없습니다."}</div>}
+        </div>
+        <ListFoot total={rows.length} size={size} setSize={setSize} page={page} setPage={setPage} />
       </div>
-      <div className="table-basic">
-        <table className="table-layout-basic">
-          <thead><tr><th className="text-left">반 명</th><th>배정 문항 건수</th><th>채점 완료</th><th>반 평균</th><th>성취도</th></tr></thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.class_id}>
-                <td className="text-left"><b>{r.class_name}</b></td>
-                <td>{r.total}</td><td>{r.marked}</td>
-                <td>{r.avg_score != null ? `${r.avg_score}점` : "-"}</td>
-                <td>{r.avg_score != null ? <div className="report-bar"><span style={{ width: `${r.avg_score}%` }} /></div> : "-"}</td>
-              </tr>
+      {openRow && !marking && (
+        <OriginalModal id="divClassMark" size="max-680" title={<>{openRow.class_name} · {openRow.paper_name}</>}
+          onClose={() => setOpenRow(null)}
+          footer={<button type="button" className={BTN_CANCEL} onClick={() => setOpenRow(null)}>닫기</button>}>
+          <p className="f-14 mb-16">채점할 학생을 선택해 주세요.</p>
+          <div className="list-basic-check pt-0 shadow-none">
+            <ul className="table-head gap-3">
+              <li className="title-line">학생명</li>
+              <li className="align-items-center" style={{ maxWidth: 90 }}>정/오(점수)</li>
+              <li className="align-items-center" style={{ maxWidth: 80 }}>채점</li>
+            </ul>
+            {openRow.students.map((s) => (
+              <ul key={s.as_id} className="table-body gap-3 table-hover-background">
+                <li className="title-line">{s.student_name}</li>
+                <li className="align-items-center" style={{ maxWidth: 90 }}>
+                  {s.status === "marked" ? `${s.correct_count}/${openRow.problem_count}(${s.score ?? 0}점)` : "미채점"}
+                </li>
+                <li className="align-items-center" style={{ maxWidth: 80 }}>
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100"
+                    onClick={() => setMarking({ asId: s.as_id, name: s.student_name })}>{s.status === "marked" ? "재채점" : "채점"}</button>
+                </li>
+              </ul>
             ))}
-            {rows.length === 0 && <tr><td colSpan={5} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "등록된 반이 없습니다."}</td></tr>}
-          </tbody>
-        </table>
-      </div>
+            {openRow.students.length === 0 && <div className="null-item">배정된 학생이 없습니다.</div>}
+          </div>
+        </OriginalModal>
+      )}
+      {marking && <MarkSheetModal asId={marking.asId} studentName={marking.name} onClose={() => setMarking(null)} onDone={() => { setMarking(null); setOpenRow(null); reload(); }} />}
     </div>
   );
 }
