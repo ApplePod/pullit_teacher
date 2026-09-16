@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { LoginForm } from "./LoginForm";
 
 const ERROR_TEXT: Record<string, string> = {
@@ -12,17 +11,5 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { next, error } = await searchParams;
-  return (
-    <>
-      {error && ERROR_TEXT[error] && (
-        <p className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">{ERROR_TEXT[error]}</p>
-      )}
-      <LoginForm next={next ?? "/dashboard"} />
-      <div className="mt-4 text-center text-sm">
-        <Link href="/forgot-password" className="text-slate-500 hover:text-slate-900">
-          비밀번호를 잊으셨나요?
-        </Link>
-      </div>
-    </>
-  );
+  return <LoginForm next={next ?? "/dashboard"} notice={error ? ERROR_TEXT[error] : undefined} />;
 }

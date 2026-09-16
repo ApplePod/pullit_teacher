@@ -5,22 +5,26 @@ import { updateProfile, changePassword } from "./actions";
 import { FormMessage } from "@/components/FormMessage";
 import { SubmitButton } from "@/components/SubmitButton";
 
-const input = "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none";
-
-export function ProfileForm({ name, phone }: { name: string; phone: string }) {
+export function ProfileForm({ name, phone, loginId }: { name: string; phone: string; loginId: string }) {
   const [state, action] = useActionState(updateProfile, null);
   return (
-    <form action={action} className="space-y-4">
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="name">이름</label>
-        <input id="name" name="name" defaultValue={name} required className={input} />
+    <form action={action} className="profile__body profile__body--oneLine">
+      <div className="form-group">
+        <label htmlFor="name" className="form-label">이름</label>
+        <input id="name" name="name" type="text" className="form-control" defaultValue={name} required />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="phone">휴대폰</label>
-        <input id="phone" name="phone" defaultValue={phone} placeholder="010-0000-0000" className={input} />
+      <div className="form-group">
+        <label htmlFor="loginId" className="form-label">아이디</label>
+        <input id="loginId" type="text" className="form-control" value={loginId} disabled />
       </div>
-      <FormMessage state={state} />
-      <SubmitButton className="sm:w-auto">저장</SubmitButton>
+      <div className="form-group">
+        <label htmlFor="phone" className="form-label">전화번호</label>
+        <input id="phone" name="phone" type="tel" className="form-control" defaultValue={phone} placeholder="010-0000-0000" />
+      </div>
+      <div className="form-group">
+        <FormMessage state={state} />
+        <SubmitButton className="button__line button__fill--small button__fill--secondary">저장하기</SubmitButton>
+      </div>
     </form>
   );
 }
@@ -28,17 +32,18 @@ export function ProfileForm({ name, phone }: { name: string; phone: string }) {
 export function PasswordForm() {
   const [state, action] = useActionState(changePassword, null);
   return (
-    <form action={action} className="space-y-4">
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="password">새 비밀번호</label>
-        <input id="password" name="password" type="password" autoComplete="new-password" required minLength={8} className={input} />
+    <form action={action} className="profile__body profile__body--oneLine">
+      <h4>비밀번호 변경</h4>
+      <div className="form-group">
+        <label htmlFor="password" className="form-label">새 비밀번호</label>
+        <input id="password" name="password" type="password" className="form-control" placeholder="새로운 비밀번호를 입력해주세요." autoComplete="new-password" required minLength={8} />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="confirm">비밀번호 확인</label>
-        <input id="confirm" name="confirm" type="password" autoComplete="new-password" required minLength={8} className={input} />
+      <div className="form-group">
+        <label htmlFor="confirm" className="form-label">새 비밀번호 확인</label>
+        <input id="confirm" name="confirm" type="password" className="form-control" placeholder="새로운 비밀번호를 다시 입력해주세요." autoComplete="new-password" required minLength={8} />
       </div>
       <FormMessage state={state} />
-      <SubmitButton className="sm:w-auto">비밀번호 변경</SubmitButton>
+      <SubmitButton className="full-btn">확인</SubmitButton>
     </form>
   );
 }

@@ -13,6 +13,15 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    // 원본(메타수학) CSS·이미지 자산을 그대로 쓰므로 next/image·CSS 링크 경고는 끔
+    rules: {
+      "@next/next/no-img-element": "off",
+      "@next/next/no-css-tags": "off",
+      "@next/next/no-page-custom-font": "off",
+      "@next/next/google-font-display": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

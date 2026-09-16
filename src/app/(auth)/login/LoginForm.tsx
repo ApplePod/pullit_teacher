@@ -1,27 +1,38 @@
 "use client";
 
-import { useActionState } from "react";
+import Link from "next/link";
+import { useActionState, useState } from "react";
 import { login } from "../actions";
-import { FormMessage } from "@/components/FormMessage";
 import { SubmitButton } from "@/components/SubmitButton";
 
-export function LoginForm({ next }: { next: string }) {
+export function LoginForm({ next, notice }: { next: string; notice?: string }) {
   const [state, action] = useActionState(login, null);
+  const [id, setId] = useState("");
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="Form">
+      <h2>학원 포털 로그인</h2>
       <input type="hidden" name="next" value={next} />
-      <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">아이디 또는 이메일</label>
-        <input id="email" name="email" type="text" autoComplete="username" required placeholder="admin"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none" />
+      <div className="flex flex-col w-full gap-xl mb-36">
+        <div className={`form-input-basic${state?.error ? " error" : ""}`}>
+          <input type="text" name="email" placeholder="아이디를 입력해주세요." maxLength={64}
+            autoComplete="username" value={id} onChange={(e) => setId(e.target.value)} required />
+        </div>
+        <div className={`form-input-basic${state?.error ? " error" : ""}`}>
+          <input className="input-basic-2" type="password" name="password" placeholder="비밀번호를 입력해주세요."
+            maxLength={64} autoComplete="current-password" required />
+          {state?.error && <p>{state.error}</p>}
+          {notice && <p>{notice}</p>}
+        </div>
       </div>
-      <div>
-        <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-700">비밀번호</label>
-        <input id="password" name="password" type="password" autoComplete="current-password" required
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:outline-none" />
+      <div className="Checkbox-wrap">
+        <div />
+        <div>
+          <Link href="/forgot-password">아이디/비밀번호 찾기</Link>
+        </div>
       </div>
-      <FormMessage state={state} />
-      <SubmitButton>로그인</SubmitButton>
+      <div className="btn-wrap">
+        <SubmitButton className={id ? "btn-primary" : "btn-success"}>로그인</SubmitButton>
+      </div>
     </form>
   );
 }

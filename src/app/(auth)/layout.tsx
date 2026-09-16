@@ -1,13 +1,31 @@
+import Link from "next/link";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">풀잇 학원 포털</h1>
-          <p className="mt-1 text-sm text-slate-500">고3 · 수능형 문항으로 문제지를 만듭니다</p>
+    <>
+      <header className="detail">
+        <div className="header-wrap">
+          <Link href="/" className="logo" aria-label="풀잇 학원 포털"><img src="/assets/home/images/common/logo.svg" alt="풀잇 학원 포털" /></Link>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">{children}</div>
-      </div>
-    </main>
+      </header>
+      <main className="Login">
+        <section id="wrapapp01">
+          <div className="swiper">
+            <div className="swiper-wrapper">
+              <div className="Benner swiper-slide swiper-slide-active" style={{ width: 500 }}>
+                <div className="Profile">
+                  <img src="/assets/center/images/common/img_login_cover.png" alt="" />
+                </div>
+                <div className="Text-wrap">
+                  <span>고3 · 수능형 현재 이용 가능 문항수</span>
+                  <span>11,718 문항</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {children}
+        </section>
+      </main>
+    </>
   );
 }

@@ -1,14 +1,9 @@
-@import "tailwindcss";
-
-:root {
-  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-    "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
-}
-
-@theme inline {
-  --font-sans: var(--font-sans);
-}
-
-body {
-  font-family: var(--font-sans);
-}
+/* 원본(메타수학) 스타일시트는 layout.tsx 에서 /legacy/css/*.css 로 로드. 여기는 보정만. */
+html, body { margin: 0; }
+.form-message { font-size: 13px; padding: 10px 12px; border-radius: 6px; margin: 8px 0; }
+.form-message--error { background: #fff1f3; color: #fa3158; }
+.form-message--ok { background: #e9f3ff; color: #1e85ff; }
+.readonly-note { font-size: 13px; color: #97979d; margin: 4px 0 16px; }
+.dropdown-menu.show { display: block; }
+header.detail .logo { display: inline-flex !important; align-items: center; height: 72px; width: auto !important; background: none !important; }
+header.detail .logo img { height: 28px; }
