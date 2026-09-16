@@ -114,3 +114,7 @@ header.detail .logo img { height: 28px; }
 .pt-modal__body { padding: 20px 24px; overflow-y: auto; }
 .pt-modal__body .form-group { margin-bottom: 14px; }
 .pt-modal__foot { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid #eaeaef; }
+
+/* 교사 메뉴권한 그리드 */
+.perm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; margin-top: 6px; }
+.perm-chk { font-size: 13px; display: flex; align-items: center; gap: 6px; }
