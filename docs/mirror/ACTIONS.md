@@ -629,45 +629,324 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | 내 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 펼침/갱신 | act_00.png |
 
+## pages_center_paper_share_cshtml  (23 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 내 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:mypaper.cshtml | act_00.png |
+| 즐겨찾기 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:favorite.cshtml | act_01.png |
+| 공유 문제지 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| 테마별 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:themecalculationpaper.cshtml | act_03.png |
+| 휴지통 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:trash.cshtml | act_04.png |
+| 1년 | `btn period-btn` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 4px 0px 0px 4px | 0px 14px | 14px | 36px | no_visible_change |  |
+| 6개월 | `btn period-btn` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 0px 4px 4px 0px | 0px 14px | 14px | 36px | no_visible_change |  |
+| 초기화 | `btn-underline` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) | 0px none rgb(52, 52, 64) | 4px | 1px 6px | 14px | 21.5938px | not_clicked(danger/external) |  |
+| 필터 저장 | `btn-underline` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) | 0px none rgb(52, 52, 64) | 4px | 1px 6px | 14px | 21.5938px | not_clicked(danger/external) |  |
+| 검색 | `` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) |  | 0px | 0px 16px | 12px | 34px | no_visible_change |  |
+| 초등 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 4px 0px 0px 4px | 0px 16px | 12px | 36px | changed → 펼침/갱신 | act_10.png |
+| 중등 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px | 0px 16px | 12px | 36px | changed → 펼침/갱신 | act_11.png |
+| 고등 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px 4px 4px 0px | 0px 16px | 12px | 36px | no_visible_change |  |
+| add
+추가 | `btn-add-delete` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 4px | 0px | 14px | 20px | changed → 펼침/갱신 | act_13.png |
+| 학생 배정 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | changed → 모달 | act_14.png, act_14_modal.html |
+| 인쇄 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+| 즐겨찾기 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | changed → 모달 | act_16.png, act_16_modal.html |
+| 엑셀다운 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+| 문제지 만들기 | `button__line button__fill--medium button__fill--` | rgb(250, 49, 88) | rgb(255, 255, 255) | 0px none rgb(255, 255, 255 | 4px | 0px 16px | 14px | 36px | changed → iframe:makestudy.cshtml | act_18.png |
+| Scroll to Top | `scrollToTop` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 4px | 1px 6px | 16px | 32px | click_error:Message: element click intercepted: Element <button class="s |  |
+|  | `prev disabled` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 1 | `active` | rgb(255, 255, 255) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+|  | `next` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+
+## pages_center_paper_theme_cshtml  (13 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 내 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:mypaper.cshtml | act_00.png |
+| 내 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:mypaper.cshtml | act_01.png |
+| 즐겨찾기 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:favorite.cshtml | act_02.png |
+| 즐겨찾기 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:favorite.cshtml | act_03.png |
+| 공유 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:share.cshtml | act_04.png |
+| 공유 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:share.cshtml | act_05.png |
+| 테마별 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:themecalculationpaper.cshtml | act_06.png |
+| 테마별 문제지 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | changed → 이동:themecalculationpaper.cshtml | act_07.png |
+| 휴지통 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:trash.cshtml | act_08.png |
+| 휴지통 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:trash.cshtml | act_09.png |
+| 연산 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:themecalculationpaper.cshtml | act_10.png |
+| 연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:themecalculationpaper.cshtml | act_11.png |
+| 진단평가 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 펼침/갱신 | act_12.png |
+
+## pages_center_paper_themecalculationpaper_cshtml  (7 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 내 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:mypaper.cshtml | act_00.png |
+| 내 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:mypaper.cshtml | act_01.png |
+| 즐겨찾기 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:favorite.cshtml | act_02.png |
+| 즐겨찾기 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:favorite.cshtml | act_03.png |
+| 공유 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:share.cshtml | act_04.png |
+| 공유 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:share.cshtml | act_05.png |
+| 테마별 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 펼침/갱신 | act_06.png |
+
+## pages_center_paper_themepaperforexam_cshtml  (15 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 내 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:mypaper.cshtml | act_00.png |
+| 내 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:mypaper.cshtml | act_01.png |
+| 즐겨찾기 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:favorite.cshtml | act_02.png |
+| 즐겨찾기 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:favorite.cshtml | act_03.png |
+| 공유 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:share.cshtml | act_04.png |
+| 공유 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:share.cshtml | act_05.png |
+| 테마별 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:themecalculationpaper.cshtml | act_06.png |
+| 테마별 문제지 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | changed → 이동:themecalculationpaper.cshtml | act_07.png |
+| 휴지통 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:trash.cshtml | act_08.png |
+| 휴지통 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:trash.cshtml | act_09.png |
+| 연산 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:themecalculationpaper.cshtml | act_10.png |
+| 연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:themecalculationpaper.cshtml | act_11.png |
+| 진단평가 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:theme.cshtml | act_12.png |
+| 진단평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:theme.cshtml | act_13.png |
+| 단원평가 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 펼침/갱신 | act_14.png |
+
+## pages_center_paper_trash_cshtml  (9 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 내 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:mypaper.cshtml | act_00.png |
+| 내 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:mypaper.cshtml | act_01.png |
+| 즐겨찾기 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:favorite.cshtml | act_02.png |
+| 즐겨찾기 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:favorite.cshtml | act_03.png |
+| 공유 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:share.cshtml | act_04.png |
+| 공유 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:share.cshtml | act_05.png |
+| 테마별 문제지 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:themecalculationpaper.cshtml | act_06.png |
+| 테마별 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:themecalculationpaper.cshtml | act_07.png |
+| 휴지통 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 펼침/갱신 | act_08.png |
+
+## pages_center_premium_kmt_cshtml  (17 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:video.cshtml | act_00.png |
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_01.png |
+| 메타초등연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:student.cshtml | act_02.png |
+| AI내신기출매칭
+오픈베타 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_03.png |
+| KMT학력평가 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| 시험요강 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 응시접수관리 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_06.png |
+| KMT기출 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_07.png |
+| KMT본평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 채점입력 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_09.png |
+| 결과/분석표 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 상장출력 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | not_clicked(danger/external) |  |
+| 홍보물 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_12.png |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+
+## pages_center_premium_kmt_result_excel_cshtml  (17 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 0px | 0px | 16px | auto | changed → 이동:video.cshtml | act_00.png |
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_01.png |
+| 메타초등연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:student.cshtml | act_02.png |
+| AI내신기출매칭
+오픈베타 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_03.png |
+| KMT학력평가 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| 시험요강 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 응시접수관리 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_06.png |
+| KMT기출 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_07.png |
+| KMT본평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 채점입력 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_09.png |
+| 결과/분석표 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 상장출력 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | not_clicked(danger/external) |  |
+| 홍보물 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_12.png |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgba(255, 255, 2 | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+
+## pages_center_premium_mathoperations_direct_cshtml  (23 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_00.png |
+| 메타초등연산 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| AI내신기출매칭
+오픈베타 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_02.png |
+| KMT학력평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:kmt.cshtml | act_03.png |
+| 학생별 자동학습 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:student.cshtml | act_04.png |
+| 반별 자동학습 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:group.cshtml | act_05.png |
+| 내 연산지 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 내 연산 채점 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:directmark.cshtml | act_07.png |
+| 1년 | `btn period-btn` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 4px 0px 0px 4px | 0px 14px | 14px | 36px | no_visible_change |  |
+| 6개월 | `btn period-btn` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 0px 4px 4px 0px | 0px 14px | 14px | 36px | no_visible_change |  |
+| 검색 | `` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) |  | 0px | 0px 16px | 12px | 34px | no_visible_change |  |
+| 전체 | `` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px 0px 0px 4px | 0px 16px | 12px | 36px | no_visible_change |  |
+| 연산단계별 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px | 0px 16px | 12px | 36px | changed → 펼침/갱신 | act_12.png |
+| 교과진도별 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px 4px 4px 0px | 0px 16px | 12px | 36px | no_visible_change |  |
+| 학생 배정 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | changed → 모달 | act_14.png, act_14_modal.html |
+| 삭제 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+| 엑셀다운 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+| 연산진단평가 | `button__line button__fill--medium button__fill--` | rgb(30, 133, 255) | rgb(255, 255, 255) | 0px none rgb(255, 255, 255 | 4px | 0px 16px | 14px | 36px | changed → iframe:DirectEvaluation.cshtml | act_17.png |
+| 연산지 만들기 | `button__line button__fill--medium button__fill--` | rgb(30, 133, 255) | rgb(255, 255, 255) | 0px none rgb(255, 255, 255 | 4px | 0px 16px | 14px | 36px | click_error:Message: element click intercepted: Element <button type="bu |  |
+| Scroll to Top | `scrollToTop` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 4px | 1px 6px | 16px | 32px | click_error:Message: element click intercepted: Element <button class="s |  |
+|  | `prev disabled` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 1 | `active` | rgb(255, 255, 255) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+|  | `next` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+
+## pages_center_premium_mathoperations_student_cshtml  (8 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | click_error:Message: element click intercepted: Element <button class="n |  |
+| 메타초등연산 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| AI내신기출매칭
+오픈베타 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_02.png |
+| KMT학력평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:kmt.cshtml | act_03.png |
+| 학생별 자동학습 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | click_error:Message: element click intercepted: Element <button class="n |  |
+| 반별 자동학습 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:group.cshtml | act_05.png |
+| 내 연산지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:direct.cshtml | act_06.png |
+| 내 연산 채점 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:directmark.cshtml | act_07.png |
+
+## pages_center_premium_test_aimatch_cshtml  (3 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_00.png |
+| 메타연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:Direct.cshtml | act_01.png |
+| AI내신기출매칭
+오픈베타 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | changed → 펼침/갱신 | act_02.png |
+
+## pages_center_premium_test_trash_cshtml  (7 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_00.png |
+| 메타연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:Direct.cshtml | act_01.png |
+| AI내신기출매칭
+오픈베타 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_02.png |
+| KMT학력평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:kmt.cshtml | act_03.png |
+| AI매칭 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:aimatch.cshtml | act_04.png |
+| 기출 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | not_clicked(danger/external) |  |
+| 휴지통 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | changed → 펼침/갱신 | act_06.png |
+
+## pages_center_premium_test_uploadpaper_cshtml  (20 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:video.cshtml | act_00.png |
+| 메타연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:Direct.cshtml | act_01.png |
+| AI내신기출매칭
+오픈베타 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_02.png |
+| KMT학력평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:kmt.cshtml | act_03.png |
+| AI매칭 문제지 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:aimatch.cshtml | act_04.png |
+| 기출 문제지 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | not_clicked(danger/external) |  |
+| 휴지통 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | changed → 이동:trash.cshtml | act_06.png |
+| 검색 | `` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) |  | 0px | 0px 16px | 12px | 34px | no_visible_change |  |
+| 시험지 삭제 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+| 시험지업로드 | `button__line button__fill--medium button__fill--` | rgb(250, 49, 88) | rgb(255, 255, 255) | 0px none rgb(255, 255, 255 | 4px | 0px 16px | 14px | 36px | not_clicked(danger/external) |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(52, 52, 64) | 0px none rgb(52, 52, 64) | 0px | 0px | 14px | 32px | changed → 모달 | act_10.png, act_10_modal.html |
+| 만들기 | `button__fill button__line--xsmall button__line--` | rgb(255, 255, 255) | rgb(52, 52, 64) | 1px solid rgb(220, 220, 22 | 4px | 0px 12px | 12px | 32px | changed → iframe:matchstudy?from=uploadpaper& | act_11.png |
+| Scroll to Top | `scrollToTop` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 4px | 1px 6px | 16px | 32px | click_error:Message: element click intercepted: Element <button class="s |  |
+|  | `prev disabled` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 1 | `active` | rgb(255, 255, 255) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 2 | `` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 3 | `` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 4 | `` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+| 5 | `` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+|  | `next` | rgba(0, 0, 0, 0) | rgb(51, 51, 51) | 0px none rgb(51, 51, 51) | 0px | 0px | 12px | 32px | click_error:Message: element click intercepted: Element <a href="javascr |  |
+
+## pages_center_premium_video_cshtml  (21 buttons)
+
+| 텍스트 | 클래스 | 배경 | 글자 | 테두리 | 둥글기 | 패딩 | 글자크기 | 높이 | 결과 | 산출물 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 개념동영상 | `nav-link active` | rgba(0, 0, 0, 0) | rgb(30, 133, 255) | 0px none rgb(30, 133, 255) | 4px | 0px 16px | 14px | 48px | no_visible_change |  |
+| 메타초등연산 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:student.cshtml | act_01.png |
+| AI내신기출매칭
+오픈베타 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:aimatch.cshtml | act_02.png |
+| KMT학력평가 | `nav-link` | rgba(0, 0, 0, 0) | rgb(105, 105, 114) | 0px none rgb(105, 105, 114 | 4px | 0px 16px | 14px | 48px | changed → 이동:kmt.cshtml | act_03.png |
+| 전체 | `nav-link active` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 배정 완료 | `nav-link` | rgba(0, 0, 0, 0) | rgb(86, 86, 97) | 1px solid rgb(86, 86, 97) | 32px | 0px 16px | 14px | 32px | no_visible_change |  |
+| 초등 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 4px 0px 0px 4px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 중등 | `` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 0px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 고등 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px 4px 4px 0px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 1학년 | `` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 8px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 2학년 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 4px | 0px 8px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 3학년 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) | 1px solid rgb(220, 220, 22 | 4px | 0px 8px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 전체 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 4px 0px 0px 4px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 1학기 | `` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 0px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 2학기 | `` | rgb(255, 255, 255) | rgb(105, 105, 114) |  | 0px 4px 4px 0px | 0px 16px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 새교육과정 | `` | rgb(233, 243, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 8px | 12px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 학생배정 | `category-btns-item` | rgb(255, 255, 255) | rgb(30, 133, 255) | 1px solid rgb(30, 133, 255 | 4px | 0px 16px | 14px | 36px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `` | rgba(0, 0, 0, 0) | rgb(59, 59, 71) | 0px none rgb(59, 59, 71) | 0px | 0px | 14px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| 보기 | `button__fill button__line--xsmall button__line--` | rgb(255, 255, 255) | rgb(52, 52, 64) | 1px solid rgb(220, 220, 22 | 4px | 0px 12px | 12px | 32px | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+| Scroll to Top | `scrollToTop` | rgba(0, 0, 0, 0) | rgb(33, 37, 41) | 0px none rgb(33, 37, 41) | 4px | 1px 6px | 16px | auto | click_error:Message: element not interactable
+  (Session info: chrome=15 |  |
+|  | `btn-close` | rgba(0, 0, 0, 0) | rgb(0, 0, 0) | 0px none rgb(0, 0, 0) | 6px | 0px | 16px | 36px | changed → 펼침/갱신 | act_20.png |
+
 ## 버튼 스타일 종류 요약 (클래스 → 배경/글자/둥글기, 등장 수)
 
-- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(105, 105, 114) radius=4px ×90
-- `category-btns-item` bg=rgb(255, 255, 255) color=rgb(30, 133, 255) radius=4px ×29
-- `a` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=0px ×25
-- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px ×25
-- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(30, 133, 255) radius=4px ×23
+- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(105, 105, 114) radius=4px ×132
+- `a` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=0px ×51
+- `category-btns-item` bg=rgb(255, 255, 255) color=rgb(30, 133, 255) radius=4px ×38
+- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(30, 133, 255) radius=4px ×34
+- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(86, 86, 97) radius=32px ×34
+- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px ×27
 - `form-label` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×20
 - `line-clamp-1` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=0px ×15
 - `a` bg=rgba(0, 0, 0, 0) color=rgb(30, 133, 255) radius=0px ×15
-- `btn-underline` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=4px ×12
-- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px ×12
+- `btn-underline` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=4px ×14
+- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px ×14
+- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px 4px 4px 0px ×13
+- `button` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=0px ×12
+- `scrollToTop` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=4px ×12
+- `nav-link` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=32px ×11
+- `prev` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×11
+- `active` bg=rgb(255, 255, 255) color=rgb(30, 133, 255) radius=4px ×11
+- `next` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×10
 - `dashboard__status--card` bg=rgb(255, 255, 255) color=rgb(33, 37, 41) radius=4px ×9
-- `button` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=0px ×9
-- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px 4px 4px 0px ×9
-- `scrollToTop` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=4px ×8
-- `prev` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×8
-- `active` bg=rgb(255, 255, 255) color=rgb(30, 133, 255) radius=4px ×8
-- `btn` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px 0px 0px 4px ×7
-- `btn` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px 4px 4px 0px ×7
-- `next` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×7
+- `btn` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px 0px 0px 4px ×9
+- `btn` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px 4px 4px 0px ×9
+- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px 0px 0px 4px ×9
+- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=4px ×8
+- `button__line` bg=rgb(250, 49, 88) color=rgb(255, 255, 255) radius=4px ×8
+- `a` bg=rgba(0, 0, 0, 0) color=rgb(86, 86, 97) radius=0px ×8
 - `link-button__more` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=0px ×6
-- `nav-link` bg=rgba(0, 0, 0, 0) color=rgb(86, 86, 97) radius=32px ×6
-- `label` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px 0px 0px 4px ×6
-- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=4px ×6
-- `button__line` bg=rgb(250, 49, 88) color=rgb(255, 255, 255) radius=4px ×6
-- `btn-add-delete` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=4px ×5
+- `btn-add-delete` bg=rgba(0, 0, 0, 0) color=rgb(33, 37, 41) radius=4px ×6
 - `w-100` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px ×5
-- `nav-link` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=32px ×4
+- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=4px 0px 0px 4px ×4
 - `btn` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=4px ×4
-- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=4px 0px 0px 4px ×3
+- `a` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×4
 - `accordion-button` bg=rgb(255, 255, 255) color=rgb(59, 59, 71) radius=5px 5px 0px 0px ×3
+- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=0px ×3
 - `w-100` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=4px 0px 0px 4px ×3
 - `w-100` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px 4px 4px 0px ×3
+- `button__line` bg=rgb(30, 133, 255) color=rgb(255, 255, 255) radius=4px ×3
 - `category-btns-item` bg=rgb(30, 133, 255) color=rgb(255, 255, 255) radius=4px ×2
 - `accordion-button` bg=rgb(255, 255, 255) color=rgb(59, 59, 71) radius=0px ×2
 - `form-check-label` bg=rgba(0, 0, 0, 0) color=rgb(52, 52, 64) radius=0px ×2
-- `button__fill` bg=rgba(0, 0, 0, 0) color=rgb(255, 255, 255) radius=4px ×1
-- `btn` bg=rgb(255, 255, 255) color=rgb(105, 105, 114) radius=0px ×1
-- `disabled` bg=rgba(0, 0, 0, 0) color=rgb(51, 51, 51) radius=0px ×1
-- `label` bg=rgb(233, 243, 255) color=rgb(30, 133, 255) radius=0px ×1
-- `button__fill` bg=rgb(255, 255, 255) color=rgb(33, 37, 41) radius=4px ×1
+- `button__fill` bg=rgb(255, 255, 255) color=rgb(52, 52, 64) radius=4px ×2

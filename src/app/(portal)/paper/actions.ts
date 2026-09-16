@@ -32,6 +32,10 @@ export async function createPaper(input: {
   name: string;
   subject: "math" | "english";
   problem_codes: string[];
+  /** 프린트 설정(만들기 3단계) — paper.options JSONB 에 그대로 저장 */
+  options?: Record<string, unknown>;
+  /** 임시 저장(draft) / 만들기 완료(ready) */
+  status?: "draft" | "ready";
 }): Promise<{ error?: string; id?: string }> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -39,13 +43,15 @@ export async function createPaper(input: {
   const { data: profile } = await supabase.from("profile").select("center_id").eq("id", user.id).maybeSingle();
   if (!profile) return { error: "학원 정보를 찾을 수 없습니다." };
   if (!input.name.trim()) return { error: "문제지 이름을 입력해주세요." };
-  if (input.problem_codes.length === 0) return { error: "문항을 1개 이상 선택해주세요." };
+  const status = input.status ?? "ready";
+  if (status !== "draft" && input.problem_codes.length === 0) return { error: "문항을 1개 이상 선택해주세요." };
 
   const { data: paper, error: pe } = await supabase
     .from("paper")
     .insert({
       center_id: profile.center_id, created_by: user.id, name: input.name.trim(),
-      subject: input.subject, status: "ready", problem_count: input.problem_codes.length,
+      subject: input.subject, status, problem_count: input.problem_codes.length,
+      options: input.options ?? {},
     })
     .select("id").single();
   if (pe || !paper) return { error: "문제지 생성에 실패했습니다." };

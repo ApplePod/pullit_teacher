@@ -15,7 +15,7 @@ const GNB = [
 
 export function TopNav({ userName }: { userName: string }) {
   const pathname = usePathname();
-  const layer = useLayerPopup();
+  const layer = useLayerPopup({ global: true });
   useEffect(() => { const onMsg = (e: MessageEvent) => { if (e.data?.ptGoto) window.location.href = e.data.ptGoto; }; window.addEventListener("message", onMsg); return () => window.removeEventListener("message", onMsg); }, []);
   const isActive = (m: string | readonly string[]) =>
     Array.isArray(m) ? m.some((x) => pathname.startsWith(x)) : pathname.startsWith(m as string);
