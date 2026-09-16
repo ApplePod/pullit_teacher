@@ -1,5 +1,7 @@
 "use client";
 
+import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
@@ -35,7 +37,7 @@ export function StudentMarkClient() {
                 <td>{r.assigned_at ? new Date(r.assigned_at).toLocaleDateString("ko-KR") : "-"}</td>
                 <td>{r.status === "marked" ? `${r.correct_count}/${r.problem_count} (${r.score}점)` : "-"}</td>
                 <td><span className={`mark-status mark-${r.status}`}>{STATUS[r.status] ?? r.status}</span></td>
-                <td><button className="btn btn-default btn-sm" onClick={() => setMarking(r)}>{r.status === "marked" ? "재채점" : "채점"}</button></td>
+                <td><button className={BTN_WHITE_XS} onClick={() => setMarking(r)}>{r.status === "marked" ? "재채점" : "채점"}</button></td>
               </tr>
             ))}
             {rows.length === 0 && <tr><td colSpan={8} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "배정된 문제지가 없습니다."}</td></tr>}
@@ -67,10 +69,9 @@ function MarkModal({ row, onClose, onDone }: { row: AssignmentRow; onClose: () =
     onDone();
   });
   return (
-    <div className="pt-modal-backdrop" onClick={onClose}>
-      <div className="pt-modal" style={{ width: 560 }} onClick={(e) => e.stopPropagation()}>
-        <div className="pt-modal__head"><h4>채점 · {row.student_name} · {row.paper_name}</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
-        <div className="pt-modal__body">
+    <OriginalModal id="pt-modal" title={<>채점 · {row.student_name} · {row.paper_name}</>} onClose={onClose} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onClose}>취소</button>
+          <button className={BTN_APPLY} onClick={save} disabled={pending || loading}>채점 저장</button></>}>
+        <div>
           {loading ? <p className="make-empty">불러오는 중…</p> : (
             <>
               <p className="mark-summary">정답 <b>{correctCount}</b> / {problems.length} · 예상점수 <b>{problems.length ? Math.round(correctCount / problems.length * 100) : 0}</b>점</p>
@@ -95,11 +96,6 @@ function MarkModal({ row, onClose, onDone }: { row: AssignmentRow; onClose: () =
             </>
           )}
         </div>
-        <div className="pt-modal__foot">
-          <button className="btn btn-default" onClick={onClose}>취소</button>
-          <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={save} disabled={pending || loading}>채점 저장</button>
-        </div>
-      </div>
-    </div>
-  );
+      </OriginalModal>
+    );
 }

@@ -40,7 +40,6 @@ export function StudentFormClient({ student }: { student: StudentRow | null }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student]);
 
-  saveRef.current = () => save();
   const val = (id: string) => (host.current?.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("#" + id)?.value ?? "").trim();
   const save = () => {
     setMsg(null);
@@ -59,6 +58,8 @@ export function StudentFormClient({ student }: { student: StudentRow | null }) {
       if (res.error) setMsg(res.error); else router.push("/management/student");
     });
   };
+
+  useEffect(() => { saveRef.current = save; });
 
   return (
     <div ref={host} className="studentform-host">

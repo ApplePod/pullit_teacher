@@ -1,5 +1,7 @@
 "use client";
 
+import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -33,8 +35,8 @@ export function ClassClient() {
         </li></ul>
       </div>
       <div className="d-flex justify-content-between items-center mb-12 mt-16">
-        <button className="btn btn-default" onClick={onDelete} disabled={checked.size === 0}>삭제</button>
-        <button className="button__line button__fill--medium button__fill--red" onClick={() => setModal(true)}>반 등록</button>
+        <button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onDelete} disabled={checked.size === 0}>삭제</button>
+        <button className={BTN_RED_MD} onClick={() => setModal(true)}>반 등록</button>
       </div>
       <div className="table-basic">
         <table className="table-layout-basic">
@@ -52,8 +54,8 @@ export function ClassClient() {
                 <td>{r.student_count}</td><td>{r.teacher_name ?? "-"}</td>
                 <td>{new Date(r.created_at).toLocaleDateString("ko-KR")}</td>
                 <td>{r.memo ?? "-"}</td>
-                <td><button className="btn btn-default btn-sm" disabled>학생</button></td>
-                <td><button className="btn btn-default btn-sm" disabled>보기</button></td>
+                <td><button className={BTN_WHITE_XS} disabled>학생</button></td>
+                <td><button className={BTN_WHITE_XS} disabled>보기</button></td>
                 <td><button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { await deleteClasses([r.id]); load(); }); }}>🗑</button></td>
               </tr>
             ))}
@@ -75,10 +77,9 @@ function ClassModal({ teachers, onClose, onDone, start, pending }: {
   const on = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
   const submit = () => { setMsg(null); start(async () => { const r = await createClassGroup(f); if (r.error) setMsg(r.error); else onDone(); }); };
   return (
-    <div className="pt-modal-backdrop" onClick={onClose}>
-      <div className="pt-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="pt-modal__head"><h4>반 등록</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
-        <div className="pt-modal__body">
+    <OriginalModal id="pt-modal" title={<>반 등록</>} onClose={onClose} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onClose}>목록으로</button>
+          <button className={BTN_APPLY} onClick={submit} disabled={pending}>저장하기</button></>}>
+        <div>
           <div className="form-group"><label className="form-label required">반 이름</label><input className="form-control" placeholder="반 이름을 입력해주세요." value={f.name} onChange={on("name")} /></div>
           <div className="form-group"><label className="form-label">담당교사</label>
             <select className="form-control" value={f.teacher_id} onChange={on("teacher_id")}>
@@ -90,11 +91,6 @@ function ClassModal({ teachers, onClose, onDone, start, pending }: {
           <div className="form-group"><label className="form-label">메모</label><textarea className="form-control" value={f.memo} onChange={on("memo")} /></div>
           {msg && <p className="form-message form-message--error">{msg}</p>}
         </div>
-        <div className="pt-modal__foot">
-          <button className="btn btn-default" onClick={onClose}>목록으로</button>
-          <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>저장하기</button>
-        </div>
-      </div>
-    </div>
-  );
+      </OriginalModal>
+    );
 }

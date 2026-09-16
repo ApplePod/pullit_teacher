@@ -1,5 +1,7 @@
 "use client";
 
+import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -37,10 +39,10 @@ export function TeacherClient() {
       </div>
       <div className="d-flex justify-content-between items-center mb-12 mt-16">
         <div className="d-flex gap-2">
-          <button className="btn btn-default" disabled>일괄 사용권한 변경</button>
-          <button className="btn btn-default" onClick={onDelete} disabled={checked.size === 0}>삭제</button>
+          <button className={BTN_WHITE_XS + " button__weight--medium"} disabled>일괄 사용권한 변경</button>
+          <button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onDelete} disabled={checked.size === 0}>삭제</button>
         </div>
-        <button className="button__line button__fill--medium button__fill--red" onClick={() => setModal(true)}>교사 등록</button>
+        <button className={BTN_RED_MD} onClick={() => setModal(true)}>교사 등록</button>
       </div>
       <div className="table-basic">
         <table className="table-layout-basic">
@@ -57,7 +59,7 @@ export function TeacherClient() {
                 <td>{r.login_id || "-"}</td><td>{r.phone ?? "-"}</td>
                 <td>{r.role === "owner" ? "전체(원장)" : permLabel(r.access_menu)}</td>
                 <td>{new Date(r.created_at).toLocaleDateString("ko-KR")}</td>
-                <td><button className="btn btn-default btn-sm" disabled>수정</button></td>
+                <td><button className={BTN_WHITE_XS} disabled>수정</button></td>
                 <td>{r.role !== "owner" && <button className="icon-del" onClick={() => { if (confirm("삭제할까요?")) start(async () => { const x = await deleteTeachers([r.id]); if (x.error) alert(x.error); load(); }); }}>🗑</button>}</td>
               </tr>
             ))}
@@ -82,17 +84,16 @@ function TeacherModal({ onClose, onDone, start, pending }: { onClose: () => void
     start(async () => { const r = await createTeacher({ ...f, access_menu: perms }); if (r.error) setMsg(r.error); else onDone(); });
   };
   return (
-    <div className="pt-modal-backdrop" onClick={onClose}>
-      <div className="pt-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="pt-modal__head"><h4>교사 등록</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
-        <div className="pt-modal__body">
+    <OriginalModal id="pt-modal" title={<>교사 등록</>} onClose={onClose} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onClose}>목록으로</button>
+          <button className={BTN_APPLY} onClick={submit} disabled={pending}>저장하기</button></>}>
+        <div>
           <div className="form-group"><label className="form-label required">교사명</label><input className="form-control" placeholder="교사명을 입력해주세요." value={f.name} onChange={on("name")} /></div>
           <div className="form-group"><label className="form-label required">아이디</label><input className="form-control" placeholder="영문 소문자, 숫자 4~12자리" value={f.login_id} onChange={on("login_id")} /></div>
           <div className="form-group"><label className="form-label required">비밀번호</label><input className="form-control" type="text" placeholder="6자 이상" value={f.password} onChange={on("password")} /></div>
           <div className="form-group"><label className="form-label">휴대폰</label><input className="form-control" placeholder="010-0000-0000" value={f.phone} onChange={on("phone")} /></div>
           <div className="form-group">
             <label className="form-label">메뉴권한
-              <button type="button" className="btn btn-default btn-sm" style={{ marginLeft: 8 }}
+              <button type="button" className={BTN_WHITE_XS} style={{ marginLeft: 8 }}
                 onClick={() => setPerms(allOn ? {} : Object.fromEntries(MENU_PERMS.map(([k]) => [k, true])))}>{allOn ? "전체 해제" : "전체 선택"}</button>
             </label>
             <div className="perm-grid">
@@ -103,11 +104,6 @@ function TeacherModal({ onClose, onDone, start, pending }: { onClose: () => void
           </div>
           {msg && <p className="form-message form-message--error">{msg}</p>}
         </div>
-        <div className="pt-modal__foot">
-          <button className="btn btn-default" onClick={onClose}>목록으로</button>
-          <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>저장하기</button>
-        </div>
-      </div>
-    </div>
-  );
+      </OriginalModal>
+    );
 }

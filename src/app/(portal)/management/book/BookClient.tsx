@@ -1,5 +1,7 @@
 "use client";
 
+import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -18,7 +20,7 @@ export function BookClient() {
       <ListTab tabs={MANAGEMENT_TABS} className="mb-24" />
       <div className="d-flex justify-content-between items-center mb-16">
         <h3 className="section-title" style={{ margin: 0 }}>사용 교재</h3>
-        <button className="button__line button__fill--medium button__fill--red" onClick={() => setModal(true)}>교재 등록</button>
+        <button className={BTN_RED_MD} onClick={() => setModal(true)}>교재 등록</button>
       </div>
       <div className="book-grid">
         {rows.map((r) => (
@@ -44,10 +46,9 @@ function BookModal({ onClose, onDone, start, pending }: { onClose: () => void; o
   const [msg, setMsg] = useState<string | null>(null);
   const submit = () => { setMsg(null); start(async () => { const r = await createBook(f); if (r.error) setMsg(r.error); else onDone(); }); };
   return (
-    <div className="pt-modal-backdrop" onClick={onClose}>
-      <div className="pt-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="pt-modal__head"><h4>교재 등록</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
-        <div className="pt-modal__body">
+    <OriginalModal id="pt-modal" title={<>교재 등록</>} onClose={onClose} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={onClose}>목록으로</button>
+          <button className={BTN_APPLY} onClick={submit} disabled={pending}>저장하기</button></>}>
+        <div>
           <div className="form-group"><label className="form-label required">교재명</label><input className="form-control" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="교재명을 입력해주세요." /></div>
           <div className="form-group"><label className="form-label">출판사</label><input className="form-control" value={f.publisher} onChange={(e) => setF({ ...f, publisher: e.target.value })} /></div>
           <div className="form-group"><label className="form-label">과목</label>
@@ -56,11 +57,6 @@ function BookModal({ onClose, onDone, start, pending }: { onClose: () => void; o
             </select></div>
           {msg && <p className="form-message form-message--error">{msg}</p>}
         </div>
-        <div className="pt-modal__foot">
-          <button className="btn btn-default" onClick={onClose}>목록으로</button>
-          <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>저장하기</button>
-        </div>
-      </div>
-    </div>
-  );
+      </OriginalModal>
+    );
 }

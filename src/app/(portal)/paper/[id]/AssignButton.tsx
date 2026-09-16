@@ -1,5 +1,7 @@
 "use client";
 
+import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_WHITE_XS, BTN_RED_MD } from "@/components/portal/OriginalModal";
+
 import { useEffect, useState, useTransition } from "react";
 import { listAssignableStudents, assignPaper } from "../../clinic/clinicActions";
 
@@ -21,12 +23,11 @@ export function AssignButton({ paperId }: { paperId: string }) {
   };
   return (
     <>
-      <button className="button__line button__fill--medium button__fill--red" onClick={() => setOpen(true)}>학생 배정</button>
+      <button className={BTN_RED_MD} onClick={() => setOpen(true)}>학생 배정</button>
       {open && (
-        <div className="pt-modal-backdrop" onClick={() => setOpen(false)}>
-          <div className="pt-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="pt-modal__head"><h4>학생 배정</h4><button onClick={() => setOpen(false)} className="pt-modal__x">×</button></div>
-            <div className="pt-modal__body">
+        <OriginalModal id="pt-modal" title={<>학생 배정</>} onClose={() => setOpen(false)} footer={<><button className={BTN_WHITE_XS + " button__weight--medium"} onClick={() => setOpen(false)}>취소</button>
+              <button className={BTN_APPLY} onClick={submit} disabled={pending || sel.size === 0}>배정하기</button></>}>
+        <div>
               <p className="mark-summary">배정할 학생을 선택하세요. 선택 <b>{sel.size}</b>명</p>
               <div className="assign-list">
                 {students.map((s) => (
@@ -38,13 +39,8 @@ export function AssignButton({ paperId }: { paperId: string }) {
               </div>
               {msg && <p className="form-message form-message--error">{msg}</p>}
             </div>
-            <div className="pt-modal__foot">
-              <button className="btn btn-default" onClick={() => setOpen(false)}>취소</button>
-              <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending || sel.size === 0}>배정하기</button>
-            </div>
-          </div>
-        </div>
-      )}
+      </OriginalModal>
+    )}
     </>
   );
 }
