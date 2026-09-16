@@ -195,3 +195,4 @@ header.detail .logo img { height: 28px; }
 .pv-expl-answer { font-weight: 800; color: #1e85ff; margin-bottom: 10px; }
 .pv-expl-sec { margin-bottom: 12px; }
 .pv-expl-title { font-weight: 700; font-size: 13px; color: #343440; margin-bottom: 4px; padding-left: 8px; border-left: 3px solid #1e85ff; }
+.chip.chip-on { background: #1e85ff; color: #fff; border-color: #1e85ff; }

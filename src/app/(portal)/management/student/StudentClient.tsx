@@ -3,17 +3,21 @@
 import { useEffect, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
-import { listStudents, createStudent, deleteStudents, type StudentRow } from "./studentActions";
+import { listStudents, createStudent, deleteStudents, bulkUpdateStudents, bulkCreateStudents, type StudentRow } from "./studentActions";
 
 const GRADE_OPTS = [["h1", "고1"], ["h2", "고2"], ["h3", "고3"], ["n", "N수"], ["etc", "기타"]] as const;
 const GRADE_LABEL: Record<string, string> = { h1: "고1", h2: "고2", h3: "고3", n: "N수", etc: "기타" };
 const CHIPS = ["전체", "예비초", "초1", "초2", "초3", "초4", "초5", "초6", "중1", "중2", "중3", "고1", "고2", "고3", "기타"];
+const LEVELS = ["L1", "L2", "L3", "L4", "L5", "L6", "L7"];
+const STATES: [string, string][] = [["active", "정규"], ["paused", "휴회"]];
 
 export function StudentClient() {
   const [rows, setRows] = useState<StudentRow[]>([]);
   const [search, setSearch] = useState("");
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [modal, setModal] = useState(false);
+  const [bulkModal, setBulkModal] = useState(false);
+  const [bigModal, setBigModal] = useState(false);
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -38,7 +42,7 @@ export function StudentClient() {
             <label className="listFilter-title">검색어</label>
             <div className="listFilter-items">
               <div className="search-select">
-                <div className="select__small"><select><option>학생명</option></select></div>
+                <div className="select__small"><select><option>학생명</option><option>학생 휴대폰</option></select></div>
                 <div className="search-input">
                   <input type="search" placeholder="검색어 입력" value={search}
                     onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => e.key === "Enter" && load(search)} />
@@ -60,11 +64,11 @@ export function StudentClient() {
 
       <div className="d-flex justify-content-between items-center mb-12">
         <div className="d-flex gap-2">
-          <button className="btn btn-default" disabled>일괄 레벨/학적 상태 변경</button>
+          <button className="btn btn-default" onClick={() => { if (checked.size === 0) { alert("학생을 선택해주세요."); return; } setBulkModal(true); }}>일괄 레벨/학적 상태 변경</button>
           <button className="btn btn-default" onClick={onDelete} disabled={checked.size === 0}>삭제</button>
         </div>
         <div className="d-flex gap-2">
-          <button className="button__line button__fill--medium button__fill--red" disabled>학생 대량 등록</button>
+          <button className="button__line button__fill--medium button__fill--red" onClick={() => setBigModal(true)}>학생 대량 등록</button>
           <button className="button__line button__fill--medium button__fill--red" onClick={() => { setMsg(null); setModal(true); }}>학생 등록</button>
         </div>
       </div>
@@ -101,6 +105,8 @@ export function StudentClient() {
       <p className="list-count mt-12">총 <b>{rows.length}</b>명</p>
 
       {modal && <RegisterModal onClose={() => setModal(false)} onDone={() => { setModal(false); load(); }} msg={msg} setMsg={setMsg} pending={pending} start={start} />}
+      {bulkModal && <BulkLevelModal ids={[...checked]} onClose={() => setBulkModal(false)} onDone={() => { setBulkModal(false); setChecked(new Set()); load(search); }} start={start} pending={pending} />}
+      {bigModal && <BigRegisterModal onClose={() => setBigModal(false)} onDone={() => { setBigModal(false); load(); }} start={start} pending={pending} />}
     </div>
   );
 }
@@ -143,6 +149,45 @@ function RegisterModal({ onClose, onDone, msg, setMsg, pending, start }: {
           <button className="btn btn-default" onClick={onClose}>목록으로</button>
           <button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>저장하기</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+
+function BulkLevelModal({ ids, onClose, onDone, start, pending }: { ids: string[]; onClose: () => void; onDone: () => void; start: (fn: () => Promise<void>) => void; pending: boolean }) {
+  const [level, setLevel] = useState(""); const [state, setState] = useState(""); const [msg, setMsg] = useState<string | null>(null);
+  const submit = () => { setMsg(null); start(async () => { const r = await bulkUpdateStudents(ids, { study_level: level || undefined, state: state || undefined }); if (r.error) setMsg(r.error); else onDone(); }); };
+  return (
+    <div className="pt-modal-backdrop" onClick={onClose}>
+      <div className="pt-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="pt-modal__head"><h4>일괄 레벨/학적 상태 변경 ({ids.length}명)</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
+        <div className="pt-modal__body">
+          <div className="form-group"><label className="form-label">레벨</label>
+            <div className="chip-row">{LEVELS.map((l) => <button key={l} type="button" className={`chip${level === l ? " chip-on" : ""}`} onClick={() => setLevel(level === l ? "" : l)}>{l}</button>)}</div></div>
+          <div className="form-group"><label className="form-label">학적 상태</label>
+            <div className="chip-row">{STATES.map(([v, l]) => <button key={v} type="button" className={`chip${state === v ? " chip-on" : ""}`} onClick={() => setState(state === v ? "" : v)}>{l}</button>)}</div></div>
+          {msg && <p className="form-message form-message--error">{msg}</p>}
+        </div>
+        <div className="pt-modal__foot"><button className="btn btn-default" onClick={onClose}>취소</button><button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>변경</button></div>
+      </div>
+    </div>
+  );
+}
+
+function BigRegisterModal({ onClose, onDone, start, pending }: { onClose: () => void; onDone: () => void; start: (fn: () => Promise<void>) => void; pending: boolean }) {
+  const [text, setText] = useState(""); const [msg, setMsg] = useState<string | null>(null);
+  const submit = () => { setMsg(null); start(async () => { const r = await bulkCreateStudents(text); if (r.error) setMsg(r.error); else { setMsg(null); onDone(); } }); };
+  return (
+    <div className="pt-modal-backdrop" onClick={onClose}>
+      <div className="pt-modal" style={{ width: 520 }} onClick={(e) => e.stopPropagation()}>
+        <div className="pt-modal__head"><h4>학생 대량 등록</h4><button onClick={onClose} className="pt-modal__x">×</button></div>
+        <div className="pt-modal__body">
+          <p className="sample-guide">엑셀에서 <b>학생명, 학년, 휴대폰, 보호자명, 보호자휴대폰</b> 순으로 복사해 붙여넣으세요. (탭/콤마 구분, 한 줄에 한 명)</p>
+          <textarea className="form-control" rows={8} placeholder={"홍길동\t고3\t010-1111-2222\t홍부모\t010-3333-4444"} value={text} onChange={(e) => setText(e.target.value)} />
+          {msg && <p className="form-message form-message--error">{msg}</p>}
+        </div>
+        <div className="pt-modal__foot"><button className="btn btn-default" onClick={onClose}>취소</button><button className="full-btn" style={{ width: "auto", padding: "0 24px" }} onClick={submit} disabled={pending}>등록</button></div>
       </div>
     </div>
   );
