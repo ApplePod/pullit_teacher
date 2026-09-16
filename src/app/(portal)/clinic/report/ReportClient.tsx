@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
@@ -75,9 +76,9 @@ export function ReportClient() {
           <div className="list-basic-check mt-8">
             <ul className="table-head gap-4-5">
               <li style={{ maxWidth: 20 }}>
-                <input type="checkbox" className="form-check-input" id="selectAll"
-                  checked={view.length > 0 && view.every((r) => checked.has(r.id))}
-                  onChange={(e) => setChecked(e.target.checked ? new Set(view.map((r) => r.id)) : new Set())} />
+                <SelectAllCheckbox  className="form-check-input" id="selectAll"
+                  
+                   total={view.length} allSelected={view.every((r) => checked.has(r.id))} onToggle={(v) => setChecked(v ? new Set(view.map((r) => r.id)) : new Set())} />
               </li>
               <li className="title-line">분석표명</li>
               <li className="" style={{ maxWidth: 48 }}>학생</li>
@@ -171,9 +172,9 @@ function MakeReportModal({ onClose, onDone }: { onClose: () => void; onDone: () 
       <div className="list-basic-check pt-0 shadow-none">
         <ul className="table-head gap-3">
           <li style={{ maxWidth: 20 }}>
-            <input className="form-check-input" type="checkbox" id="stdselectAll"
-              checked={students.length > 0 && chk.size === students.length}
-              onChange={(e) => setChk(e.target.checked ? new Set(students.map((s) => s.student_id)) : new Set())} />
+            <SelectAllCheckbox className="form-check-input"  id="stdselectAll"
+              
+               total={students.length} allSelected={chk.size === students.length} onToggle={(v) => setChk(v ? new Set(students.map((s) => s.student_id)) : new Set())} />
           </li>
           <li className="title-line">학생명</li>
           <li style={{ maxWidth: 60 }}>학년</li>

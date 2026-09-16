@@ -63,6 +63,8 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   const [selected, setSelected] = useState<Problem[]>([]);
   const [options, setOptions] = useState<PrintOptions>(DEFAULT_OPTIONS);
   const [created, setCreated] = useState<{ id: string; name: string } | null>(null);
+  const [autoCount, setAutoCount] = useState(30);          // 원본 '문항수' 슬라이더 값
+  const [autoDiff, setAutoDiff] = useState("");            // 자동 출제 난이도(선택 시)
   const [pending, start] = useTransition();
 
   // 원본 마크업 안의 출제방식 라디오·아코디언·프린트 설정 탭을 React 상태와 연결
@@ -97,6 +99,22 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
     };
     const onChange = (e: Event) => {
       const el = e.target as HTMLInputElement;
+      // 문항수 슬라이더: 원본처럼 --value 를 갱신하고 자동 출제 문항 수로 쓴다
+      if (el?.classList?.contains("range-slider__input")) {
+        const v = Number(el.value);
+        el.style.setProperty("--value", String(v));
+        root.querySelectorAll<HTMLInputElement>("input.range-slider__input").forEach((r) => {
+          if (r !== el) { r.value = String(v); r.style.setProperty("--value", String(v)); }
+        });
+        setAutoCount(v);
+        return;
+      }
+      // 자동 출제 난이도 라디오(원본 id: s1_diff…)
+      if (el?.id?.startsWith("s1_diff") || el?.id?.startsWith("filterDiff")) {
+        const label = root.querySelector(`label[for="${el.id}"]`)?.textContent?.trim() ?? "";
+        setAutoDiff(label.includes("하") ? "basic" : label.includes("상") ? "advanced" : label.includes("중") ? "normal" : "");
+        return;
+      }
       if (!el || !el.closest("#tplStep3Right")) return;
       const id = el.id || "";
       setOptions((o) => {
@@ -139,7 +157,27 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   const doSearch = (p = 1) => { setPage(p); start(async () => setResult(await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: difficulty || undefined, page: p }))); };
   const toggle = (pb: Problem) => setSelected((c) => c.some((x) => x.problem_code === pb.problem_code) ? c.filter((x) => x.problem_code !== pb.problem_code) : [...c, pb]);
   const isSel = (code: string) => selected.some((x) => x.problem_code === code);
-  const paperInput = (status: "draft" | "ready") => ({ name: paperName || autoName(), subject, problem_codes: selected.map((s) => s.problem_code), options: { ...options, method }, status });
+  const paperInput = (status: "draft" | "ready", codes?: string[]) => ({
+    name: paperName || autoName(), subject,
+    problem_codes: codes ?? selected.map((s) => s.problem_code),
+    options: { ...options, method, count: method === "D" ? selected.length : autoCount },
+    status,
+  });
+
+  /** 자동 출제·교재매칭: 조건에 맞는 문항을 문항수만큼 뽑는다 */
+  const pickAuto = async (): Promise<Problem[]> => {
+    const size = 20;
+    const first = await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: autoDiff || undefined, page: 1 });
+    const pool: Problem[] = [...first.items];
+    const pages = Math.min(Math.ceil(first.total / size), Math.ceil(autoCount / size) + 2);
+    for (let p = 2; p <= pages && pool.length < autoCount * 2; p++) {
+      const r = await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: autoDiff || undefined, page: p });
+      pool.push(...r.items);
+    }
+    // 고르게 섞어서 앞에서부터 문항수만큼
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    return pool.slice(0, autoCount);
+  };
 
   /** 프린트 설정 → 다음: 저장 후 '만들기 완료' 단계 표시 */
   const finish = () => start(async () => {
@@ -149,6 +187,15 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   });
   const next = () => {
     if (step === 1 && method === "D" && selected.length === 0) { void metaAlert("문항을 1개 이상 선택해주세요."); return; }
+    // 자동 출제·교재매칭은 프린트 설정으로 넘어갈 때 문항을 뽑아 둔다(미리보기·문항수에 그대로 반영)
+    if (step === 1 && method !== "D") {
+      start(async () => {
+        const items = await pickAuto();
+        if (items.length === 0) { await metaAlert("조건에 맞는 문항이 없습니다."); return; }
+        setSelected(items); setStep(2);
+      });
+      return;
+    }
     if (step === 2) finish(); else if (step < 2) setStep(step + 1);
   };
   const prev = () => { if (step > 0 && step < 3) setStep(step - 1); };

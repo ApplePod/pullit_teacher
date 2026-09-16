@@ -1,6 +1,7 @@
 "use client";
 
 import { RawHtml } from "@/components/RawHtml";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { useEffect, useState, useTransition } from "react";
 import { fmtShort } from "@/lib/date";
 import { ListTab } from "@/components/portal/ListTab";
@@ -59,7 +60,7 @@ export function FavQuestionClient() {
       </div>
       <div className="list-basic-check mt-8">
         <ul className="table-head gap-4-5">
-          <li style={{ maxWidth: 20 }}><input type="checkbox" id="selectAll" className="form-check-input" checked={rows.length > 0 && checked.size === rows.length} onChange={(e) => setChecked(e.target.checked ? new Set(rows.map((r) => r.id)) : new Set())} /></li>
+          <li style={{ maxWidth: 20 }}><SelectAllCheckbox  id="selectAll" className="form-check-input"   total={rows.length} allSelected={checked.size === rows.length} onToggle={(v) => setChecked(v ? new Set(rows.map((r) => r.id)) : new Set())} /></li>
           <li className="title-line">즐겨찾는 문항 폴더명</li>
           <li style={{ maxWidth: 80 }}>문항 수</li>
           <li style={{ maxWidth: 64 }}>최종 수정일</li>

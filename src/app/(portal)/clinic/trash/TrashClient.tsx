@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
 import { useLayerPopup } from "@/components/portal/LayerPopup";
@@ -56,9 +57,9 @@ export function TrashClient() {
           <div className="list-basic-check mt-8">
             <ul className="table-head gap-3">
               <li style={{ maxWidth: 20 }}>
-                <input type="checkbox" className="form-check-input" id="selectAll"
-                  checked={view.length > 0 && view.every((r) => checked.has(r.key))}
-                  onChange={(e) => setChecked(e.target.checked ? new Set(view.map((r) => r.key)) : new Set())} />
+                <SelectAllCheckbox  className="form-check-input" id="selectAll"
+                  
+                   total={view.length} allSelected={view.every((r) => checked.has(r.key))} onToggle={(v) => setChecked(v ? new Set(view.map((r) => r.key)) : new Set())} />
               </li>
               <li className="title-line">문제지명</li>
               <li className="" style={{ maxWidth: 68 }}>학생/반 명</li>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { useRouter, useSearchParams } from "next/navigation";
 import { metaAlert } from "@/components/portal/MetaModal";
 import {
@@ -132,9 +133,9 @@ export function MappingClient() {
             <table className="table table-bordered table-default-list">
               <thead><tr>
                 <th><div className="form-check d-flex gap-1">
-                  <input type="checkbox" name="user" className="form-check-input" id="checkGroupAll"
-                    checked={list.length > 0 && chk.size === list.length}
-                    onChange={(e) => setChk(e.target.checked ? new Set(list.map((b) => b.id)) : new Set())} />
+                  <SelectAllCheckbox  name="user" className="form-check-input" id="checkGroupAll"
+                    
+                     total={list.length} allSelected={chk.size === list.length} onToggle={(v) => setChk(v ? new Set(list.map((b) => b.id)) : new Set())} />
                   <label htmlFor="checkGroupAll" className="form-check-label d-flex flex-column">교재명</label>
                 </div></th>
                 <th>구분</th><th>반명</th>
@@ -191,9 +192,9 @@ export function MappingClient() {
             <table className="table table-bordered table-default-list">
               <thead><tr>
                 <th><div className="form-check d-flex gap-1">
-                  <input type="checkbox" name="user" className="form-check-input" id="checkAll"
-                    checked={list.length > 0 && chk.size === list.length}
-                    onChange={(e) => setChk(e.target.checked ? new Set(list.map((b) => b.id)) : new Set())} />
+                  <SelectAllCheckbox  name="user" className="form-check-input" id="checkAll"
+                    
+                     total={list.length} allSelected={chk.size === list.length} onToggle={(v) => setChk(v ? new Set(list.map((b) => b.id)) : new Set())} />
                   <label htmlFor="checkAll" className="form-check-label d-flex flex-column">교재명</label>
                 </div></th>
                 <th>구분</th><th>사용학생</th>

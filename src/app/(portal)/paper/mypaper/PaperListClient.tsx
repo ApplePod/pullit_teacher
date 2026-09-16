@@ -1,6 +1,7 @@
 "use client";
 
 import { RawHtml } from "@/components/RawHtml";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { useEffect, useState, useTransition } from "react";
 import { fmtShort } from "@/lib/date";
 import { ListTab } from "@/components/portal/ListTab";
@@ -53,7 +54,7 @@ export function PaperListClient({ mode = "mine" }: { mode?: Mode }) {
   /** 원본 table-head — 화면마다 컬럼 구성이 다르다 */
   const tableHead = (
     <ul className="table-head">
-      <li style={{ maxWidth: 20 }}><input type="checkbox" className="form-check-input" id="selectAll" checked={rows.length > 0 && checked.size === rows.length} onChange={(e) => setChecked(e.target.checked ? new Set(rows.map((r) => r.id)) : new Set())} /></li>
+      <li style={{ maxWidth: 20 }}><SelectAllCheckbox  className="form-check-input" id="selectAll"   total={rows.length} allSelected={checked.size === rows.length} onToggle={(v) => setChecked(v ? new Set(rows.map((r) => r.id)) : new Set())} /></li>
       <li className="title-line">문제지명</li>
       <li className={mode === "mine" ? "text-center" : ""} style={{ maxWidth: 60 }}>태그</li>
       <li style={{ maxWidth: 42 }}>채점형태</li>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { fmtShort } from "@/lib/date";
 import { useRouter } from "next/navigation";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
@@ -274,9 +275,9 @@ export function ClassClient() {
                 <tr>
                   <th>
                     <div className="form-check d-flex gap-1">
-                      <input type="checkbox" name="user" className="form-check-input" id="checkAll"
-                        checked={pageRows.length > 0 && pageRows.every((r) => checked.has(r.id))}
-                        onChange={(e) => setChecked(e.target.checked ? new Set(pageRows.map((r) => r.id)) : new Set())} />
+                      <SelectAllCheckbox  name="user" className="form-check-input" id="checkAll"
+                        
+                         total={pageRows.length} allSelected={pageRows.every((r) => checked.has(r.id))} onToggle={(v) => setChecked(v ? new Set(pageRows.map((r) => r.id)) : new Set())} />
                       <label htmlFor="checkAll" className="form-check-label">반 명</label>
                     </div>
                   </th>
@@ -450,9 +451,9 @@ export function ClassClient() {
                                 <tr>
                                   <th>
                                     <div className="form-check d-flex gap-1">
-                                      <input type="checkbox" name="checkAllpaperbooks" className="form-check-input" id="checkAll"
-                                        checked={books.length > 0 && bookChecked.size === books.length}
-                                        onChange={(e) => setBookChecked(e.target.checked ? new Set(books.map((b) => b.id)) : new Set())} />
+                                      <SelectAllCheckbox  name="checkAllpaperbooks" className="form-check-input" id="checkAll"
+                                        
+                                         total={books.length} allSelected={bookChecked.size === books.length} onToggle={(v) => setBookChecked(v ? new Set(books.map((b) => b.id)) : new Set())} />
                                       <label htmlFor="checkAll" className="form-check-label">교재명</label>
                                     </div>
                                   </th>
@@ -591,9 +592,9 @@ export function ClassClient() {
                       <tr>
                         <th>
                           <div className="form-check d-flex gap-1">
-                            <input type="checkbox" name="user12" className="form-check-input" id="checkAll02"
-                              checked={students.length > 0 && stdChecked.size === students.length}
-                              onChange={(e) => setStdChecked(e.target.checked ? new Set(students.map((s) => s.id)) : new Set())} />
+                            <SelectAllCheckbox  name="user12" className="form-check-input" id="checkAll02"
+                              
+                               total={students.length} allSelected={stdChecked.size === students.length} onToggle={(v) => setStdChecked(v ? new Set(students.map((s) => s.id)) : new Set())} />
                             <label htmlFor="checkAll02" className="form-check-label">학생 명</label>
                           </div>
                         </th>
@@ -689,9 +690,9 @@ function AddStudentModal({ classId, onClose, onDone, pending, start }: {
             <table className="table table-default-list">
               <thead><tr>
                 <th><div className="form-check d-flex gap-1">
-                  <input type="checkbox" className="form-check-input" id="chkAllAddStd"
-                    checked={shown.length > 0 && shown.every((s) => sel.has(s.id))}
-                    onChange={(e) => setSel(e.target.checked ? new Set(shown.map((s) => s.id)) : new Set())} />
+                  <SelectAllCheckbox  className="form-check-input" id="chkAllAddStd"
+                    
+                     total={shown.length} allSelected={shown.every((s) => sel.has(s.id))} onToggle={(v) => setSel(v ? new Set(shown.map((s) => s.id)) : new Set())} />
                   <label htmlFor="chkAllAddStd" className="form-check-label">학생 명</label></div></th>
                 <th>단계</th><th>학년</th><th>학적상태</th>
               </tr></thead>

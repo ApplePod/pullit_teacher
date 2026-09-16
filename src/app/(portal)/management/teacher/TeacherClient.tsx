@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { fmtShort } from "@/lib/date";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
@@ -205,9 +206,9 @@ export function TeacherClient() {
                 <tr>
                   <th>
                     <div className="form-check d-flex gap-1">
-                      <input type="checkbox" name="user" className="form-check-input" id="checkAll"
-                        checked={pageRows.length > 0 && pageRows.every((r) => checked.has(r.id))}
-                        onChange={(e) => setChecked(e.target.checked ? new Set(pageRows.map((r) => r.id)) : new Set())} />
+                      <SelectAllCheckbox  name="user" className="form-check-input" id="checkAll"
+                        
+                         total={pageRows.length} allSelected={pageRows.every((r) => checked.has(r.id))} onToggle={(v) => setChecked(v ? new Set(pageRows.map((r) => r.id)) : new Set())} />
                       <label htmlFor="checkAll" className="form-check-label d-flex flex-column">교사명</label>
                     </div>
                   </th>

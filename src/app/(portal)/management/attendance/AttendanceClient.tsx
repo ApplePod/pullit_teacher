@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { fmtMonth } from "@/lib/date";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
@@ -265,9 +266,9 @@ export function AttendanceClient({ initialMonth, initialData, initialClasses = [
               <tr>
                 <th style={{ minWidth: 120 }}>
                   <div className="form-check d-flex gap-1">
-                    <input type="checkbox" name="userAll" className="form-check-input" id="checkStudentAll"
-                      checked={pageRows.length > 0 && pageRows.every((s) => chklist.has(s.id))}
-                      onChange={(e) => setChklist(e.target.checked ? new Set(pageRows.map((s) => s.id)) : new Set())} />
+                    <SelectAllCheckbox  name="userAll" className="form-check-input" id="checkStudentAll"
+                      
+                       total={pageRows.length} allSelected={pageRows.every((s) => chklist.has(s.id))} onToggle={(v) => setChklist(v ? new Set(pageRows.map((s) => s.id)) : new Set())} />
                     <label htmlFor="checkStudentAll" className="form-check-label d-flex flex-column" style={{ marginLeft: 25 }}>학생명</label>
                   </div>
                 </th>

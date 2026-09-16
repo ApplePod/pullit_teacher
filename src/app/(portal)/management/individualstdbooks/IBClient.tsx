@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState, useTransition } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { useRouter } from "next/navigation";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { OriginalModal, BTN_CANCEL, BTN_APPLY, BTN_RED_MD } from "@/components/portal/OriginalModal";
@@ -31,6 +32,7 @@ export function IBClient() {
   const [keyword, setKeyword] = useState("");
   const [query, setQuery] = useState("");
   const [classFilter, setClassFilter] = useState("");
+  const [gradeAll, setGradeAll] = useState(true);   // 원본은 '전체'가 기본 선택이고 다시 누르면 해제된다
   const [grades, setGrades] = useState<Set<string>>(new Set());
   const [semester, setSemester] = useState("");
   const [modal, setModal] = useState<IBBook[] | null>(null);
@@ -67,7 +69,7 @@ export function IBClient() {
     start(async () => setModal(await allBooks()));
   };
 
-  const toggleGrade = (code: string) => setGrades((g) => { const n = new Set(g); if (n.has(code)) n.delete(code); else n.add(code); return n; });
+  const toggleGrade = (code: string) => { setGradeAll(false); setGrades((g) => { const n = new Set(g); if (n.has(code)) n.delete(code); else n.add(code); return n; }); };
 
   return (
     <>
@@ -125,7 +127,7 @@ export function IBClient() {
             <div className="listFilter-items">
               <div className="filter-check">
                 <input type="checkbox" name="filtergradeAll" id="fGradeAll" value=""
-                  checked={grades.size === 0 || grades.size === GRADES.length} onChange={(e) => setGrades(e.target.checked ? new Set(GRADES.map(([, , g]) => g)) : new Set())} />
+                  checked={gradeAll} onChange={(e) => { setGradeAll(e.target.checked); setGrades(e.target.checked ? new Set(GRADES.map(([, , g]) => g)) : new Set()); }} />
                 <label htmlFor="fGradeAll">전체</label>
               </div>
               {[GRADES.slice(0, 6), GRADES.slice(6, 9), GRADES.slice(9)].map((chunk, i) => (
@@ -192,9 +194,9 @@ export function IBClient() {
             <tr>
               <th>
                 <div className="form-check d-flex gap-1">
-                  <input type="checkbox" name="user" className="form-check-input" id="checkAll"
-                    checked={books.length > 0 && checked.size === books.length}
-                    onChange={(e) => setChecked(e.target.checked ? new Set(books.map((b) => b.id)) : new Set())} />
+                  <SelectAllCheckbox  name="user" className="form-check-input" id="checkAll"
+                    
+                     total={books.length} allSelected={checked.size === books.length} onToggle={(v) => setChecked(v ? new Set(books.map((b) => b.id)) : new Set())} />
                   <label htmlFor="checkAll" className="form-check-label d-flex flex-column">교재명</label>
                 </div>
               </th>

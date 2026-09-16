@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { SelectAllCheckbox } from "@/components/portal/SelectAllCheckbox";
 import { fmtISO } from "@/lib/date";
 import { closeLayerPopup } from "@/components/portal/LayerPopup";
 import { metaAlert } from "@/components/portal/MetaModal";
@@ -63,7 +64,7 @@ export function AssignPopupClient({ paperIds }: { paperIds: string[] }) {
                   <div className="list-basic list-basic-filter w-100" style={{ border: 0 }}>
                     <div className="inner-scroll" style={{ height: 360 }}>
                       <ul className="table-head gap-3">
-                        <li style={{ maxWidth: 20 }}><input type="checkbox" id="chkAll" className="form-check-input tree-check" checked={list.length > 0 && chk.size === list.length} onChange={(e) => setChk(e.target.checked ? new Set(list.map((s) => s.id)) : new Set())} /></li>
+                        <li style={{ maxWidth: 20 }}><SelectAllCheckbox  id="chkAll" className="form-check-input tree-check"   total={list.length} allSelected={chk.size === list.length} onToggle={(v) => setChk(v ? new Set(list.map((s) => s.id)) : new Set())} /></li>
                         <li className="f-14 bw11 title-line">이름</li><li className="bw11 f-14 justify-content-center text-center">레벨</li><li className="bw11 f-14 justify-content-center text-center">학년</li>
                       </ul>
                       {list.map((s) => row(s, chk, setChk))}
