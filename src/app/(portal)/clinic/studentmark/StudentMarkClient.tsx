@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { ListTab } from "@/components/portal/ListTab";
 import { CLINIC_TABS } from "@/lib/nav";
 import { useLayerPopup } from "@/components/portal/LayerPopup";
@@ -11,8 +11,9 @@ import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type 
 import { MarkSheetModal } from "./MarkSheetModal";
 
 /** 원본 Pages/Center/Clinic/studentmark.cshtml 마크업 그대로 + 실데이터·동작 */
-export function StudentMarkClient() {
-  const [rows, setRows] = useState<StudentAsgRow[]>([]);
+export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentAsgRow[] }) {
+  const [rows, setRows] = useState<StudentAsgRow[]>(initialRows);
+  const first = useRef(true);
   const [filter, setFilter] = useState<FilterState>(EMPTY_FILTER);
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [marking, setMarking] = useState<StudentAsgRow | null>(null);
@@ -26,7 +27,8 @@ export function StudentMarkClient() {
       band: f.band, markYn: f.markYn, enoteYn: f.enoteYn, tag: f.tag,
     }));
   }), []);
-  useEffect(() => { load(filter); }, [filter, load]);
+  // 첫 렌더는 서버가 내려준 목록을 그대로 쓰고, 필터가 바뀔 때만 다시 조회
+  useEffect(() => { if (first.current) { first.current = false; return; } load(filter); }, [filter, load]);
 
   const sel = [...checked];
   const selRows = rows.filter((r) => checked.has(r.as_id));

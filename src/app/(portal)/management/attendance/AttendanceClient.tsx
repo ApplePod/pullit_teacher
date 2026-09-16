@@ -1,10 +1,10 @@
 "use client";
 
-import { Fragment, useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
-import { loadMonth, saveMonth, listClassOptions, type AttStudent } from "./attendanceActions";
+import { loadMonth, saveMonth, listClassOptions, type AttStudent, type AttRecord } from "./attendanceActions";
 
 /** 원본 _CODE4CD('GR') */
 const GR: [string, string, string][] = [
@@ -33,17 +33,33 @@ function ymList() {
 }
 function thisMonth() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; }
 
-export function AttendanceClient() {
+function buildGrid(ym: string, students: AttStudent[], records: AttRecord[]) {
+  const [y, m] = ym.split("-").map(Number);
+  const len = new Date(y, m, 0).getDate();
+  const g: Record<string, string[]> = {};
+  students.forEach((s) => { g[s.id] = Array.from({ length: len }, () => "-"); });
+  records.forEach((r) => {
+    const d = Number(r.attended_on.slice(8, 10));
+    if (g[r.student_id] && d >= 1 && d <= len) g[r.student_id][d - 1] = r.status;
+  });
+  return g;
+}
+
+export function AttendanceClient({ initialMonth, initialData, initialClasses = [] }: {
+  initialMonth?: string; initialData?: { students: AttStudent[]; records: AttRecord[] }; initialClasses?: { id: string; name: string }[];
+}) {
   const yyyyMMList = useMemo(() => ymList(), []);
-  const [setDate, setSetDate] = useState(thisMonth());
-  const [students, setStudents] = useState<AttStudent[]>([]);
-  const [grid, setGrid] = useState<Record<string, string[]>>({});
+  const [setDate, setSetDate] = useState(initialMonth ?? thisMonth());
+  const first = useRef(!!initialData);
+  const [students, setStudents] = useState<AttStudent[]>(initialData?.students ?? []);
+  const [grid, setGrid] = useState<Record<string, string[]>>(
+    initialData && initialMonth ? buildGrid(initialMonth, initialData.students, initialData.records) : {});
   const [chklist, setChklist] = useState<Set<string>>(new Set());
   const [key, setKey] = useState("all");
   const [keyword, setKeyword] = useState("");
   const [grade, setGrade] = useState("");
   const [classId, setClassId] = useState("");
-  const [classList, setClassList] = useState<{ id: string; name: string }[]>([]);
+  const [classList, setClassList] = useState<{ id: string; name: string }[]>(initialClasses);
   const [smsYn, setSmsYn] = useState("");
   const [foldOpen, setFoldOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -64,22 +80,19 @@ export function AttendanceClient() {
   const load = useCallback((ym: string, o?: { key?: string; keyword?: string; grade?: string; classId?: string }) => {
     start(async () => {
       const { students, records } = await loadMonth(ym, { key, keyword, grade, classId, ...o });
-      const [y, m] = ym.split("-").map(Number);
-      const len = new Date(y, m, 0).getDate();
-      const g: Record<string, string[]> = {};
-      students.forEach((s) => { g[s.id] = Array.from({ length: len }, () => "-"); });
-      records.forEach((r) => {
-        const d = Number(r.attended_on.slice(8, 10));
-        if (g[r.student_id] && d >= 1 && d <= len) g[r.student_id][d - 1] = r.status;
-      });
-      setStudents(students); setGrid(g);
+      setStudents(students); setGrid(buildGrid(ym, students, records));
     });
   }, [key, keyword, grade, classId]);
 
+  // 첫 렌더는 서버가 내려준 이번 달 데이터를 사용
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { load(setDate); }, [setDate]);
+  useEffect(() => { if (first.current) { first.current = false; return; } load(setDate); }, [setDate]);
 
-  useEffect(() => { start(async () => setClassList(await listClassOptions(grade || undefined))); }, [grade]);
+  const firstClasses = useRef(initialClasses.length > 0);
+  useEffect(() => {
+    if (firstClasses.current && !grade) { firstClasses.current = false; return; }
+    start(async () => setClassList(await listClassOptions(grade || undefined)));
+  }, [grade]);
 
   let shown = students;
   if (smsYn) shown = shown.filter((s) => s.in_sms_send_yn === smsYn);
