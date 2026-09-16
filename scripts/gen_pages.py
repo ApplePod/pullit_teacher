@@ -12,8 +12,14 @@ def path_to_route(p):
 def clean(html):
     m=re.search(r'<article id="contents"[^>]*>(.*)</article>', html, re.S)
     inner = m.group(1) if m else html
-    # 페이지 자체의 per-page contents-header 제거 (상단 GNB 가 대체)
-    inner=re.sub(r'<div class="contents-header">.*?</div>\s*</div>\s*</div>', '', inner, count=1, flags=re.S)
+    # 페이지 자체의 per-page contents-header 제거 (상단 GNB 가 대체) — div 균형 매칭
+    m=re.search(r'<div class="contents-header"[^>]*>', inner)
+    if m:
+        st=m.start(); i=m.end(); depth=1
+        for tm in re.finditer(r'<(/?)div\b', inner[i:], re.I):
+            depth += -1 if tm.group(1) else 1
+            if depth==0:
+                end=i+inner[i:].find('>',tm.end())+1; inner=inner[:st]+inner[end:]; break
     inner=re.sub(r'<script.*?</script>','',inner,flags=re.S)
     inner=re.sub(r'<!--.*?-->','',inner,flags=re.S)
     inner=re.sub(r'\{\{.*?\}\}','',inner,flags=re.S)
