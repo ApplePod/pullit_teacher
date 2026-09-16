@@ -2,7 +2,7 @@ import json, glob, os, re
 SRC="/Users/harry/Desktop/Claude_newlearn/mmath_복원_동적"
 APP="/Users/harry/Desktop/Claude_newlearn/pullit_teacher/src/app/(portal)"
 # 이미 기능 구현된 라우트는 건너뜀
-SKIP_ROUTES={"/paper/make","/paper/mypaper","/management/student","/management/teacher","/management/class","/management/attendance","/management/book","/clinic/studentmark","/clinic/report"}  # 기능 구현분 보존
+SKIP_ROUTES={"/paper/make","/paper/mypaper","/management/student","/management/teacher","/management/class","/management/attendance","/management/book","/clinic/studentmark","/clinic/report","/management/centerinfo","/mypage/profile"}  # 기능 구현분 보존
 def path_to_route(p):
     m=re.search(r'/Pages/Center/(.+?)\.cshtml', p, re.I)
     if not m:

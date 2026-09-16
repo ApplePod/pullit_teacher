@@ -1,5 +1,26 @@
-const HTML = `<div id="contapp" class="contens-body" style=""><ul class="list-tab"><li class="nav-item"><button class="nav-link active">프로필 설정</button></li><li class="nav-item"><button class="nav-link">정산 관리</button></li></ul><div class="tab-content" id="myTabContent"><div class="tab-pane fade show active" id="tab-pane-1"><div class="mypage"><div class="mypage__wrap mypage__wrap--1 mt-24"><div class="profile__header"><div class="profile__image"><label for="fileInput" id="profileModalButton"><button><img alt="" src="/assets/center/images/common/profile_default.png"></button></label><input type="file" id="fileInput" style="display: none;"></div><div class="d-flex items-center justify-content-between gap-3 w-full flex-right"><blockquote><h4>최영재</h4></blockquote><div class="d-flex gap-2"><button class="btn btn-default button__fill--small"> 기본이미지로 변경</button><button class="button__line button__fill--small button__fill--secondary">저장하기</button></div></div></div><div class="profile__body profile__body--oneLine"><div class="form-group"><label for="userName" class="form-label">이름</label><input type="tel" class="form-control" id="userName" disabled=""></div><div class="form-group"><label for="userID" class="form-label">아이디</label><input type="tel" class="form-control" id="userID" disabled=""></div><div class="form-group"><label for="telchange" class="form-label">전화번호</label><div class="input-group"><input type="tel" class="form-control" id="telchange" disabled=""></div></div><div class="form-group"><div class="input-group"><label for="passwordChg" class="form-label pr-40 pt-24">비밀번호</label><button id="passwordChg" class="btn btn-default">비밀번호 변경하기</button></div></div></div></div></div></div></div></div>`;
-
-export default function Page() {
-  return <div dangerouslySetInnerHTML={{ __html: HTML }} />;
+import { requireUser } from "@/lib/auth";
+import { displayLoginId } from "@/lib/login-id";
+import { ProfileForm, PasswordForm } from "./forms";
+export default async function ProfilePage() {
+  const { user, profile } = await requireUser();
+  return (
+    <div className="contens-body">
+      <ul className="list-tab" role="tablist"><li className="nav-item"><button className="nav-link active" type="button">프로필 설정</button></li></ul>
+      <div className="tab-content mt-24">
+        <div className="mypage">
+          <div className="mypage__wrap mypage__wrap--1">
+            <div className="profile__header">
+              <div className="profile__image"><button type="button"><img src="/assets/center/images/common/profile_default.png" alt="" /></button></div>
+              <div className="d-flex items-center justify-content-between gap-3 w-full flex-right">
+                <blockquote><h4>{profile.name}</h4></blockquote>
+                <span className="f-12 bw6">{profile.role === "owner" ? "원장" : "강사"}</span>
+              </div>
+            </div>
+            <ProfileForm name={profile.name} phone={profile.phone ?? ""} loginId={displayLoginId(user.email)} />
+          </div>
+          <div className="mypage__wrap mypage__wrap--1 mt-24"><PasswordForm /></div>
+        </div>
+      </div>
+    </div>
+  );
 }
