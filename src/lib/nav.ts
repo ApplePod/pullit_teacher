@@ -14,3 +14,11 @@ export const PAPER_TABS = [
   ["/paper/share", "공유 문제지"],
   ["/paper/trash", "휴지통"],
 ] as const;
+
+export const CLINIC_TABS = [
+  ["/clinic/studentmark", "학생별 채점"],
+  ["/clinic/class", "반별 채점"],
+  ["/clinic/autobook", "교재매칭 채점"],
+  ["/clinic/report", "학습 분석 보고서"],
+  ["/clinic/trash", "휴지통"],
+] as const;

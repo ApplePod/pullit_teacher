@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { PaperPreview } from "./PaperPreview";
+import { AssignButton } from "./AssignButton";
 import type { Problem } from "@/components/ProblemView";
 
 export default async function PaperDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -23,7 +24,10 @@ export default async function PaperDetailPage({ params }: { params: Promise<{ id
     <div className="contens-body">
       <div className="d-flex justify-content-between items-center mb-16">
         <h3 className="section-title" style={{ margin: 0 }}>{paper.name}</h3>
-        <Link href="/paper/mypaper" className="btn btn-default">목록으로</Link>
+        <div className="d-flex gap-2">
+          <AssignButton paperId={paper.id} />
+          <Link href="/paper/mypaper" className="btn btn-default">목록으로</Link>
+        </div>
       </div>
       <PaperPreview title={paper.name} problems={ordered} />
     </div>
