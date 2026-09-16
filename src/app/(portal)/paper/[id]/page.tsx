@@ -16,7 +16,7 @@ export default async function PaperDetailPage({ params }: { params: Promise<{ id
   const codes = (pp ?? []).map((r) => r.problem_code);
   const { data: problems } = await supabase
     .from("problem")
-    .select("problem_code,subject,unit_code,question,choices,answer_index,answer_text,difficulty,score,concept")
+    .select("problem_code,subject,unit_code,question,choices,answer_index,answer_text,difficulty,score,concept,explanation")
     .in("problem_code", codes.length ? codes : ["__none__"]);
   const map = new Map((problems ?? []).map((p) => [p.problem_code, p as Problem]));
   const ordered = codes.map((c) => map.get(c)).filter(Boolean) as Problem[];

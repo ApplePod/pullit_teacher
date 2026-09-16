@@ -181,3 +181,17 @@ header.detail .logo img { height: 28px; }
 .ib-book { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px; font-size: 14px; }
 .ib-book:hover { background: #f6f6f9; }
 @media (max-width: 900px) { .ib-grid { grid-template-columns: 1fr; } }
+
+/* 문제지 출력 모드 */
+.paper-mode { display: inline-flex; border: 1px solid #dcdcde; border-radius: 8px; overflow: hidden; }
+.paper-mode__btn { padding: 7px 18px; font-size: 14px; background: #fff; color: #69697a; border-right: 1px solid #dcdcde; }
+.paper-mode__btn:last-child { border-right: none; }
+.paper-mode__btn.active { background: #1e85ff; color: #fff; font-weight: 700; }
+.paper-sheet__tag { font-size: 13px; margin-left: 10px; padding: 2px 10px; border-radius: 4px; background: #e9f3ff; color: #1e85ff; vertical-align: middle; }
+.answer-key { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.answer-key__cell { display: flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid #eaeaef; border-radius: 6px; padding: 10px 0; }
+.answer-key__no { color: #97979d; font-size: 13px; } .answer-key__val { font-weight: 800; color: #1e85ff; }
+.pv-expl { margin-top: 14px; padding: 14px 16px; background: #f6f6f9; border-radius: 8px; }
+.pv-expl-answer { font-weight: 800; color: #1e85ff; margin-bottom: 10px; }
+.pv-expl-sec { margin-bottom: 12px; }
+.pv-expl-title { font-weight: 700; font-size: 13px; color: #343440; margin-bottom: 4px; padding-left: 8px; border-left: 3px solid #1e85ff; }
