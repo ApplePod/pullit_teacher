@@ -1,0 +1,741 @@
+{
+  "subject": "math",
+  "curriculum": "2022",
+  "code_format": "math_2022_{과목}_{대단원}_{중단원}",
+  "difficulty_map": {
+    "basic": "하",
+    "normal": "중",
+    "advanced": "상"
+  },
+  "cognitive_stages": [
+    "개념형",
+    "적용형",
+    "추론형",
+    "고난도추론형"
+  ],
+  "large_units": [
+    {
+      "code": "1_1",
+      "subject_name": "수학Ⅰ",
+      "name": "지수함수와 로그함수",
+      "middle_units": [
+        {
+          "code": "math_2022_1_1_1",
+          "name": "지수와 로그",
+          "count_multiple_choice": 304,
+          "count_short_answer": 232,
+          "small_units": [
+            {
+              "name": "거듭제곱",
+              "count": 43
+            },
+            {
+              "name": "거듭제곱근",
+              "count": 46
+            },
+            {
+              "name": "거듭제곱근의 성질",
+              "count": 49
+            },
+            {
+              "name": "로그",
+              "count": 48
+            },
+            {
+              "name": "로그의 밑의 변환",
+              "count": 47
+            },
+            {
+              "name": "로그의 성질",
+              "count": 43
+            },
+            {
+              "name": "로그의 정의",
+              "count": 42
+            },
+            {
+              "name": "상용로그",
+              "count": 46
+            },
+            {
+              "name": "지수가 실수일 때의 지수법칙",
+              "count": 45
+            },
+            {
+              "name": "지수가 유리수일 때의 지수법칙",
+              "count": 41
+            },
+            {
+              "name": "지수가 정수일 때의 지수법칙",
+              "count": 43
+            },
+            {
+              "name": "지수의 확장",
+              "count": 43
+            }
+          ]
+        },
+        {
+          "code": "math_2022_1_1_2",
+          "name": "지수함수와 로그함수",
+          "count_multiple_choice": 270,
+          "count_short_answer": 205,
+          "small_units": [
+            {
+              "name": "로그함수",
+              "count": 74
+            },
+            {
+              "name": "로그함수의 성질",
+              "count": 78
+            },
+            {
+              "name": "로그함수의 활용",
+              "count": 83
+            },
+            {
+              "name": "지수함수",
+              "count": 83
+            },
+            {
+              "name": "지수함수의 성질",
+              "count": 81
+            },
+            {
+              "name": "지수함수의 활용",
+              "count": 76
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "1_2",
+      "subject_name": "수학Ⅰ",
+      "name": "삼각함수",
+      "middle_units": [
+        {
+          "code": "math_2022_1_2_1",
+          "name": "삼각함수",
+          "count_multiple_choice": 303,
+          "count_short_answer": 196,
+          "small_units": [
+            {
+              "name": "부채꼴의 호의 길이와 넓이",
+              "count": 45
+            },
+            {
+              "name": "사인함수와 코사인함수의 그래프",
+              "count": 50
+            },
+            {
+              "name": "삼각함수 사이의 관계",
+              "count": 51
+            },
+            {
+              "name": "삼각함수를 포함한 방정식과 부등식",
+              "count": 43
+            },
+            {
+              "name": "삼각함수의 값의 부호",
+              "count": 52
+            },
+            {
+              "name": "삼각함수의 성질",
+              "count": 42
+            },
+            {
+              "name": "삼각함수의 정의",
+              "count": 44
+            },
+            {
+              "name": "삼각함수의 활용",
+              "count": 39
+            },
+            {
+              "name": "일반각",
+              "count": 41
+            },
+            {
+              "name": "탄젠트함수의 그래프",
+              "count": 46
+            },
+            {
+              "name": "호도법",
+              "count": 46
+            }
+          ]
+        },
+        {
+          "code": "math_2022_1_2_2",
+          "name": "사인법칙과 코사인법칙",
+          "count_multiple_choice": 287,
+          "count_short_answer": 183,
+          "small_units": [
+            {
+              "name": "사인법칙",
+              "count": 158
+            },
+            {
+              "name": "삼각형의 넓이",
+              "count": 165
+            },
+            {
+              "name": "코사인법칙",
+              "count": 147
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "1_3",
+      "subject_name": "수학Ⅰ",
+      "name": "수열",
+      "middle_units": [
+        {
+          "code": "math_2022_1_3_1",
+          "name": "등차수열과 등비수열",
+          "count_multiple_choice": 308,
+          "count_short_answer": 182,
+          "small_units": [
+            {
+              "name": "등비수열",
+              "count": 68
+            },
+            {
+              "name": "등비수열의 일반항",
+              "count": 68
+            },
+            {
+              "name": "등비수열의 합",
+              "count": 61
+            },
+            {
+              "name": "등차수열",
+              "count": 61
+            },
+            {
+              "name": "등차수열의 일반항",
+              "count": 53
+            },
+            {
+              "name": "등차수열의 합",
+              "count": 60
+            },
+            {
+              "name": "수열",
+              "count": 65
+            },
+            {
+              "name": "수열의 합과 일반항 사이의 관계",
+              "count": 54
+            }
+          ]
+        },
+        {
+          "code": "math_2022_1_3_2",
+          "name": "수열의 합",
+          "count_multiple_choice": 278,
+          "count_short_answer": 206,
+          "small_units": [
+            {
+              "name": "분수 꼴의 수열의 합",
+              "count": 126
+            },
+            {
+              "name": "자연수의 거듭제곱의 합",
+              "count": 119
+            },
+            {
+              "name": "합의기호 ∑",
+              "count": 119
+            },
+            {
+              "name": "합의기호 ∑의 성질",
+              "count": 120
+            }
+          ]
+        },
+        {
+          "code": "math_2022_1_3_3",
+          "name": "수학적 귀납법",
+          "count_multiple_choice": 302,
+          "count_short_answer": 186,
+          "small_units": [
+            {
+              "name": "수열의 귀납적 정의",
+              "count": 272
+            },
+            {
+              "name": "수학적 귀납법",
+              "count": 216
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "2_1",
+      "subject_name": "수학Ⅱ",
+      "name": "함수의 극한과 연속",
+      "middle_units": [
+        {
+          "code": "math_2022_2_1_1",
+          "name": "함수의 극한",
+          "count_multiple_choice": 300,
+          "count_short_answer": 188,
+          "small_units": [
+            {
+              "name": "미분가능성과 연속성",
+              "count": 12
+            },
+            {
+              "name": "미분계수의 기하적 의미",
+              "count": 11
+            },
+            {
+              "name": "평균변화율",
+              "count": 11
+            },
+            {
+              "name": "함수의 극한",
+              "count": 88
+            },
+            {
+              "name": "함수의 극한값 계산",
+              "count": 64
+            },
+            {
+              "name": "함수의 극한에 대한 성질",
+              "count": 82
+            },
+            {
+              "name": "함수의 극한의 대소관계",
+              "count": 76
+            },
+            {
+              "name": "함수의 극한의 활용",
+              "count": 65
+            },
+            {
+              "name": "함수의 우극한과 좌극한",
+              "count": 79
+            }
+          ]
+        },
+        {
+          "code": "math_2022_2_1_2",
+          "name": "함수의 연속",
+          "count_multiple_choice": 286,
+          "count_short_answer": 164,
+          "small_units": [
+            {
+              "name": "사잇값 정리",
+              "count": 70
+            },
+            {
+              "name": "연속함수",
+              "count": 101
+            },
+            {
+              "name": "연속함수의 성질",
+              "count": 99
+            },
+            {
+              "name": "최대최소정리",
+              "count": 94
+            },
+            {
+              "name": "함수의 연속",
+              "count": 86
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "2_2",
+      "subject_name": "수학Ⅱ",
+      "name": "미분",
+      "middle_units": [
+        {
+          "code": "math_2022_2_2_1",
+          "name": "미분계수",
+          "count_multiple_choice": 251,
+          "count_short_answer": 182,
+          "small_units": [
+            {
+              "name": "미분가능성과 연속성",
+              "count": 104
+            },
+            {
+              "name": "미분계수",
+              "count": 113
+            },
+            {
+              "name": "미분계수의 기하적 의미",
+              "count": 114
+            },
+            {
+              "name": "평균변화율",
+              "count": 102
+            }
+          ]
+        },
+        {
+          "code": "math_2022_2_2_2",
+          "name": "도함수",
+          "count_multiple_choice": 296,
+          "count_short_answer": 204,
+          "small_units": [
+            {
+              "name": "도함수",
+              "count": 121
+            },
+            {
+              "name": "도함수의 계산",
+              "count": 128
+            },
+            {
+              "name": "함수의 곱의 미분",
+              "count": 129
+            },
+            {
+              "name": "함수의 실수배, 합, 차의 미분",
+              "count": 122
+            }
+          ]
+        },
+        {
+          "code": "math_2022_2_2_3",
+          "name": "도함수의 활용",
+          "count_multiple_choice": 290,
+          "count_short_answer": 176,
+          "small_units": [
+            {
+              "name": "방정식에의 활용",
+              "count": 60
+            },
+            {
+              "name": "부등식에의 활용",
+              "count": 58
+            },
+            {
+              "name": "속도와 가속도",
+              "count": 54
+            },
+            {
+              "name": "접선의 방정식",
+              "count": 49
+            },
+            {
+              "name": "평균값 정리",
+              "count": 46
+            },
+            {
+              "name": "함수의 그래프",
+              "count": 48
+            },
+            {
+              "name": "함수의 극대와 극소",
+              "count": 50
+            },
+            {
+              "name": "함수의 증가와 감소",
+              "count": 47
+            },
+            {
+              "name": "함수의 최댓값과 최솟값",
+              "count": 54
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "2_3",
+      "subject_name": "수학Ⅱ",
+      "name": "적분",
+      "middle_units": [
+        {
+          "code": "math_2022_2_3_1",
+          "name": "부정적분",
+          "count_multiple_choice": 297,
+          "count_short_answer": 179,
+          "small_units": [
+            {
+              "name": "부정적분",
+              "count": 153
+            },
+            {
+              "name": "부정적분의 계산",
+              "count": 158
+            },
+            {
+              "name": "함수의 실수배, 합, 차의 부정적분",
+              "count": 165
+            }
+          ]
+        },
+        {
+          "code": "math_2022_2_3_2",
+          "name": "정적분",
+          "count_multiple_choice": 263,
+          "count_short_answer": 171,
+          "small_units": [
+            {
+              "name": "적분과 미분의 관계",
+              "count": 139
+            },
+            {
+              "name": "정적분",
+              "count": 144
+            },
+            {
+              "name": "정적분의 계산",
+              "count": 151
+            }
+          ]
+        },
+        {
+          "code": "math_2022_2_3_3",
+          "name": "정적분의 활용",
+          "count_multiple_choice": 267,
+          "count_short_answer": 161,
+          "small_units": [
+            {
+              "name": "곡선과 x축 사이의 넓이",
+              "count": 147
+            },
+            {
+              "name": "두 곡선 사이의 넓이",
+              "count": 139
+            },
+            {
+              "name": "속도와 거리",
+              "count": 142
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "3_1",
+      "subject_name": "확률과 통계",
+      "name": "경우의 수",
+      "middle_units": [
+        {
+          "code": "math_2022_3_1_1",
+          "name": "순열과 조합",
+          "count_multiple_choice": 268,
+          "count_short_answer": 201,
+          "small_units": [
+            {
+              "name": "같은 것이 있는 순열",
+              "count": 83
+            },
+            {
+              "name": "방정식의 해의 개수",
+              "count": 88
+            },
+            {
+              "name": "중복순열",
+              "count": 73
+            },
+            {
+              "name": "중복조합",
+              "count": 66
+            },
+            {
+              "name": "중복조합과 다항식",
+              "count": 70
+            },
+            {
+              "name": "함수의 개수",
+              "count": 89
+            }
+          ]
+        },
+        {
+          "code": "math_2022_3_1_2",
+          "name": "이항정리",
+          "count_multiple_choice": 266,
+          "count_short_answer": 185,
+          "small_units": [
+            {
+              "name": "이항계수의 성질",
+              "count": 233
+            },
+            {
+              "name": "이항정리",
+              "count": 218
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "3_2",
+      "subject_name": "확률과 통계",
+      "name": "확률",
+      "middle_units": [
+        {
+          "code": "math_2022_3_2_1",
+          "name": "확률의 뜻과 활용",
+          "count_multiple_choice": 282,
+          "count_short_answer": 169,
+          "small_units": [
+            {
+              "name": "배반사건과 여사건",
+              "count": 77
+            },
+            {
+              "name": "시행과 사건",
+              "count": 76
+            },
+            {
+              "name": "여사건의 확률",
+              "count": 71
+            },
+            {
+              "name": "확률의 기본 성질",
+              "count": 79
+            },
+            {
+              "name": "확률의 덧셈정리",
+              "count": 72
+            },
+            {
+              "name": "확률의 뜻",
+              "count": 76
+            }
+          ]
+        },
+        {
+          "code": "math_2022_3_2_2",
+          "name": "조건부확률",
+          "count_multiple_choice": 295,
+          "count_short_answer": 158,
+          "small_units": [
+            {
+              "name": "독립시행의 확률",
+              "count": 88
+            },
+            {
+              "name": "독립인 두 사건의 확률의 곱셈정리",
+              "count": 90
+            },
+            {
+              "name": "사건의 독립과 종속",
+              "count": 94
+            },
+            {
+              "name": "조건부확률",
+              "count": 91
+            },
+            {
+              "name": "확률의 곱셈정리",
+              "count": 90
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "3_3",
+      "subject_name": "확률과 통계",
+      "name": "통계",
+      "middle_units": [
+        {
+          "code": "math_2022_3_3_1",
+          "name": "확률분포",
+          "count_multiple_choice": 298,
+          "count_short_answer": 177,
+          "small_units": [
+            {
+              "name": "연속확률변수와 확률밀도함수",
+              "count": 39
+            },
+            {
+              "name": "이산확률변수의 기댓값, 분산, 표준편차",
+              "count": 39
+            },
+            {
+              "name": "이산확률변수의 확률분포",
+              "count": 36
+            },
+            {
+              "name": "이항분포",
+              "count": 41
+            },
+            {
+              "name": "이항분포와 정규분포의 관계",
+              "count": 39
+            },
+            {
+              "name": "이항분포의 평균, 분산, 표준편차",
+              "count": 42
+            },
+            {
+              "name": "정규분포",
+              "count": 38
+            },
+            {
+              "name": "정규분포의 활용",
+              "count": 37
+            },
+            {
+              "name": "큰수의 법칙",
+              "count": 38
+            },
+            {
+              "name": "평균, 분산, 표준편차의 성질",
+              "count": 45
+            },
+            {
+              "name": "표준정규분포",
+              "count": 42
+            },
+            {
+              "name": "확률변수와 이산확률변수",
+              "count": 39
+            }
+          ]
+        },
+        {
+          "code": "math_2022_3_3_2",
+          "name": "통계적 추정",
+          "count_multiple_choice": 270,
+          "count_short_answer": 172,
+          "small_units": [
+            {
+              "name": "모비율과 표본비율",
+              "count": 73
+            },
+            {
+              "name": "모비율의 추정",
+              "count": 70
+            },
+            {
+              "name": "모평균과 표본평균",
+              "count": 67
+            },
+            {
+              "name": "모평균의 추정",
+              "count": 83
+            },
+            {
+              "name": "표본비율의 분포",
+              "count": 74
+            },
+            {
+              "name": "표본평균의 분포",
+              "count": 75
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
