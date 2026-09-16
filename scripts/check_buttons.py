@@ -1,5 +1,5 @@
 # 기능화된 전 화면: 원본 버튼(텍스트+클래스) 대조 + 미선택 클릭 알림 + JS 오류 수집
-import time,json,sys,os
+import os, time,json,sys,os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -9,7 +9,7 @@ ROUTES={"/clinic/studentmark":"pages_center_clinic_studentmark_cshtml","/clinic/
 "/management/statistic":"pages_center_management_statistic_cshtml","/management/individualstdbooks":"pages_center_management_individualstdbooks_cshtml","/management/centerinfo":"pages_center_management_centerinfo_cshtml","/mypage/profile":"pages_center_mypage_profile_cshtml",
 "/management/student":"pages_center_management_student_cshtml","/management/studentform":"pages_center_management_studentform_cshtml","/paper/mypaper":"pages_center_paper_mypaper_cshtml","/paper/favorite":"pages_center_paper_favorite_cshtml","/paper/share":"pages_center_paper_share_cshtml","/paper/trash":"pages_center_paper_trash_cshtml"}
 o=Options(); o.add_argument("--headless=new"); o.add_argument("--window-size=1400,1000")
-d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B="http://localhost:3777"
+d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B=f"http://localhost:{os.environ.get('OURS_PORT','3777')}"
 d.get(B+"/login"); time.sleep(1.5)
 d.find_element(By.CSS_SELECTOR,"input[type=text]").send_keys("admin"); d.find_element(By.CSS_SELECTOR,"input[type=password]").send_keys("admin1"); d.find_element(By.CSS_SELECTOR,"button[type=submit]").click(); time.sleep(3)
 def norm(t): return " ".join(t.split())

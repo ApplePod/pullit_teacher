@@ -150,7 +150,21 @@ export function AttendanceClient({ initialMonth, initialData, initialClasses = [
   const doModalPrint = () => window.print();
 
   return (
-    <div className="contens-body">
+    <>
+      {/* 원본 #contents 안의 구버전 헤더(스타일시트에서 display:none) — DOM 구조 그대로 유지 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>문제지 만들기</button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body">
       <ListTab tabs={MANAGEMENT_TABS} className="mb-24" />
       <div className="listFilter-wrap">
         <ul>
@@ -265,7 +279,7 @@ export function AttendanceClient({ initialMonth, initialData, initialClasses = [
               {pageRows.map((s) => (
                 <tr key={s.id}>
                   <td className="name">
-                    <div className="form-check d-flex gap-1">
+                    <div className="form-check d-flex gap-1 title-line">
                       <input type="checkbox" name="chkUId" id={`chkUid_${s.id}`} value={s.id} className="form-check-input"
                         checked={chklist.has(s.id)}
                         onChange={() => setChklist((c) => { const n = new Set(c); if (n.has(s.id)) n.delete(s.id); else n.add(s.id); return n; })} />
@@ -350,7 +364,8 @@ export function AttendanceClient({ initialMonth, initialData, initialClasses = [
 
       {smsSettings && <SmsSettingsModal onClose={() => setSmsSettings(false)} />}
       {sendText && <SendTextModal count={chklist.size} onClose={() => setSendText(false)} />}
-    </div>
+      </div>
+    </>
   );
 }
 

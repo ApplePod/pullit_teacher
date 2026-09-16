@@ -7,7 +7,7 @@ import { useLayerPopup } from "@/components/portal/LayerPopup";
 import { metaAlert } from "@/components/portal/MetaModal";
 import { listClinicTrash, trashAssignments, type TrashRow } from "../clinicActions";
 import { TRASH_FILTER_HTML } from "../studentmark/filterHtml";
-import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "../studentmark/listCommon";
+import { ClinicHeader, DurationCell, EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "../studentmark/listCommon";
 
 /** 원본 Pages/Center/Clinic/trash.cshtml 마크업 그대로 + 실데이터·동작 */
 export function TrashClient() {
@@ -36,9 +36,11 @@ export function TrashClient() {
   };
 
   return (
-    <div className="contens-body">
+    <>
+      <ClinicHeader />
+      <div className="contens-body">
       {layer.popup}
-      <ListTab tabs={CLINIC_TABS} />
+      <ListTab tabs={CLINIC_TABS} tablist />
       <div className="tab-content">
         <div className="tab-pane fade active show" id="tab-pane-2-1" role="tabpanel" tabIndex={0}>
           <OriginalFilter html={TRASH_FILTER_HTML} storeKey="clinic-trash" onChange={setFilter} />
@@ -68,20 +70,25 @@ export function TrashClient() {
             {view.map((r) => (
               <ul key={r.key} className="table-body gap-3 table-hover-background">
                 <li className="check-block" style={{ maxWidth: 20 }}>
-                  <input type="checkbox" name="chkPaperId" className="form-check-input" value={r.key} checked={checked.has(r.key)} onChange={() => toggle(r.key)} />
+                  <input type="checkbox" name="f_check" className="form-check-input" value={r.key} checked={checked.has(r.key)} onChange={() => toggle(r.key)} />
                 </li>
                 <li className="title-line">
                   <div className="d-flex gap-1"><div className="left">
                     <div className="d-flex title-line">
-                      <a href="javascript:void(0)" className="line-clamp-1 title-tooltip" title={r.paper_name}
+                      <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" className="line-clamp-1" title={r.paper_name}
                         onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/preview?ids=${r.paper_id}`); }}>{r.paper_name}</a>
-                      {r.kind === "class" && <span className="badge-alram">반</span>}
                     </div>
                     <Tagline paperType={r.paper_type} tags={[]} count={r.problem_count} maker={r.maker} />
                   </div></div>
                 </li>
-                <li className="bw10" style={{ maxWidth: 68 }}><span className="line-clamp-2">{r.target_name}</span></li>
-                <li className="bw10" style={{ maxWidth: 64 }}><span>{fmtD(r.assigned_at)}<br />~{fmtD(r.due_at)}</span></li>
+                <li className="bw10  align-items-center" style={{ maxWidth: 68, lineHeight: 1 }}>
+                  <div className="line-clamp-1 f-12" style={{ maxWidth: 68 }}>{r.kind === "student" ? r.target_name : ""}</div>
+                  <div className="d-flex" style={r.kind === "class" ? undefined : { display: "none" }}>
+                    <span>/</span>
+                    <div className="line-clamp-1 f-12" style={{ maxWidth: 68 }}>{r.kind === "class" ? r.target_name : ""}</div>
+                  </div>
+                </li>
+                <li className="bw10" style={{ maxWidth: 64 }}><DurationCell from={r.assigned_at} to={r.due_at} editable={!r.marked_at} /></li>
                 <li className="bw10" style={{ maxWidth: 56 }}>{fmtD(r.assigned_at)} <br /> {r.marked_at ? fmtD(r.marked_at) : "-"}</li>
                 <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>-</li>
                 <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>
@@ -94,6 +101,7 @@ export function TrashClient() {
           <ListFoot total={rows.length} size={size} setSize={setSize} page={page} setPage={setPage} />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

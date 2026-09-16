@@ -1,29 +1,18 @@
-import Link from "next/link";
-
+/** 원본 login.cshtml 의 상단 구조 그대로: header.detail > .header-wrap > a.logo */
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      {/* 원본 로그인 화면은 문제은행 CSS 2종을 함께 로드한다 (input position 등 미세 스타일이 여기서 온다) */}
+      <link rel="stylesheet" href="/legacy/css/edbank/neq.css" />
+      <link rel="stylesheet" href="/legacy/css/edbank/bank.css" />
       <header className="detail">
         <div className="header-wrap">
-          <Link href="/" className="logo" aria-label="풀잇 학원 포털">
-            <img src="/assets/home/images/common/logo.svg" alt="풀잇 학원 포털" />
-          </Link>
+          {/* 원본 마크업 그대로(<a href="/">) — 배경 이미지로 로고를 표시한다 */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a href="/" className="logo" aria-label="메타수학"></a>
         </div>
       </header>
-      <main className="Login">
-        <section>
-          <div className="Benner">
-            <div className="Profile">
-              <img src="/assets/center/images/common/img_login_cover.png" alt="" />
-            </div>
-            <div className="Text-wrap">
-              <span>초1~고3 현재 이용 가능 문항수</span>
-              <span>739,860 문항</span>
-            </div>
-          </div>
-          {children}
-        </section>
-      </main>
+      <main className="Login">{children}</main>
     </>
   );
 }

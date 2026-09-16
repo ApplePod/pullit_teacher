@@ -1,5 +1,6 @@
 "use client";
 
+import { RawHtml } from "@/components/RawHtml";
 import { useEffect, useState, useTransition } from "react";
 import { fmtShort } from "@/lib/date";
 import { ListTab } from "@/components/portal/ListTab";
@@ -37,13 +38,11 @@ export function FavQuestionClient() {
     if (r.error) { await metaAlert(r.error); return; }
     setModal(null); load();
   };
-  return (
-    <div className="contens-body">
-      {layer.popup}
-      <ListTab tabs={PAPER_TABS} />
-      <FavSubTab current="question" />
+  /** 원본: 문제지/문항 2차 탭 때문에 본문이 tab-content > tab-pane 안에 들어간다 */
+  const body = (
+    <>
       <p className="alert-orange mt-24 mb-12">자주 사용하는 문항을 즐겨찾기로 저장합니다.</p>
-      <div dangerouslySetInnerHTML={{ __html: FAVQ_FILTER_HTML }} />
+      <RawHtml html={FAVQ_FILTER_HTML} />
       <div className="category-btns mt-24">
         <div className="left-area">
           <button type="button" className="category-btns-item" onClick={async () => {
@@ -69,12 +68,12 @@ export function FavQuestionClient() {
         </ul>
         {rows.map((r) => (
           <ul key={r.id} className="table-body table-hover-background gap-4-5">
-            <li style={{ maxWidth: 20 }}><input type="checkbox" className="form-check-input selectChild" name="f_check" value={r.id} checked={checked.has(r.id)} onChange={() => setChecked((c) => { const n = new Set(c); if (n.has(r.id)) n.delete(r.id); else n.add(r.id); return n; })} /></li>
-            <li className="title-line"><a href="#" className="line-clamp-1 title-tooltip" title={r.name} onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/favoritequestion?id=${r.id}`); }}>{r.name}</a></li>
+            <li className="check-block" style={{ maxWidth: 20 }}><input type="checkbox" className="form-check-input" name="paperCheckBox" value={r.id} checked={checked.has(r.id)} onChange={() => setChecked((c) => { const n = new Set(c); if (n.has(r.id)) n.delete(r.id); else n.add(r.id); return n; })} /></li>
+            <li><a href="#" data-bs-toggle="tooltip" data-bs-placement="top" className="line-clamp-1 line-clamp-2 title-tooltip" title={r.name} onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/favoritequestion?id=${r.id}`); }}>{r.name}</a></li>
             <li style={{ maxWidth: 80 }}>{r.count}문항</li>
             <li style={{ maxWidth: 64 }}>{fmt(r.updated_at)}</li>
             <li style={{ maxWidth: 52 }}><span className="line-clamp-2 f-12">{r.owner ?? "-"}</span></li>
-            <li style={{ maxWidth: 60 }}><button type="button" className="button__fill button__line--xsmall button__line--white bw10" onClick={() => setModal({ id: r.id, name: r.name })}> 이름수정 </button></li>
+            <li style={{ maxWidth: 60 }}><button type="button" className="button__fill button__line--xsmall button__line--white bw10" style={{ maxWidth: 52 }} onClick={() => setModal({ id: r.id, name: r.name })}>편집</button></li>
           </ul>
         ))}
         {rows.length === 0 && <div className="null-item">{pending ? "불러오는 중…" : "등록된 내역이 없습니다."}</div>}
@@ -83,6 +82,17 @@ export function FavQuestionClient() {
         <div className="d-flex align-items-center gap-2 f-14"> 총 {rows.length}개 중 <div className="select__small"><select defaultValue="10"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="40">40</option><option value="50">50</option></select></div> 개씩 보기 </div>
         <button className="scrollToTop" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><i className="fa-sharp fa-light fa-arrow-up-to-line" aria-hidden="true"></i><span>Scroll to Top</span></button>
         <div className="pagination"><div className="pagination__wrap"><a href="javascript:void(0);" className="prev disabled"><i className="fa-light fa-angle-left" aria-hidden="true"></i></a><a href="javascript:void(0);" className="active">1</a><a href="javascript:void(0);" className="next"><i className="fa-light fa-angle-right" aria-hidden="true"></i></a></div></div>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="contens-body">
+      {layer.popup}
+      <ListTab tabs={PAPER_TABS} />
+      <FavSubTab current="question" />
+      <div className="tab-content">
+        <div className="tab-pane fade active show" id="tab-pane-2-2" role="tabpanel" tabIndex={0}>{body}</div>
       </div>
       {modal && (
         <OriginalModal id="modalFavFolder" title={modal.id ? "문항 즐겨찾기 이름 수정" : "문항 즐겨찾기 만들기"} size="max-450" onClose={() => setModal(null)}

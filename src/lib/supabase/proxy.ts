@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { supabaseEnv } from "@/lib/supabase/env";
 
-const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password", "/auth"];
+const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password", "/auth", "/student", "/attendance-keypad"];
 
 export async function updateSession(request: NextRequest) {
   const { url, key } = supabaseEnv();

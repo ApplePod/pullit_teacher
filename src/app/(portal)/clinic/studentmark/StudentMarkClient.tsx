@@ -7,7 +7,7 @@ import { useLayerPopup } from "@/components/portal/LayerPopup";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 import { cancelMarking, listStudentAssignments, makeWrongPaper, trashAssignments, type StudentAsgRow } from "../clinicActions";
 import { STUDENTMARK_FILTER_HTML } from "./filterHtml";
-import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "./listCommon";
+import { ClinicHeader, DurationCell, EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, Tagline, usePaging, type FilterState } from "./listCommon";
 import { MarkSheetModal } from "./MarkSheetModal";
 
 /** 원본 Pages/Center/Clinic/studentmark.cshtml 마크업 그대로 + 실데이터·동작 */
@@ -64,9 +64,11 @@ export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentA
   };
 
   return (
-    <div className="contens-body">
+    <>
+      <ClinicHeader />
+      <div className="contens-body">
       {layer.popup}
-      <ListTab tabs={CLINIC_TABS} />
+      <ListTab tabs={CLINIC_TABS} tablist />
       <p className="alert-orange mt-24 mb-12">&#39;학생별 선택&#39;으로 배정한 문제지를 목록에서 선택하여 채점합니다.</p>
       <div className="tab-content">
         <div className="tab-pane fade active show" id="tab-pane-2-1" role="tabpanel" tabIndex={0}>
@@ -108,7 +110,7 @@ export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentA
                 <li className="title-line">
                   <div className="d-flex gap-1"><div className="left">
                     <div className="d-flex title-line">
-                      <a href="javascript:void(0)" className="line-clamp-1 title-tooltip" title={r.paper_name}
+                      <a href="javascript:void(0)" data-bs-toggle="tooltip" data-bs-placement="top" className="line-clamp-1 title-tooltip" title={r.paper_name}
                         onClick={(e) => { e.preventDefault(); layer.open(`/popup/paper/preview?ids=${r.paper_id}`); }}>{r.paper_name}</a>
                       <span className="badge-alram" style={{ display: "none" }}>반</span>
                     </div>
@@ -116,7 +118,7 @@ export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentA
                   </div></div>
                 </li>
                 <li className="bw10" style={{ maxWidth: 62 }}><span className="line-clamp-2">{r.student_name}</span></li>
-                <li className="bw10" style={{ maxWidth: 64 }}><span>{fmtD(r.assigned_at)}<br />~{fmtD(r.due_at)}</span></li>
+                <li className="bw10" style={{ maxWidth: 64 }}><DurationCell from={r.assigned_at} to={r.due_at} editable={r.status !== "marked"} /></li>
                 <li className="bw10" style={{ maxWidth: 56 }}>{fmtD(r.assigned_at)} <br /> {r.marked_at ? fmtD(r.marked_at) : "-"}</li>
                 <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
                   {r.status === "marked"
@@ -124,7 +126,7 @@ export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentA
                     : <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => setMarking(r)}>미채점</button>}
                 </li>
                 <li className="bw10 align-items-center" style={{ maxWidth: 40 }}>
-                  <i className="fa-solid fa-arrow-up-right-from-square f-14" style={{ cursor: "pointer" }} aria-hidden="true"
+                  <i className="fa-solid fa-arrow-up-right-from-square f-14" aria-hidden="true"
                     onClick={() => layer.open(`/popup/paper/preview?ids=${r.paper_id}`)}></i>
                 </li>
                 <li className="bw6 align-items-center" style={{ maxWidth: 68 }}>{enoteLabel(r)}
@@ -145,6 +147,7 @@ export function StudentMarkClient({ initialRows = [] }: { initialRows?: StudentA
         </div>
       </div>
       {marking && <MarkSheetModal asId={marking.as_id} studentName={marking.student_name} onClose={() => setMarking(null)} onDone={() => { setMarking(null); reload(); }} />}
-    </div>
+      </div>
+    </>
   );
 }

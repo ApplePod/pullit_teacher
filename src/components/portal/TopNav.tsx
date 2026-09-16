@@ -10,7 +10,7 @@ const GNB = [
   { href: "/paper/mypaper", label: "문제지 보관함", match: "/paper" },
   { href: "/clinic/studentmark", label: "채점&클리닉", match: "/clinic" },
   { href: "/premium/video", label: "프리미엄", match: "/premium" },
-  { href: "/management/student", label: "관리", match: ["/management", "/mypage"] },
+  { href: "/management/student", label: "관리", match: ["/management"] }, // 원본은 마이페이지에서 활성 아님
 ] as const;
 
 export function TopNav({ userName }: { userName: string }) {
@@ -38,11 +38,12 @@ export function TopNav({ userName }: { userName: string }) {
         </div>
         <div className="right-area">
           <button type="button" className="button__line button__fill--medium button__fill--red" onClick={() => layer.open("/popup/paper/make")}>
-            <i className="fa-solid fa-pencil" aria-hidden="true"></i> 문제지 만들기
+            <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i> 문제지 만들기
           </button>
           <div className="notification-wrap border rounded-1">
-            <button type="button" className="button__alram">
+            <button type="button" className="button__alram" onClick={() => layer.open("/popup/notification")}>
               <span className="material-symbols-sharp">notifications</span>
+              <div className="badge-alram" style={{ display: "none" }}>0</div>
             </button>
           </div>
           <ProfileMenu userName={userName} />

@@ -1,4 +1,5 @@
 "use client";
+import { RawHtml } from "@/components/RawHtml";
 
 import { useEffect, useRef, useState } from "react";
 import { fmtShort } from "@/lib/date";
@@ -20,6 +21,75 @@ export const EMPTY_FILTER: FilterState = {
 
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
+/** 원본 화면 상단 페이지 헤더(라이브에서는 #contents .contents-header 가 숨김 처리되어 있다) */
+export function ClinicHeader() {
+  return (
+    <div className="contents-header">
+      <div className="contents-header__wrap">
+        <div className="left-area">
+          <img src="/assets/center/images/common/clinical_notes.svg" style={{ width: 32 }} alt="" />
+          <h2>채점&클리닉</h2>
+        </div>
+        <div className="right-area">
+          <button type="button" className="button__line button__fill--medium button__fill--red">
+            <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>문제지 만들기
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 원본 시작일/종료일은 readonly 텍스트 입력 + jQuery UI datepicker 다.
+ * 마크업(type="text" readonly)을 원본 그대로 두고, 달력은 같은 모양의 팝업으로 대신한다.
+ */
+const WEEK = ["일", "월", "화", "수", "목", "금", "토"];
+function openDatePicker(input: HTMLInputElement, onPick: (v: string) => void) {
+  document.getElementById("ui-datepicker-div")?.remove();
+  const init = /^\d{4}-\d{2}-\d{2}$/.test(input.value) ? new Date(input.value) : new Date();
+  let y = init.getFullYear(), m = init.getMonth();
+  const box = document.createElement("div");
+  box.id = "ui-datepicker-div";
+  box.className = "ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all";
+  box.style.cssText = "display:block;position:absolute;z-index:1100;width:216px;padding:8px;background:#fff;border:1px solid #dcdcde;border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.12);font-size:12px";
+  const draw = () => {
+    const first = new Date(y, m, 1).getDay();
+    const days = new Date(y, m + 1, 0).getDate();
+    const cells: string[] = [];
+    for (let i = 0; i < first; i++) cells.push("<td></td>");
+    for (let d = 1; d <= days; d++) cells.push(`<td><a href="#" class="ui-state-default" data-d="${d}" style="display:block;text-align:center;padding:3px 0;color:#333;text-decoration:none">${d}</a></td>`);
+    const rows: string[] = [];
+    for (let i = 0; i < cells.length; i += 7) rows.push(`<tr>${cells.slice(i, i + 7).join("")}</tr>`);
+    box.innerHTML =
+      `<div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all" style="display:flex;align-items:center;justify-content:space-between;padding-bottom:6px">` +
+      `<a href="#" class="ui-datepicker-prev ui-corner-all" data-mv="-1" style="text-decoration:none;color:#333;padding:0 6px">&lt;</a>` +
+      `<div class="ui-datepicker-title"><span class="ui-datepicker-year">${y}</span>년 <span class="ui-datepicker-month">${m + 1}</span>월</div>` +
+      `<a href="#" class="ui-datepicker-next ui-corner-all" data-mv="1" style="text-decoration:none;color:#333;padding:0 6px">&gt;</a></div>` +
+      `<table class="ui-datepicker-calendar" style="width:100%;border-collapse:collapse"><thead><tr>` +
+      WEEK.map((w) => `<th style="font-weight:400;color:#8b8b8b;padding:2px 0">${w}</th>`).join("") +
+      `</tr></thead><tbody>${rows.join("")}</tbody></table>`;
+  };
+  draw();
+  const close = () => { box.remove(); document.removeEventListener("mousedown", outside, true); };
+  const outside = (e: MouseEvent) => { if (!box.contains(e.target as Node) && e.target !== input) close(); };
+  box.addEventListener("click", (e) => {
+    const t = (e.target as HTMLElement).closest("a");
+    if (!t) return;
+    e.preventDefault();
+    const mv = t.getAttribute("data-mv");
+    if (mv) { m += Number(mv); if (m < 0) { m = 11; y -= 1; } else if (m > 11) { m = 0; y += 1; } draw(); return; }
+    const d = t.getAttribute("data-d");
+    if (d) { onPick(iso(new Date(y, m, Number(d)))); close(); }
+  });
+  const r = input.getBoundingClientRect();
+  box.style.left = `${r.left + window.scrollX}px`;
+  box.style.top = `${r.bottom + window.scrollY + 2}px`;
+  document.body.appendChild(box);
+  document.addEventListener("mousedown", outside, true);
+  return close;
+}
+
 /**
  * 원본 필터 블록(HTML 그대로)을 붙이고 각 컨트롤을 연결한다.
  * 1년/6개월 period-btn · 연도선택 · 시작일/종료일 · 검색 · 초등/중등/고등 · 추가 · 초기화 · 필터 저장 · 필터 펼치기(filterMore2).
@@ -38,12 +108,17 @@ export function OriginalFilter({ html, storeKey, onChange }: { html: string; sto
     const on = (el: Element | null, ev: string, fn: EventListenerOrEventListenerObject) => {
       if (!el) return; el.addEventListener(ev, fn); cleanup.push(() => el.removeEventListener(ev, fn));
     };
-    // 시작일 / 종료일 (원본은 jQuery datepicker — 여기서는 날짜 입력으로 동작)
+    // 시작일 / 종료일 — 원본 마크업(readonly 텍스트)을 그대로 두고 달력 팝업을 붙인다
     const sd = root.querySelector<HTMLInputElement>("input.startDate");
     const ed = root.querySelector<HTMLInputElement>("input.endDate");
-    [sd, ed].forEach((i) => { if (i) { i.type = "date"; i.removeAttribute("readonly"); } });
-    on(sd, "change", () => { st.start = sd?.value ?? ""; fire(); });
-    on(ed, "change", () => { st.end = ed?.value ?? ""; fire(); });
+    const bindPicker = (i: HTMLInputElement | null, set: (v: string) => void) => {
+      if (!i) return;
+      const open = (e: Event) => { e.preventDefault(); openDatePicker(i, (v) => { i.value = v; set(v); fire(); }); };
+      on(i, "click", open);
+      on(i.parentElement?.querySelector(".fa-calendar") ?? null, "click", open);
+    };
+    bindPicker(sd, (v) => { st.start = v; });
+    bindPicker(ed, (v) => { st.end = v; });
     const setRange = (from: Date, to: Date) => {
       st.start = iso(from); st.end = iso(to);
       if (sd) sd.value = st.start; if (ed) ed.value = st.end;
@@ -102,20 +177,13 @@ export function OriginalFilter({ html, storeKey, onChange }: { html: string; sto
     };
     root.addEventListener("change", onChangeRadio);
     cleanup.push(() => root.removeEventListener("change", onChangeRadio));
-    // 필터 펼치기 (원본 filterMore2)
+    // 필터 펼치기 — 원본 filterMore2 그대로(아이콘 글자로 상태 판단, .fold-top 과 .fold 를 함께 토글)
     const more = root.querySelector<HTMLLabelElement>(".fold-top .listFilter-title");
     more?.removeAttribute("onclick");
-    if (more?.closest(".fold-top")?.classList.contains("active")) {   // 원본에서 펼쳐진 상태로 시작하는 화면
-      root.querySelectorAll(".fold").forEach((f) => f.classList.add("active"));
-      const ic0 = more.querySelector(".material-symbols-sharp");
-      if (ic0) ic0.textContent = "remove";
-    }
     on(more, "click", () => {
-      const top = more?.closest(".fold-top");
-      const open = !top?.classList.contains("active");
-      top?.classList.toggle("active", open);
-      root.querySelectorAll(".fold").forEach((f) => f.classList.toggle("active", open));
       const ic = more?.querySelector(".material-symbols-sharp");
+      const open = (ic?.textContent ?? "").trim() === "add";
+      root.querySelectorAll(".fold-top, .fold").forEach((f) => f.classList.toggle("active", open));
       if (ic) ic.textContent = open ? "remove" : "add";
     });
     // 추가 / 삭제 (필터 줄 추가)
@@ -152,20 +220,37 @@ export function OriginalFilter({ html, storeKey, onChange }: { html: string; sto
     });
     return () => cleanup.forEach((f) => f());
   }, [storeKey]);
-  return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <RawHtml html={html} ref={ref} />;
+}
+
+/**
+ * 학습가능기간 칸 내용 — 원본은 채점 전(미채점)이면 기간설정 링크(a.btn-underline.f-12.lh-sm),
+ * 채점이 끝났으면 글자(span)로만 보여준다.
+ */
+export function DurationCell({ from, to, editable }: { from: string | null; to: string | null; editable: boolean }) {
+  const text = <span>{fmtShort(from)}<br />~{fmtShort(to)}</span>;
+  if (!editable) return text;
+  return (
+    <a href="javascript:;" className="btn-underline f-12 lh-sm"
+      onClick={(e) => { e.preventDefault(); void metaAlert("준비 중입니다."); }}>{text}</a>
+  );
 }
 
 /** 목록 하단 — 총 N개 중 / 개씩 보기 / Scroll to Top / 페이지네이션 (원본 마크업) */
 export function ListFoot({ total, size, setSize, page, setPage }: {
   total: number; size: number; setSize: (n: number) => void; page: number; setPage: (n: number) => void;
 }) {
-  const pages = Math.max(1, Math.ceil(total / size));
-  const go = (n: number) => (e: React.MouseEvent) => { e.preventDefault(); if (n >= 1 && n <= pages) setPage(n); };
+  const pages = Math.ceil(total / size);                   // 원본은 목록이 비면 0 페이지(다음 버튼이 살아 있다)
+  const last = Math.max(1, pages);
+  const sizeRef = useRef<HTMLSelectElement>(null);
+  // 원본 select 는 selected 속성이 없다 — 값만 맞춘다
+  useEffect(() => { if (sizeRef.current) sizeRef.current.value = String(size); }, [size]);
+  const go = (n: number) => (e: React.MouseEvent) => { e.preventDefault(); if (n >= 1 && n <= last) setPage(n); };
   return (
     <div className="d-flex justify-content-between mt-16">
       <div className="d-flex align-items-center gap-2 f-14"> 총 {total}개 중
         <div className="select__small">
-          <select value={size} onChange={(e) => { setSize(Number(e.target.value)); setPage(1); }}>
+          <select ref={sizeRef} onChange={(e) => { setSize(Number(e.target.value)); setPage(1); }}>
             <option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="40">40</option><option value="50">50</option>
           </select>
         </div> 개씩 보기
@@ -176,10 +261,10 @@ export function ListFoot({ total, size, setSize, page, setPage }: {
       <div className="pagination">
         <div className="pagination__wrap">
           <a href="javascript:void(0);" className={`prev${page <= 1 ? " disabled" : ""}`} onClick={go(page - 1)}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
-          {Array.from({ length: pages }, (_, i) => (
+          {Array.from({ length: last }, (_, i) => (
             <a key={i} href="javascript:void(0);" className={page === i + 1 ? "active" : ""} onClick={go(i + 1)}>{i + 1}</a>
           ))}
-          <a href="javascript:void(0);" className={`${page >= pages ? "disabled " : ""}next`} onClick={go(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+          <a href="javascript:void(0);" className={`${page === pages ? "disabled " : ""}next`} onClick={go(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
         </div>
       </div>
     </div>
@@ -202,14 +287,22 @@ export const bandOf = (grade?: string | null) =>
 export const gradeOf = (grade?: string | null) => (grade ? GRADE_LABEL[grade] ?? grade : "");
 export const STUDY_LABEL: Record<string, string> = { custom: "교과학습", level_test: "진단평가", achievement_test: "성취도평가", calculation: "연산" };
 
-/** 목록 행의 문제지 태그 줄 (원본 .tagline) */
-export function Tagline({ grade, paperType, tags, count, maker }: {
-  grade?: string | null; paperType: string; tags: string[]; count: number; maker: string | null;
+/**
+ * 목록 행의 문제지 태그 줄 (원본 .tagline)
+ * 원본은 단계·학년·교재레벨·학습구분·태그·문항수·채점방식·출제자 8 개 <p> 를 항상 만들고,
+ * 값이 없는 항목만 display:none 으로 감춘다(v-show). 같은 규칙으로 맞춘다.
+ */
+export function Tagline({ grade, paperType, tags, count, maker, level }: {
+  grade?: string | null; paperType: string; tags: string[]; count: number; maker: string | null; level?: string | null;
 }) {
+  const off = (v?: string | null) => (v ? undefined : { display: "none" });
+  const band = grade ? bandOf(grade) : "";
+  const gr = grade ? gradeOf(grade) : "";
   return (
     <div className="d-flex tagline">
-      {grade ? <p>{bandOf(grade)}</p> : null}
-      {grade ? <p>{gradeOf(grade)}</p> : null}
+      <p style={off(band)}>{band}</p>
+      <p style={off(gr)}>{gr}</p>
+      <p style={off(level)}>{level ?? ""}</p>
       <p>{STUDY_LABEL[paperType] ?? "교과학습"}</p>
       <p>{tags[0] ?? "기본"}</p>
       <p>{count}문항/1회차</p>

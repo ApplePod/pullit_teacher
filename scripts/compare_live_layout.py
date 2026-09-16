@@ -1,3 +1,4 @@
+import os
 # 라이브 원본 화면과 우리 화면의 실제 배치(여백·크기·좌표)를 나란히 비교
 import sys, time
 from selenium import webdriver
@@ -29,7 +30,7 @@ PAGES = [
     ("/Pages/Center/Mypage/profile.cshtml","/mypage/profile"),
 ]
 
-OURS = "http://localhost:3777"
+OURS = f"http://localhost:{os.environ.get('OURS_PORT','3777')}"
 
 SELECTORS = [
     "#contents", ".contents-header", ".contents-header__wrap", ".contens-body",

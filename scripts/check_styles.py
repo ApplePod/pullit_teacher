@@ -1,3 +1,4 @@
+import os
 # 원본 버튼 계산 스타일 vs 우리 화면 (배경/글자/테두리/둥글기/패딩/글자크기/굵기/높이)
 import json,time,os
 from selenium import webdriver
@@ -21,7 +22,7 @@ document.querySelectorAll('button, a.btn, a.button__line, label').forEach(e=>{
 });
 return out;"""
 o=Options(); o.add_argument("--headless=new"); o.add_argument("--window-size=1440,1000")
-d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B="http://localhost:3777"
+d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B=f"http://localhost:{os.environ.get('OURS_PORT','3777')}"
 d.get(B+"/login"); time.sleep(1.5)
 d.find_element(By.CSS_SELECTOR,"input[type=text]").send_keys("admin"); d.find_element(By.CSS_SELECTOR,"input[type=password]").send_keys("admin1"); d.find_element(By.CSS_SELECTOR,"button[type=submit]").click(); time.sleep(3)
 tot=cmp=0; diffs={}

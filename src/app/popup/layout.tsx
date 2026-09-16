@@ -18,7 +18,8 @@ export default function PopupLayout({ children }: { children: React.ReactNode })
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUITE/fonts/static/woff2/SUITE.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.7/static/pretendard.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+        <link rel="preconnect" href="https://ka-p.fontawesome.com" crossOrigin="" />
+        <link rel="stylesheet" href="https://ka-p.fontawesome.com/releases/v6.7.2/css/pro.min.css?token=c57ecb994b" />
         <link rel="stylesheet" href="/legacy/css/style.css" />
         <link rel="stylesheet" href="/legacy/css/style-new.css" />
         <link rel="stylesheet" href="/Scripts/daterangepicker.css" />

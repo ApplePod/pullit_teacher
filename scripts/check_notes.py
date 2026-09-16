@@ -1,3 +1,4 @@
+import os
 # 원본 안내문(.alert-orange / .alert-blue)과 우리 화면 비교
 import re,time,html as H
 from selenium import webdriver
@@ -15,7 +16,7 @@ def notes(h):
         if t and "{{" not in t: out.append(t)
     return out
 o=Options(); o.add_argument("--headless=new"); o.add_argument("--window-size=1440,1000")
-d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B="http://localhost:3777"
+d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B=f"http://localhost:{os.environ.get('OURS_PORT','3777')}"
 d.get(B+"/login"); time.sleep(1.5)
 d.find_element(By.CSS_SELECTOR,"input[type=text]").send_keys("admin"); d.find_element(By.CSS_SELECTOR,"input[type=password]").send_keys("admin1"); d.find_element(By.CSS_SELECTOR,"button[type=submit]").click(); time.sleep(3)
 miss=0

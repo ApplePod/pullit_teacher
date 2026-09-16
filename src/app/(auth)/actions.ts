@@ -5,21 +5,43 @@ import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { toEmail } from "@/lib/login-id";
 
-export type ActionState = { error?: string; message?: string } | null;
+export type ActionState = { error?: string; message?: string; field?: "id" | "pw" } | null;
 
 
+/** 원본 login.cshtml 과 동일한 검증 문구 (checkreslt: id/id2/pw/pw2) */
 export async function login(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const email = toEmail(String(formData.get("email") ?? ""));
+  const loginId = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "") || "/dashboard";
+  const holdLogin = String(formData.get("hold") ?? "") === "1";
 
-  if (!email.split("@")[0] || !password) return { error: "아이디와 비밀번호를 입력해주세요." };
+  if (!loginId) return { error: "아이디를 입력하세요!", field: "id" };
+  if (!password) return { error: "비밀번호를 입력하세요!", field: "pw" };
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: "아이디 또는 비밀번호가 올바르지 않습니다." };
+  const supabase = await createClient({ sessionOnly: !holdLogin });
+  const { error } = await supabase.auth.signInWithPassword({ email: toEmail(loginId), password });
+  if (error) {
+    // 원본은 아이디 존재 여부에 따라 문구가 다르다
+    const exists = await loginIdExists(loginId);
+    return exists
+      ? { error: "비밀번호가 일치하지 않습니다.", field: "pw" }
+      : { error: "등록되지 않은 아이디 입니다.", field: "id" };
+  }
 
   redirect(next.startsWith("/") ? next : "/dashboard");
+}
+
+/** 아이디 등록 여부 확인 (원본과 같은 안내를 위해) */
+async function loginIdExists(loginId: string): Promise<boolean> {
+  const { createAdminClient } = await import("@/lib/supabase/admin");
+  try {
+    const admin = createAdminClient();
+    const { data } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
+    const target = toEmail(loginId).toLowerCase();
+    return (data?.users ?? []).some((u) => (u.email ?? "").toLowerCase() === target);
+  } catch {
+    return true; // 확인 불가 시에는 비밀번호 오류로 안내
+  }
 }
 
 export async function logout() {

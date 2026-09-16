@@ -12,6 +12,7 @@ import {
   listClassStudents, listAssignableStudents, addStudentsToClass, removeStudentsFromClass, moveStudentsToClass,
   type ClassRow, type ClassSchedule, type ClassStudentRow,
 } from "./classActions";
+import { listClassTextbooks, removeClassTextbooks, type MappingBook } from "../book/bookActions";
 
 /** 원본 _CODE4CD('GR') — [원본코드, 라벨, DB 코드] */
 const GR: [string, string, string][] = [
@@ -27,12 +28,15 @@ const STATE_NM: Record<string, string> = { active: "정규", paused: "휴회", l
 const stepNm = (g: string) => (g.startsWith("e") ? "초등" : g.startsWith("m") ? "중등" : g.startsWith("h") ? "고등" : g === "n" ? "N수" : "기타");
 const gradeNo = (g: string) => (/^[emh]\d$/.test(g) ? `${g[1]}학년` : GRADE_LABEL[g] ?? g);
 const shortDate = fmtShort;
+/** 원본 paginationV2.js pageRange 기본값 */
+const PAGE_RANGE = 5;
 
 type Detail = {
   id?: string; f_group_nm: string; f_grade_cd: string; f_start_dt: string; f_room: string;
   teacher_id: string; f_memo: string; f_schedule_info: (ClassSchedule & { tempId: number })[];
+  f_reg_nm: string; f_update_dt: string;
 };
-const emptyDetail = (): Detail => ({ f_group_nm: "", f_grade_cd: "", f_start_dt: "", f_room: "", teacher_id: "", f_memo: "", f_schedule_info: [] });
+const emptyDetail = (): Detail => ({ f_group_nm: "", f_grade_cd: "", f_start_dt: "", f_room: "", teacher_id: "", f_memo: "", f_schedule_info: [], f_reg_nm: "", f_update_dt: "" });
 
 export function ClassClient() {
   const router = useRouter();
@@ -49,6 +53,8 @@ export function ClassClient() {
   const [detail, setDetail] = useState<Detail>(emptyDetail());
   const [students, setStudents] = useState<ClassStudentRow[]>([]);
   const [stdChecked, setStdChecked] = useState<Set<string>>(new Set());
+  const [books, setBooks] = useState<MappingBook[]>([]);
+  const [bookChecked, setBookChecked] = useState<Set<string>>(new Set());
   const [addModal, setAddModal] = useState(false);
   const [moveModal, setMoveModal] = useState<{ ids: string[] } | null>(null);
   const [pending, start] = useTransition();
@@ -59,10 +65,23 @@ export function ClassClient() {
   useEffect(() => { load(); start(async () => setTeachers(await listTeacherOptions())); }, []);
 
   const cnt = rows.length;
-  const totalPage = Math.max(1, Math.ceil(cnt / pageView));
+  /** 원본 paginationV2.js 와 동일: totalPages 는 0 이 될 수 있고 페이지 링크는 5개 묶음 */
+  const totalPage = Math.ceil(cnt / pageView);
+  const pageNums = (() => {
+    const startIndex = (Math.ceil(page / PAGE_RANGE) - 1) * PAGE_RANGE + 1;
+    const endIndex = startIndex + PAGE_RANGE > totalPage ? totalPage : startIndex + PAGE_RANGE - 1;
+    const arr: number[] = [];
+    for (let i = startIndex; i <= endIndex; i++) if (i > 0 && i <= totalPage) arr.push(i);
+    if (arr.length === 0) arr.push(1);
+    return arr;
+  })();
+  /** 원본 prevPage/nextPage — 5개 묶음 단위 이동 */
+  const goPrev = () => { const g = Math.ceil(page / PAGE_RANGE); if (page > PAGE_RANGE) setPage(g * PAGE_RANGE - PAGE_RANGE); };
+  const goNext = () => { const g = Math.ceil(page / PAGE_RANGE); if (g < Math.ceil(totalPage / PAGE_RANGE)) setPage(g * PAGE_RANGE + 1); };
   const pageRows = rows.slice((page - 1) * pageView, page * pageView);
   const toggle = (id: string) => setChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const toggleStd = (id: string) => setStdChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const toggleBook = (id: string) => setBookChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
   /** 원본 doDeleteGroup — "삭제된 항목은 복구할 수 없습니다. 삭제하시겠습니까? " */
   const doDeleteGroup = (ids: string[]) => start(async () => {
@@ -77,19 +96,38 @@ export function ClassClient() {
     doDeleteGroup([...checked]);
   };
 
-  const doDetail = () => { setDetail(emptyDetail()); setStudents([]); setTab("group"); setView("reg"); };
+  const doDetail = () => { setDetail(emptyDetail()); setStudents([]); setBooks([]); setBookChecked(new Set()); setTab("group"); setView("reg"); };
   const openEdit = (id: string, which: "group" | "student") => start(async () => {
     const d = await getClassDetail(id);
     if (!d) { await metaAlert("반 정보를 불러오지 못했습니다."); return; }
+    const row = rows.find((r) => r.id === id);
     setDetail({
       id: d.id, f_group_nm: d.name, f_grade_cd: d.grade ?? "", f_start_dt: d.start_date ?? "",
       f_room: d.room ?? "", teacher_id: d.teacher_id ?? "", f_memo: d.memo ?? "",
       f_schedule_info: (d.schedule ?? []).map((s, i) => ({ ...s, tempId: i })),
+      f_reg_nm: row?.reg_name ?? "", f_update_dt: row ? shortDate(row.created_at) : "",
     });
     setStudents(await listClassStudents(id));
+    setBooks(await listClassTextbooks(id));
+    setBookChecked(new Set());
     setStdChecked(new Set());
     setTab(which); setView("edit");
   });
+
+  /** 원본 사용교재 블록 — doRemoveBooks / doRemoveOneBook / doSetTextbooks */
+  const removeBooks = (ids: string[]) => start(async () => {
+    const r = await removeClassTextbooks(detail.id as string, ids);
+    if (r.error) { await metaAlert(r.error); return; }
+    setBooks(await listClassTextbooks(detail.id as string));
+    setBookChecked(new Set());
+  });
+  const doRemoveBooks = async () => {
+    if (bookChecked.size === 0) { await metaAlert("먼저 목록에서 선택해주세요 "); return; }
+    removeBooks([...bookChecked]);
+  };
+  const doRemoveOneBook = (id: string) => removeBooks([id]);
+  const doSetTextbooks = () =>
+    router.push(`/management/book/mapping?gid=${detail.id}&reqKind=group&gNm=${encodeURIComponent(detail.f_group_nm)}`);
   const doList = () => { setView("list"); setStdChecked(new Set()); load(); };
 
   const reloadStudents = () => start(async () => { setStudents(await listClassStudents(detail.id as string)); setStdChecked(new Set()); });
@@ -130,12 +168,55 @@ export function ClassClient() {
     setMoveModal({ ids: [...stdChecked] });
   };
 
+  /** 원본 수정화면 탭 (v-show) — 목록·등록 화면에서는 display:none 으로 DOM 에 남는다 */
+  const editTabs = (
+    <ul className="list-tab mb-24" role="tablist" style={view === "edit" ? undefined : { display: "none" }}>
+      <li className="nav-item" role="presentation">
+        <button id="buttonforgroup" className={`nav-link${tab === "group" && view === "edit" ? " active" : ""}`} data-bs-toggle="tab" data-bs-target="#tab-pane-3"
+          type="button" role="tab" aria-selected={tab === "group"} onClick={() => setTab("group")}>반 정보</button>
+      </li>
+      <li className="nav-item" role="presentation">
+        <button id="buttonforstudentingroup" className={`nav-link${tab === "student" && view === "edit" ? " active" : ""}`} data-bs-toggle="tab" data-bs-target="#tab-pane-4"
+          type="button" role="tab" aria-selected={tab === "student"} tabIndex={tab === "student" ? undefined : -1}
+          onClick={() => setTab("student")}>반 학생 정보</button>
+      </li>
+    </ul>
+  );
+
   return (
-    <div className="contens-body" id="contapp">
-      {view === "list" && (
-        <>
-          <ListTab tabs={MANAGEMENT_TABS} />
-          <div className="listFilter-wrap">
+    <>
+      {/* 원본 class.cshtml 의 구버전 헤더— style-new.css 의 `#contents .contents-header{display:none}` 로 숨겨진다 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div id="tempLeftHeader" className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div id="leftHeaderForDetail" className="left-area contents-header__detail mt-20" style={{ display: "none" }}>
+            <div className="bread-crumbs">
+              <span>관리</span>
+              <span>반 편성</span>
+            </div>
+            <a href="javascript:void(0);" className="back-btn">
+              <img id="rrbackButton" src="/assets/center/images/common/back_header_icon.svg" alt="" />
+            </a>
+            <h2>
+              <span id="fortitle" className="s300 fw-700"></span>
+              반 편성하기
+            </h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>
+              문제지 만들기
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body" id="contapp">
+      {view === "list" && <ListTab tabs={MANAGEMENT_TABS} />}
+      {/* 원본: 검색필터는 v-show 라 등록·수정 화면에서도 DOM 에 남아 숨겨진다 */}
+      <div className="listFilter-wrap" style={view === "list" ? undefined : { display: "none" }}>
             <ul>
               <li>
                 <label className="listFilter-title">검색어</label>
@@ -174,8 +255,10 @@ export function ClassClient() {
                 </div>
               </li>
             </ul>
-          </div>
+      </div>
 
+      {view === "list" && (
+        <>
           <div className="category-btns mt-24 mb-8">
             <div className="left-area">
               <button type="button" className="category-btns-item" onClick={doPreDeleteGroups}>삭제</button>
@@ -251,32 +334,35 @@ export function ClassClient() {
               <i className="fa-sharp fa-light fa-arrow-up-to-line" aria-hidden="true"></i><span>Scroll to Top</span>
             </button>
             <div className="pagination"><div className="pagination__wrap">
-              <a href="javascript:void(0);" className={`prev${page <= 1 ? " disabled" : ""}`} onClick={() => page > 1 && setPage(page - 1)}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
-              {Array.from({ length: totalPage }, (_, i) => i + 1).map((n) => (
+              <a href="javascript:void(0);" className={`prev${page === 1 ? " disabled" : ""}`} onClick={goPrev}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
+              {pageNums.map((n) => (
                 <a key={n} href="javascript:void(0);" className={page === n ? "active" : ""} onClick={() => setPage(n)}>{n}</a>
               ))}
-              <a href="javascript:void(0);" className={`${page >= totalPage ? "disabled " : ""}next`} onClick={() => page < totalPage && setPage(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+              <a href="javascript:void(0);" className={`${page === totalPage ? "disabled " : ""}next`} onClick={goNext}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
             </div></div>
           </div>
         </>
       )}
 
+      {/* 원본: 등록 탭(v-if) 과 수정 탭(v-show — 목록·등록 화면에서도 DOM 에 남아 숨겨진다) 마크업이 서로 다르다 */}
+      {view === "reg" && (
+        <ul className="list-tab mb-24" role="tablist">
+          <li className="nav-item" role="presentation">
+            <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-pane-1" type="button" role="tab" aria-selected="true">반 정보</button>
+          </li>
+          <li className="nav-item">
+            <button className="nav-link" onClick={async () => { await metaAlert("반을 먼저 등록해주세요. "); }}>반 학생 정보</button>
+          </li>
+        </ul>
+      )}
+      {view === "edit" && editTabs}
+
       {view !== "list" && (
         <>
-          <ul className="list-tab mb-24" role="tablist">
-            <li className="nav-item" role="presentation">
-              <button id="buttonforgroup" className={`nav-link${tab === "group" ? " active" : ""}`} type="button" role="tab"
-                onClick={() => setTab("group")}>반 정보</button>
-            </li>
-            <li className="nav-item" role="presentation">
-              <button id="buttonforstudentingroup" className={`nav-link${tab === "student" ? " active" : ""}`} type="button" role="tab"
-                onClick={async () => { if (view === "reg") { await metaAlert("반을 먼저 등록해주세요. "); return; } setTab("student"); }}>반 학생 정보</button>
-            </li>
-          </ul>
-
           <div className="tab-content" id="myTabContent">
-            {tab === "group" && (
-              <div className="tab-pane fade show active" role="tabpanel">
+            {/* 원본: 등록은 #tab-pane-1, 수정은 #tabcontforgroup (수정 화면은 두 탭 패널이 모두 DOM 에 있다) */}
+            <div className={view === "reg" ? "tab-pane fade show active" : `tab-pane fade show${tab === "group" ? " active" : ""}`}
+              id={view === "reg" ? "tab-pane-1" : "tabcontforgroup"} role="tabpanel" tabIndex={0}>
                 <div className="manegment">
                   <div className="templete templete-add">
                     <p className="p300 mb-24 f-12">*표시는 필수 입력사항입니다.</p>
@@ -284,8 +370,10 @@ export function ClassClient() {
                       <div className="col-12">
                         <div className="form-group">
                           <label htmlFor="className" className="form-label f-14 required">반명</label>
-                          <input type="text" className="form-control" id="className" placeholder="반명을 입력해주세요." maxLength={50}
+                          <input type="text" className="form-control" id="className" placeholder="반명을 입력해주세요."
+                            {...(view === "reg" ? { maxLength: 50 } : {})}
                             value={detail.f_group_nm} onChange={(e) => setDetail({ ...detail, f_group_nm: e.target.value })} />
+                          <div className="invalid-feedback">{"{HELP TEXT}"}</div>
                         </div>
                       </div>
                       <div className="col-12">
@@ -301,16 +389,24 @@ export function ClassClient() {
                                 </Fragment>
                               ))}
                             </div>
+                            <div className="invalid-feedback">{"{HELP TEXT}"}</div>
                           </div>
                         </div>
                       </div>
                       <div className="col-6">
                         <div className="form-group">
                           <label htmlFor="openDate" className="form-label f-14">개강일</label>
+                          {/* 원본 jq-date-picker 컴포넌트가 렌더하는 마크업 그대로 */}
                           <div className="daterange-single">
-                            <input type="date" className="form-control" id="openDate"
-                              value={detail.f_start_dt} onChange={(e) => setDetail({ ...detail, f_start_dt: e.target.value })} />
+                            <div className="duration">
+                              <div className="position-relative">
+                                <input type="text" id="openDate" className="singleDate" placeholder="날짜"
+                                  value={detail.f_start_dt} onChange={(e) => setDetail({ ...detail, f_start_dt: e.target.value })} />
+                                <i className="fa-sharp fa-regular fa-calendar" aria-hidden="true" style={{ zIndex: 1, cursor: "pointer" }}></i>
+                              </div>
+                            </div>
                           </div>
+                          <div className="invalid-feedback">{"{HELP TEXT}"}</div>
                         </div>
                       </div>
                       <div className="col-6">
@@ -318,6 +414,7 @@ export function ClassClient() {
                           <label htmlFor="roomNum" className="form-label f-14">강의실</label>
                           <input type="text" className="form-control" id="roomNum" placeholder="수업하시는 강의실명을 입력해주세요."
                             value={detail.f_room} onChange={(e) => setDetail({ ...detail, f_room: e.target.value })} />
+                          <div className="invalid-feedback">{"{HELP TEXT}"}</div>
                         </div>
                       </div>
                       <div className="col-12">
@@ -332,8 +429,63 @@ export function ClassClient() {
                               </Fragment>
                             ))}
                           </div>
+                          <div className="invalid-feedback">{"{HELP TEXT}"}</div>
                         </div>
                       </div>
+
+                      {/* 원본: 사용교재 블록은 수정(selectedDetailShowToEdit) 화면에만 있다 */}
+                      {view === "edit" && (
+                        <div className="col-12">
+                          <h4 className="fw-700 f-16">사용교재</h4>
+                          <h4 className="d-flex justify-content-between mt-16 ">
+                            <span className="fw-700"> 총 <span className="s300">{books.length}</span>개</span>
+                            <span className="d-flex gap-1">
+                              <button type="button" className="button__fill button__line--xsmall button__line--white" onClick={doRemoveBooks}>삭제</button>
+                              <button type="button" className="button__fill--red button__line--xsmall" onClick={doSetTextbooks}><span className="material-symbols-sharp f-20">add</span> 교재 추가</button>
+                            </span>
+                          </h4>
+                          <div className="use-book">
+                            <table className="table table-default-list header-gray">
+                              <thead>
+                                <tr>
+                                  <th>
+                                    <div className="form-check d-flex gap-1">
+                                      <input type="checkbox" name="checkAllpaperbooks" className="form-check-input" id="checkAll"
+                                        checked={books.length > 0 && bookChecked.size === books.length}
+                                        onChange={(e) => setBookChecked(e.target.checked ? new Set(books.map((b) => b.id)) : new Set())} />
+                                      <label htmlFor="checkAll" className="form-check-label">교재명</label>
+                                    </div>
+                                  </th>
+                                  <th>학년 학기</th>
+                                  <th>교육과정</th>
+                                  <th>출판사</th>
+                                  <th>삭제</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {books.map((b) => (
+                                  <tr key={b.id}>
+                                    <td>
+                                      <div className="form-check d-flex gap-1">
+                                        <input type="checkbox" className="form-check-input" id={`book0${b.id}`} name="f_selected_books" value={b.id}
+                                          checked={bookChecked.has(b.id)} onChange={() => toggleBook(b.id)} />
+                                        <label htmlFor={`book0${b.id}`} className="form-check-label">{b.name}</label>
+                                      </div>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{b.publisher ?? ""}</td>
+                                    <td>
+                                      <button onClick={() => doRemoveOneBook(b.id)}><span className="material-symbols-sharp f-20">delete</span></button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <p className="alert-orange">목록의 체크박스를 선택하고 액션버튼(교재 추가, 삭제)을 눌러주세요.</p>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="col-12 mb-24">
                         <ul className="list-tab" role="tablist">
@@ -380,6 +532,24 @@ export function ClassClient() {
                         <p className="alert-orange">24시간제(00~23시, 00~59분)로 작성해주세요. 배치순서: 요일순, 시작시간, 끝나는 시간 순</p>
                       </div>
 
+                      {/* 원본: 최종 수정자·수정일자도 수정 화면에만 있다 */}
+                      {view === "edit" && (
+                        <>
+                          <div className="col-6">
+                            <div className="form-group">
+                              <label htmlFor="authorName" className="form-label f-14">최종 수정자</label>
+                              <input type="text" className="form-control" id="authorName" value={detail.f_reg_nm} disabled readOnly />
+                            </div>
+                          </div>
+                          <div className="col-6">
+                            <div className="form-group">
+                              <label htmlFor="addTime" className="form-label f-14">최종 수정일자</label>
+                              <input type="text" className="form-control" id="addTime" value={detail.f_update_dt} disabled readOnly />
+                            </div>
+                          </div>
+                        </>
+                      )}
+
                       <div className="col-12">
                         <div className="form-group">
                           <label htmlFor="floatingTextarea2" className="form-label f-14">메모</label>
@@ -398,11 +568,10 @@ export function ClassClient() {
                     </button>
                   </div>
                 </div>
-              </div>
-            )}
+            </div>
 
-            {tab === "student" && (
-              <div id="tabcontforstudentingroup" className="tab-pane fade show" role="tabpanel">
+            {view === "edit" && (
+              <div id="tabcontforstudentingroup" className={`tab-pane fade show${tab === "student" ? " active" : ""}`} role="tabpanel" tabIndex={0}>
                 <h4 className="f-16 fw-700 mb-16"><span className="s300 fw-700">{detail.f_group_nm}</span>반 학생 정보</h4>
                 <div className="category-btns mt-24 mb-8">
                   <div className="left-area">
@@ -465,6 +634,7 @@ export function ClassClient() {
           </div>
         </>
       )}
+      {view !== "edit" && editTabs}
 
       {addModal && detail.id && (
         <AddStudentModal classId={detail.id} onClose={() => setAddModal(false)} pending={pending} start={start}
@@ -476,12 +646,15 @@ export function ClassClient() {
           onDone={() => { setMoveModal(null); reloadStudents(); }} />
       )}
 
-      <div id="tempGuideUI" className="alert alert-warning alert-dismissible fade show alert-fixed" role="alert">
+      </div>
+
+      {/* 원본: #tempGuideUI 는 .contens-body 형제로 #contents 바로 아래에 있다 */}
+      <div id="tempGuideUI" className="alert alert-warning alert-dismissible fade show alert-fixed" role="alert" style={view === "list" ? undefined : { display: "none" }}>
         <span className="material-symbols-sharp">error</span>
         <div className="msg">목록의 체크박스를 선택하고 액션버튼을 눌러주세요.</div>
         <button id="defabtn0" type="button" className="btn-close"></button>
       </div>
-    </div>
+    </>
   );
 }
 

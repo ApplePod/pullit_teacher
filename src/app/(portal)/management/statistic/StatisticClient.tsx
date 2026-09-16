@@ -65,12 +65,27 @@ export function StatisticClient() {
   };
 
   return (
-    <div className="contens-body">
+    <>
+      {/* 원본 #contents 안의 구버전 헤더(스타일시트에서 display:none) — DOM 구조 그대로 유지 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>문제지 만들기</button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body">
       <ListTab tabs={MANAGEMENT_TABS} />
       <ul className="list-tab--3 mt-16 mb-24" role="tablist">
         {["선생님별 현황", "반별 현황"].map((t, i) => (
           <li key={t} className="nav-item" role="presentation">
-            <button className={`nav-link${pane === i ? " active" : ""}`} type="button" role="tab" aria-selected={pane === i} onClick={() => setPane(i)}>{t}</button>
+            <button className={`nav-link${pane === i ? " active" : ""}`} data-bs-toggle="tab" data-bs-target={`#tab-pane-2-${i + 1}`}
+              type="button" role="tab" aria-selected={pane === i} tabIndex={-1} onClick={() => setPane(i)}>{t}</button>
           </li>
         ))}
       </ul>
@@ -99,12 +114,12 @@ export function StatisticClient() {
               </div>
               <Graph items={[["제작한 총 문제지", "pb-total", tSum?.total ?? 0], ["미채점 문제지", "pb-ing", tSum?.ungraded ?? 0], ["오답출제 해야 할 문제지", "pb-warning", tSum?.wrongTodo ?? 0]]} />
             </div>
-          </div>
-          <h4>메뉴별 상세 현황</h4>
-          <div className="menu-board">
-            <MenuTabs menu={menu} setMenu={setMenu} onExcel={() => excel(tRows, "선생님")} />
-            <div id="teacherstudyexcel" className="table-responsive no-shadow">
-              <SumTable rows={tRows} firstCol="선생님" />
+            <h4>메뉴별 상세 현황</h4>
+            <div className="menu-board">
+              <MenuTabs menu={menu} setMenu={setMenu} onExcel={() => excel(tRows, "선생님")} />
+              <div id="teacherstudyexcel" className="table-responsive no-shadow">
+                <SumTable rows={tRows} firstCol="선생님" />
+              </div>
             </div>
           </div>
         </div>
@@ -137,31 +152,32 @@ export function StatisticClient() {
               </div>
               <Graph items={[["미채점 문제지", "pb-ing", cSum?.ungraded ?? 0], ["오답출제 해야 할 문제지", "pb-warning", cSum?.wrongTodo ?? 0]]} />
             </div>
-          </div>
-          <h4>메뉴별 상세 현황</h4>
-          <div className="menu-board">
-            <MenuTabs menu={menu} setMenu={setMenu} onExcel={() => excel(cRows, "반명")} />
-            <div id="groupstudyexcel" className="table-responsive">
-              <SumTable rows={cRows} firstCol="반명" />
+            <h4>메뉴별 상세 현황</h4>
+            <div className="menu-board">
+              <MenuTabs menu={menu} setMenu={setMenu} onExcel={() => excel(cRows, "반명")} />
+              <div id="groupstudyexcel" className="table-responsive">
+                <SumTable rows={cRows} firstCol="반명" />
+              </div>
             </div>
-          </div>
-          <h4>등록된 교재</h4>
-          <table className="table table-bordered table-basic table-regibook">
-            <thead><tr><th className="text-left">반명</th><th>교재명</th></tr></thead>
-            <tbody>
-              {data.classBooks.map((b, i) => <tr key={i}><td className="text-left">{b.className}</td><td>{b.bookName}</td></tr>)}
-            </tbody>
-          </table>
-          <div className="pagination">
-            <div className="pagination__wrap">
-              <a href="javascript:void(0);" className="prev disabled"><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
-              <a href="javascript:void(0);" className="active">1</a>
-              <a href="javascript:void(0);" className="next" onClick={(e) => { e.preventDefault(); metaAlert("마지막 페이지입니다."); }}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+            <h4>등록된 교재</h4>
+            <table className="table table-bordered table-basic table-regibook">
+              <thead><tr><th className="text-left">반명</th><th>교재명</th></tr></thead>
+              <tbody>
+                {data.classBooks.map((b, i) => <tr key={i}><td className="text-left">{b.className}</td><td>{b.bookName}</td></tr>)}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <div className="pagination__wrap">
+                <a href="javascript:void(0);" className="prev disabled"><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
+                <a href="javascript:void(0);" className="active">1</a>
+                <a href="javascript:void(0);" className="next" onClick={(e) => { e.preventDefault(); metaAlert("마지막 페이지입니다."); }}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -193,7 +209,7 @@ function PeriodFilter({ from, to, setFrom, setTo, period, pickYear }: {
           </div>
           <div className="btn-group" role="group">
             {[[365, "1년"], [180, "6개월"], [90, "3개월"]].map(([d, l]) => (
-              <button key={l} type="button" className="btn period-btn" data-range={d} onClick={() => period(Number(d))}>{l}</button>
+              <button key={l} className="btn period-btn" data-range={d} onClick={() => period(Number(d))}>{l}</button>
             ))}
           </div>
         </div>

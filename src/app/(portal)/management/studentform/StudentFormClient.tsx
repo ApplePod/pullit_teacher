@@ -1,5 +1,6 @@
 "use client";
 
+import { RawHtml } from "@/components/RawHtml";
 import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { STUDENT_FORM_HTML } from "./studentFormHtml";
@@ -13,7 +14,7 @@ const HP_RE = /^01[016789]-?\d{3,4}-?\d{4}$/;
 export function StudentFormClient({ student }: { student: StudentRow | null }) {
   const router = useRouter();
   const host = useRef<HTMLDivElement>(null);
-  const [pending, start] = useTransition();
+  const [, start] = useTransition();
   const saveRef = useRef<() => void>(() => {});
 
   // 수정 모드: 원본 필드에 값 채우기
@@ -72,10 +73,30 @@ export function StudentFormClient({ student }: { student: StudentRow | null }) {
   useEffect(() => { saveRef.current = save; });
 
   return (
-    <div ref={host} className="studentform-host">
-      {/* 캡처 HTML 안에 이미 <div class="contens-body mt-20"> 가 있어 덧씌우지 않는다 */}
-      <div dangerouslySetInnerHTML={{ __html: STUDENT_FORM_HTML }} />
-      {pending && <p className="f-12 bw5" style={{ padding: "8px 0" }}>저장 중…</p>}
-    </div>
+    // 원본 DOM 그대로: #contents > .contents-header + .contens-body.mt-20 (래퍼 없음)
+    <>
+      {/* 원본 studentForm.cshtml 의 구버전 헤더 — style-new.css 의 `#contents .contents-header{display:none}` 로 숨겨진다 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div className="left-area contents-header__detail mt-20">
+            <div className="bread-crumbs">
+              <span>관리</span>
+              <span>학생등록</span>
+            </div>
+            <a href="javascript:;" className="back-btn">
+              <img src="/assets/center/images/common/back_header_icon.svg" alt="" />
+            </a>
+            <h2>학생 등록하기</h2>
+          </div>
+          <div className="right-area mt-20">
+            <button type="button" className="button__fill--blue button__line--small">
+              <span className="material-symbols-sharp">done</span>
+              저장하기
+            </button>
+          </div>
+        </div>
+      </div>
+      <RawHtml html={STUDENT_FORM_HTML} ref={host} />
+    </>
   );
 }

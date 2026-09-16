@@ -1,5 +1,6 @@
 "use client";
 
+import { RawHtml } from "@/components/RawHtml";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { searchProblems, createPaper } from "../actions";
@@ -261,7 +262,7 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
               </div>
             </div>
           </div>
-          <div dangerouslySetInnerHTML={{ __html: STEP3_PRINT }} />
+          <RawHtml html={STEP3_PRINT} />
         </>
       )}
 

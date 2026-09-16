@@ -1,9 +1,10 @@
 "use client";
 
+import { RawHtml } from "@/components/RawHtml";
 import { metaAlert, metaConfirm } from "@/components/portal/MetaModal";
 
 import { fmtShort } from "@/lib/date";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ListTab } from "@/components/portal/ListTab";
 import { MANAGEMENT_TABS } from "@/lib/nav";
@@ -11,8 +12,10 @@ import { GRADE_LABEL } from "@/lib/mgmt-consts";
 import { STUDENT_FILTER_HTML } from "./filterHtml";
 import { listStudents, deleteStudents, bulkUpdateStudents, bulkCreateStudents, type StudentRow } from "./studentActions";
 
-const LEVELS = ["L1", "L2", "L3", "L4", "L5", "L6", "L7"];
-const STATES: [string, string][] = [["active", "정규"], ["paused", "휴회"]];
+/** 원본 levelCdList — [원본 코드, 라벨] */
+const LEVELS: [string, string][] = [["SL01", "L1"], ["SL02", "L2"], ["SL03", "L3"], ["SL04", "L4"], ["SL05", "L5"], ["SL06", "L6"], ["SL07", "L7"]];
+/** 원본 일괄변경 모달 학적 상태(MSXX·MS01 제외) — [원본 코드, 우리 state, 라벨] */
+const STATES: [string, string, string][] = [["MS10", "active", "정규"], ["MS99", "left", "휴회"]];
 /** 원본 학년 코드(GRE0…GR99) ↔ 우리 grade_code */
 const GRADE_BY_CODE: Record<string, string> = {
   GRE0: "e0", GRE1: "e1", GRE2: "e2", GRE3: "e3", GRE4: "e4", GRE5: "e5", GRE6: "e6",
@@ -20,8 +23,10 @@ const GRADE_BY_CODE: Record<string, string> = {
 };
 /** 원본 학적 상태 코드 ↔ 우리 state */
 const STATE_BY_CODE: Record<string, string> = { MS01: "paused", MS10: "active", MS99: "left" };
-const LEVEL_BY_CODE: Record<string, string> = Object.fromEntries(LEVELS.map((l, i) => [`SL0${i + 1}`, l]));
+const LEVEL_BY_CODE: Record<string, string> = Object.fromEntries(LEVELS);
 const fmtD = fmtShort;
+/** 원본 paginationV2.js pageRange 기본값 */
+const PAGE_RANGE = 5;
 const BAND: Record<string, string> = { e: "초등", m: "중등", h: "고등" };
 
 export function StudentClient() {
@@ -79,10 +84,21 @@ export function StudentClient() {
 
   const toggle = (id: string) => setChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
+  /** 원본 doStdListDel — 정규(MS10) 회원은 삭제 불가, 문구도 원본 그대로 */
   const onDelete = async () => {
-    if (checked.size === 0) return;
-    if (!(await metaConfirm(`선택한 ${checked.size}명을 삭제할까요?`))) return;
-    start(async () => { await deleteStudents([...checked]); setChecked(new Set()); load(search); });
+    if (checked.size === 0) { await metaAlert("학생을 선택하세요."); return; }
+    const ids = [...checked];
+    const targets = ids.filter((id) => rows.find((r) => r.id === id)?.state !== "active");
+    if (targets.length === 0) { await metaAlert("삭제가능한 학생이 없습니다. \n정규회원은 예비, 휴회로 상태변경 후 다시 삭제해주세요."); return; }
+    let msg = `선택한 학생 (총 ${ids.length}명) 삭제 하시겠습니까?※주의:학생을 삭제하면 학생관련 학습데이터가 \n모두 삭제될 수 있어요.`;
+    if (targets.length !== ids.length) msg += "\n 정규회원은 예비, 휴회로 상태변경 후 \n다시 삭제해주세요.";
+    if (!(await metaConfirm(msg))) return;
+    start(async () => { await deleteStudents(targets); setChecked(new Set()); await metaAlert("삭제 되었습니다."); load(search); });
+  };
+  /** 원본 doStdDel — 행 삭제도 정규 회원이면 막는다 */
+  const onDeleteOne = async (r: StudentRow) => {
+    if (r.state === "active") { await metaAlert("정규회원은 예비, 휴회로 상태변경 후 다시 삭제해주세요."); return; }
+    start(async () => { await deleteStudents([r.id]); await metaAlert("삭제 되었습니다."); load(search); });
   };
 
   // 필터 적용(클라이언트) — 원본은 서버 조회지만 결과는 동일
@@ -97,20 +113,48 @@ export function StudentClient() {
     }
     return true;
   });
-  const totalPages = Math.max(1, Math.ceil(filtered.length / size));
+  /** 원본 paginationV2.js 와 동일: totalPages 는 0 이 될 수 있고 페이지 링크는 5개 묶음 */
+  const totalPages = Math.ceil(filtered.length / size);
+  const pageNums = (() => {
+    const startIndex = (Math.ceil(page / PAGE_RANGE) - 1) * PAGE_RANGE + 1;
+    const endIndex = startIndex + PAGE_RANGE > totalPages ? totalPages : startIndex + PAGE_RANGE - 1;
+    const arr: number[] = [];
+    for (let i = startIndex; i <= endIndex; i++) if (i > 0 && i <= totalPages) arr.push(i);
+    if (arr.length === 0) arr.push(1);
+    return arr;
+  })();
+  /** 원본 prevPage/nextPage — 5개 묶음 단위 이동 */
+  const goPrev = () => { const g = Math.ceil(page / PAGE_RANGE); if (page > PAGE_RANGE) setPage(g * PAGE_RANGE - PAGE_RANGE); };
+  const goNext = () => { const g = Math.ceil(page / PAGE_RANGE); if (g < Math.ceil(totalPages / PAGE_RANGE)) setPage(g * PAGE_RANGE + 1); };
   const pageRows = filtered.slice((page - 1) * size, page * size);
   const allChecked2 = pageRows.length > 0 && pageRows.every((r) => checked.has(r.id));
 
   return (
-    <div className="contens-body">
-      <ListTab tabs={MANAGEMENT_TABS} className="mb-24" />
-      <div dangerouslySetInnerHTML={{ __html: STUDENT_FILTER_HTML }} />
+    <>
+      {/* 원본 student.cshtml 의 구버전 헤더 — style-new.css 의 `#contents .contents-header{display:none}` 로 숨겨진다 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>
+              문제지 만들기
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body">
+      <ListTab tabs={MANAGEMENT_TABS} />
+      <RawHtml html={STUDENT_FILTER_HTML} />
       <p className="alert-orange mt-24 mb-16">
         <a href="#" style={{ textDecoration: "underline" }} onClick={async (e) => { e.preventDefault(); await metaAlert("샘플파일 다운로드는 준비 중입니다."); }}> 샘플파일(액셀csv)다운로드</a> 후 양식에 맞게 입력하여 이 화면에서 ctrl+v 해주세요. </p>
 
       <div className="category-btns mt-24 mb-8">
         <div className="left-area">
-          <button type="button" className="category-btns-item" onClick={async () => { if (checked.size === 0) { await metaAlert("학생을 선택해주세요."); return; } setBulkModal(true); }}>일괄 레벨/학적 상태 변경</button>
+          <button type="button" className="category-btns-item" onClick={async () => { if (checked.size === 0) { await metaAlert("대상을 선택해주세요."); return; } setBulkModal(true); }}>일괄 레벨/학적 상태 변경</button>
           <button type="button" className="category-btns-item" onClick={onDelete}>삭제</button>
         </div>
         <div className="right-area">
@@ -137,12 +181,13 @@ export function StudentClient() {
               <tr key={r.id}>
                 <td className="name text-left"><div className="form-check d-flex gap-1">
                   <input type="checkbox" name="chkStdList" className="form-check-input" id={`chkUid_${r.id}`} value={r.id}
+                    data-status={r.state === "paused" ? "MS01" : r.state === "left" ? "MS99" : "MS10"}
                     checked={checked.has(r.id)} onChange={() => toggle(r.id)} />
                   <label htmlFor={`chkUid_${r.id}`} className="form-check-label d-flex flex-column">{r.name}
                     <span className="info">
                       <span>{BAND[(r.grade ?? "")[0]] ?? "기타"}</span>
                       <span>{GRADE_LABEL[r.grade] ?? r.grade}</span>
-                      {r.study_level && <span>{r.study_level}</span>}
+                      <span>{r.study_level ?? ""}</span>
                       <span>{r.state === "paused" ? "예비" : r.state === "left" ? "휴회" : "정규"}</span>
                     </span>
                   </label>
@@ -154,10 +199,10 @@ export function StudentClient() {
                 <td></td>
                 <td>{fmtD(r.created_at)}</td>
                 <td className="text-center"><button type="button" className="button__fill button__line--xsmall button__line--white bw10" onClick={() => router.push(`/management/studentform?id=${r.id}`)}>보기</button></td>
-                <td className="text-center"><button type="button" onClick={async () => { if (await metaConfirm("해당 학생을 삭제하시겠습니까? ")) start(async () => { await deleteStudents([r.id]); load(search); }); }}><span className="material-symbols-sharp f-20 bw6">delete</span></button></td>
+                <td className="text-center"><button type="button" onClick={() => onDeleteOne(r)}><span className="material-symbols-sharp f-20 bw6">delete</span></button></td>
               </tr>
             ))}
-            {pageRows.length === 0 && <tr><td colSpan={9} className="text-center" style={{ padding: "32px 0", color: "#97979d" }}>{pending ? "불러오는 중…" : "등록된 내역이 없습니다."}</td></tr>}
+            {pageRows.length === 0 && <tr><td colSpan={9} style={{ height: "50px" }}>등록된 학생이 없습니다</td></tr>}
           </tbody>
         </table>
       </div>
@@ -169,36 +214,44 @@ export function StudentClient() {
           </select></div> 개씩 보기 </div>
         <button className="scrollToTop" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><i className="fa-sharp fa-light fa-arrow-up-to-line" aria-hidden="true"></i><span>Scroll to Top</span></button>
         <div className="pagination"><div className="pagination__wrap">
-          <a href="javascript:void(0);" className={`prev${page <= 1 ? " disabled" : ""}`} onClick={() => page > 1 && setPage(page - 1)}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+          <a href="javascript:void(0);" className={`prev${page === 1 ? " disabled" : ""}`} onClick={goPrev}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
+          {pageNums.map((n) => (
             <a key={n} href="javascript:void(0);" className={n === page ? "active" : ""} onClick={() => setPage(n)}>{n}</a>
           ))}
-          <a href="javascript:void(0);" className={`${page >= totalPages ? "disabled " : ""}next`} onClick={() => page < totalPages && setPage(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+          <a href="javascript:void(0);" className={`${page === totalPages ? "disabled " : ""}next`} onClick={goNext}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
         </div></div>
       </div>
 
-      {bulkModal && <BulkLevelModal ids={[...checked]} onClose={() => setBulkModal(false)} onDone={() => { setBulkModal(false); setChecked(new Set()); load(search); }} start={start} pending={pending} />}
-      {bigModal && <BigRegisterModal onClose={() => setBigModal(false)} />}
-    </div>
+      {/* 원본과 동일하게 모달·텍스트에어리어는 항상 DOM 에 두고 열릴 때만 show 한다 */}
+      <BulkLevelModal open={bulkModal} ids={[...checked]} onClose={() => setBulkModal(false)} onDone={() => { setBulkModal(false); setChecked(new Set()); load(search); }} start={start} pending={pending} />
+      {/* 회원일괄등록 엑셀 데이터 */}
+      <textarea id="f_data4excel" name="f_data4excel" style={{ width: 0, height: 0, border: 0 }} readOnly value="" />
+      {/* 회원일괄등록 등록 데이터 */}
+      <textarea id="f_data4excel_data" name="f_data4excel_data" rows={4} cols={50} style={{ display: "none" }} readOnly value="" />
+      {/* 회원일괄등록 웹아이디 체크용 */}
+      <textarea id="f_data4excel_web_id" name="f_data4excel_web_id" rows={4} cols={50} style={{ display: "none" }} readOnly value="" />
+      <BigRegisterModal open={bigModal} onClose={() => setBigModal(false)} />
+      </div>
+    </>
   );
 }
 
 
 
 /* 원본 student.cshtml 의 modalSetLevels 마크업 그대로 */
-function BulkLevelModal({ ids, onClose, onDone, start, pending }: { ids: string[]; onClose: () => void; onDone: () => void; start: (fn: () => Promise<void>) => void; pending: boolean }) {
+function BulkLevelModal({ open, ids, onClose, onDone, start, pending }: { open: boolean; ids: string[]; onClose: () => void; onDone: () => void; start: (fn: () => Promise<void>) => void; pending: boolean }) {
   const [level, setLevel] = useState(""); const [state, setState] = useState("");
   const apply = () => start(async () => { const r = await bulkUpdateStudents(ids, { study_level: level || undefined, state: state || undefined }); if (r.error) metaAlert(r.error); else onDone(); });
   return (
     <>
-      <div className="modal fade modal-inner-scroll max-450 show" id="modalSetLevels" tabIndex={-1} role="dialog" style={{ display: "block" }}>
+      <div className={`modal fade modal-inner-scroll max-450${open ? " show" : ""}`} id="modalSetLevels" tabIndex={-1} aria-modal="true" role="dialog" style={open ? { display: "block" } : undefined}>
         <div className="modal-dialog modal-dialog-centered"><div className="modal-content">
           <div className="modal-header"><h6 className="f-14">일괄 레벨/상태 변경</h6><button type="button" className="btn-close" onClick={onClose} aria-label="Close"><span className="material-symbols-sharp">close</span></button></div>
           <div className="modal-body"><ul className="list-underline">
             <li className="d-flex justify-content-between"><span className="title">레벨</span>
-              <div className="filter-radio">{LEVELS.map((l) => (<span key={l}><input type="radio" name="userStatusLevel" id={`userStatusLevel_${l}`} checked={level === l} onChange={() => setLevel(l)} /><label htmlFor={`userStatusLevel_${l}`}>{l}</label></span>))}</div></li>
+              <div className="filter-radio">{LEVELS.map(([cd, l]) => (<Fragment key={cd}><input type="radio" name="userStatusLevel" id={`userStatusLevel_${cd}`} checked={level === l} onChange={() => setLevel(l)} /><label htmlFor={`userStatusLevel_${cd}`}>{l}</label></Fragment>))}</div></li>
             <li className="d-flex justify-content-between" style={{ borderBottom: 0 }}><span className="title">학적 상태</span>
-              <div className="filter-radio">{STATES.map(([v, l]) => (<span key={v}><input type="radio" name="userStatus" id={`userStatusCd_${v}`} checked={state === v} onChange={() => setState(v)} /><label htmlFor={`userStatusCd_${v}`} className="w-100">{l}</label></span>))}</div></li>
+              <div className="filter-radio">{STATES.map(([cd, v, l]) => (<Fragment key={cd}><input type="radio" name="userStatus" id={`userStatusCd_${cd}`} checked={state === v} onChange={() => setState(v)} /><label htmlFor={`userStatusCd_${cd}`} className="w-100">{l}</label></Fragment>))}</div></li>
           </ul></div>
           <div className="modal-footer">
             <button type="button" style={{ minWidth: 64 }} className="button__fill button__line--small button__line--white button__weight--medium" onClick={onClose}>취소</button>
@@ -206,23 +259,23 @@ function BulkLevelModal({ ids, onClose, onDone, start, pending }: { ids: string[
           </div>
         </div></div>
       </div>
-      <div className="modal-backdrop fade show" onClick={onClose}></div>
+      {open && <div className="modal-backdrop fade show" onClick={onClose}></div>}
     </>
   );
 }
 
 /* 원본 modalStdBigData(안내) 마크업 그대로 — 실제 등록은 화면에서 ctrl+v */
-function BigRegisterModal({ onClose }: { onClose: () => void }) {
+function BigRegisterModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <>
-      <div className="modal modal--xsmall max-400 fade show" id="modalStdBigData" tabIndex={-1} role="dialog" style={{ display: "block" }}>
+      <div className={`modal modal--xsmall max-400 fade${open ? " show" : ""}`} id="modalStdBigData" tabIndex={-1} aria-modal="true" role="dialog" style={open ? { display: "block" } : undefined}>
         <div className="modal-dialog modal-dialog-centered"><div className="modal-content">
           <div className="modal-header"><h5 className="modal-title">학생 대량 등록</h5><button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button></div>
           <div className="modal-body text-center pl-40 pr-40"><p>엑셀파일에서 해당 영역을 복사 후 <br />이 화면에서 바로 ctrl+v를 해주세요.</p></div>
           <div className="modal-footer"><button type="button" className="submit" onClick={onClose}>확인</button></div>
         </div></div>
       </div>
-      <div className="modal-backdrop fade show" onClick={onClose}></div>
+      {open && <div className="modal-backdrop fade show" onClick={onClose}></div>}
     </>
   );
 }

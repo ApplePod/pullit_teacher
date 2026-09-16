@@ -10,7 +10,7 @@ import {
   type AnalysisRow, type ReportRow,
 } from "../clinicActions";
 import { REPORT_FILTER_HTML } from "../studentmark/filterHtml";
-import { EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, usePaging, type FilterState } from "../studentmark/listCommon";
+import { ClinicHeader, EMPTY_FILTER, fmtD, ListFoot, OriginalFilter, usePaging, type FilterState } from "../studentmark/listCommon";
 import { GRADE_LABEL } from "@/lib/mgmt-consts";
 
 const KINDS: [string, string][] = [
@@ -47,8 +47,10 @@ export function ReportClient() {
   };
 
   return (
-    <div className="contens-body">
-      <ListTab tabs={CLINIC_TABS} />
+    <>
+      <ClinicHeader />
+      <div className="contens-body">
+      <ListTab tabs={CLINIC_TABS} tablist />
       <p className="alert-orange mt-24 mb-12">학습 기간별 종합학습분석표, 교재별분석표, 평가 분석표를 만들어 수정, 인쇄, 발송합니다.</p>
       <div className="tab-content">
         <div className="tab-pane fade active show" id="tab-pane-2-4" role="tabpanel" tabIndex={0}>
@@ -91,29 +93,33 @@ export function ReportClient() {
                   <input type="checkbox" name="chkReportId" className="form-check-input" value={r.id} checked={checked.has(r.id)} onChange={() => toggle(r.id)} />
                 </li>
                 <li className="title-line">
-                  <div className="d-flex gap-1"><div className="left">
-                    <div className="d-flex title-line">
-                      <a href="javascript:void(0)" className="line-clamp-1 title-tooltip" title={r.name} onClick={(e) => { e.preventDefault(); setPrint([r]); }}>{r.name}</a>
+                  <div className="d-flex gap-1">
+                    <span className="badge-alram">1</span>
+                    <div className="left">
+                      <a href="javascript:;" data-bs-toggle="tooltip" data-bs-placement="top" className="line-clamp-1 title-tooltip"
+                        title={r.name} onClick={(e) => { e.preventDefault(); setPrint([r]); }}>{r.name}</a>
+                      <div className="d-flex tagline">
+                        <p style={{ display: "none" }}></p>
+                        <p>{r.label}</p>
+                      </div>
                     </div>
-                    <div className="d-flex tagline">
-                      <p>{r.label}</p><p>채점 {r.stats.marked}건</p><p>평균 {r.stats.avg_score ?? 0}점</p><p>오답 {r.stats.wrong}문항</p>
-                    </div>
-                  </div></div>
+                  </div>
                 </li>
-                <li className="bw10" style={{ maxWidth: 48 }}><span className="line-clamp-2">{r.student_name}</span></li>
-                <li className="bw10" style={{ maxWidth: 64 }}><span>{fmtD(r.period_start)}<br />~{fmtD(r.period_end)}</span></li>
+                <li className="bw10" style={{ maxWidth: 48 }}>
+                  <span className="d-flex gap-1 align-items-center">
+                    <div className="line-clamp-1 f-12" style={{ maxWidth: 68 }}>{r.student_name}</div>
+                  </span>
+                </li>
+                <li className="bw10" style={{ maxWidth: 64 }}>{fmtD(r.period_start)}<br />~{fmtD(r.period_end)}</li>
                 <li className="bw10" style={{ maxWidth: 56 }}>{fmtD(r.created_at)}</li>
-                <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
-                  {r.home_sent_at ? fmtD(r.home_sent_at)
-                    : <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => send([r.id], "home")}>발송</button>}
+                <li className="bw10 align-items-center" style={{ maxWidth: 78 }} onClick={() => send([r.id], "home")}>
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100">{r.home_sent_at ? fmtD(r.home_sent_at) : "발송하기"}</button>
                 </li>
-                <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
-                  {r.sms_req_at ? fmtD(r.sms_req_at)
-                    : <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => send([r.id], "sms")}>요청</button>}
+                <li className="bw10 align-items-center" style={{ maxWidth: 78 }} onClick={() => send([r.id], "sms")}>
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100">{r.sms_req_at ? fmtD(r.sms_req_at) : "요청하기"}</button>
                 </li>
-                <li className="bw10 align-items-center" style={{ maxWidth: 78 }}>
-                  {r.kakao_sent_at ? fmtD(r.kakao_sent_at)
-                    : <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100" onClick={() => send([r.id], "kakao")}>발송</button>}
+                <li className="bw10 align-items-center" style={{ maxWidth: 78 }} onClick={() => send([r.id], "kakao")}>
+                  <button type="button" className="button__fill button__line--xsmall button__line--white bw10 w-100">{r.kakao_sent_at ? fmtD(r.kakao_sent_at) : "발송하기"}</button>
                 </li>
               </ul>
             ))}
@@ -125,7 +131,8 @@ export function ReportClient() {
       {make && <MakeReportModal onClose={() => setMake(false)} onDone={() => { setMake(false); reload(); }} />}
       {edit && <EditReportModal row={edit} onClose={() => setEdit(null)} onDone={() => { setEdit(null); reload(); }} />}
       {print && <PrintReportModal rows={print} onClose={() => setPrint(null)} />}
-    </div>
+      </div>
+    </>
   );
 }
 

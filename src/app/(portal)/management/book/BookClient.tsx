@@ -25,7 +25,21 @@ export function BookClient() {
     router.push(`/management/book/mapping?gid=${gid}&reqKind=${reqKind}&gNm=${encodeURIComponent(gNm)}`);
 
   return (
-    <div className="contens-body">
+    <>
+      {/* 원본 #contents 안의 구버전 헤더(스타일시트에서 display:none) — DOM 구조 그대로 유지 */}
+      <div className="contents-header">
+        <div className="contents-header__wrap">
+          <div className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>문제지 만들기</button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body">
       <ListTab tabs={MANAGEMENT_TABS} />
       <div className="category-btns mt-24 mb-8">
         <div className="left-area"></div>
@@ -82,6 +96,7 @@ export function BookClient() {
           <a href="javascript:void(0);" className={`${page >= totalPage ? "disabled " : ""}next`} onClick={() => page < totalPage && setPage(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
         </div></div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

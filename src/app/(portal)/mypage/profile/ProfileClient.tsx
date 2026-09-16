@@ -30,22 +30,31 @@ export function ProfileClient({ name, phone, loginId }: { name: string; phone: s
     await metaAlert(avatarTouched ? "저장되었습니다.\n프로필 이미지 저장은 준비 중입니다." : (r?.message ?? "저장되었습니다."));
   });
 
+  /** 원본 #contents 안의 구버전 헤더(스타일시트에서 display:none) — 목록/상세에 따라 좌측 영역만 바뀐다 */
+  const contentsHeader = (
+    <div className="contents-header">
+      <div className="contents-header__wrap">
+        <div className="left-area" id="tempLeftHeader" style={view === "profile" ? undefined : { display: "none" }}>
+          <span className="material-symbols-sharp">manage_accounts</span>
+          <h2>마이페이지</h2>
+        </div>
+        <div className="left-area contents-header__detail mt-20" id="leftHeaderForDetail" style={view === "password" ? undefined : { display: "none" }}>
+          <div className="bread-crumbs"><span>마이페이지</span><span>프로필 설정</span></div>
+          <a href="javascript:void(0);" className="back-btn" onClick={(e) => { e.preventDefault(); setView("profile"); }}>
+            <img id="rrbackButton" src="/assets/center/images/common/back_header_icon.svg" alt="" />
+          </a>
+          <h2 id="changetextcontents">비밀번호 변경하기</h2>
+        </div>
+        <div className="right-area"></div>
+      </div>
+    </div>
+  );
+
   if (view === "password") {
     return (
       <>
-        <div className="contents-header contents-header__detail mt-20">
-          <div className="contents-header__wrap">
-            <div className="left-area">
-              <div className="bread-crumbs"><span>마이페이지</span><span>프로필 설정</span></div>
-              <a href="#" className="back-btn" onClick={(e) => { e.preventDefault(); setView("profile"); }}>
-                <img id="rrbackButton" src="/assets/center/images/common/back_header_icon.svg" alt="" />
-              </a>
-              <h2 id="changetextcontents">비밀번호 변경하기</h2>
-            </div>
-            <div className="right-area"></div>
-          </div>
-        </div>
-        <div className="contens-body">
+        {contentsHeader}
+        <div className="contens-body" id="contapp">
           <PasswordPanel onDone={() => setView("profile")} />
         </div>
       </>
@@ -53,7 +62,9 @@ export function ProfileClient({ name, phone, loginId }: { name: string; phone: s
   }
 
   return (
-    <div className="contens-body">
+    <>
+    {contentsHeader}
+    <div className="contens-body" id="contapp">
       <ul className="list-tab" role="tablist">
         <li className="nav-item" role="presentation">
           <button className="nav-link active" type="button" role="tab" aria-selected="true">프로필 설정</button>
@@ -86,12 +97,12 @@ export function ProfileClient({ name, phone, loginId }: { name: string; phone: s
                 </div>
                 <div className="form-group">
                   <label htmlFor="userID" className="form-label">아이디</label>
-                  <input type="text" className="form-control" id="userID" value={loginId} disabled />
+                  <input type="tel" className="form-control" id="userID" value={loginId} disabled />
                 </div>
                 <div className="form-group">
                   <label htmlFor="telchange" className="form-label">전화번호</label>
                   <div className="input-group">
-                    <input type="tel" className="form-control" id="telchange" value={f.phone} placeholder="010-0000-0000" onChange={(e) => setF({ ...f, phone: e.target.value })} />
+                    <input type="tel" className="form-control" id="telchange" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />
                   </div>
                 </div>
                 <div className="form-group">
@@ -106,6 +117,7 @@ export function ProfileClient({ name, phone, loginId }: { name: string; phone: s
         </div>
       </div>
     </div>
+    </>
   );
 }
 
@@ -114,6 +126,8 @@ function PasswordPanel({ onDone }: { onDone: () => void }) {
   const [cur, setCur] = useState("");
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
   const [pending, start] = useTransition();
 
   const verify = () => start(async () => {
@@ -129,37 +143,45 @@ function PasswordPanel({ onDone }: { onDone: () => void }) {
   });
 
   return (
-    <div className="mypage">
-      <div className="mypage__wrap mypage__wrap--1 mt-24">
-        <div className="profile__body profile__body--oneLine">
-          <h4>비밀번호 변경</h4>
-          {step === 1 ? (
+    <div className="mt-20 mypage">
+      <div className="mypage__wrap mypage__wrap--1">
+        {step === 1 ? (
+          <div className="profile__body profile__body--oneLine">
+            <h4>비밀번호 변경</h4>
             <div className="form-group">
-              <label htmlFor="nowPassword" className="form-label">현재 비밀번호</label>
-              <div className="input-group gap-1">
-                <input type="password" className="form-control" id="nowPassword" placeholder="현재 비밀번호를 입력해주세요."
-                  value={cur} onChange={(e) => setCur(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") verify(); }} />
-                <button type="button" className="btn btn-default" onClick={verify} disabled={pending}>변경</button>
+              <label htmlFor="validationDefault01" className="form-label">현재 비밀번호</label>
+              <div className="input-group">
+                <input type="password" className="form-control" id="validationDefault01" placeholder="현재 비밀번호를 입력해주세요." required
+                  value={cur} onChange={(e) => setCur(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && cur) verify(); }} />
+                <button type="button" disabled={!cur || pending} id="buttonForPW" onClick={verify}>변경</button>
+                <div id="invfeedb" className="invalid-feedback" style={{ display: "none" }}>비밀번호가 일치하지 않습니다.</div>
               </div>
             </div>
-          ) : (
-            <>
-              <div className="form-group">
-                <label htmlFor="newPassword" className="form-label">새 비밀번호</label>
-                <input type="password" className="form-control" id="newPassword" placeholder="새 비밀번호를 입력해주세요. (6자 이상)"
+          </div>
+        ) : (
+          <div className="profile__body profile__body--oneLine">
+            <h4>비밀번호 변경</h4>
+            <div className="form-group">
+              <label htmlFor="validationDefault03" className="form-label">새 비밀번호</label>
+              <div className="input-password-hide">
+                <input type={show1 ? "text" : "password"} className="form-control" id="validationDefault03" placeholder="새로운 비밀번호를 입력해주세요."
                   value={pw} onChange={(e) => setPw(e.target.value)} />
+                <div className="hide-btn" onClick={() => setShow1(!show1)}><span className="material-symbols-sharp">visibility</span></div>
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
-              <div className="form-group">
-                <label htmlFor="newPassword2" className="form-label">새 비밀번호 확인</label>
-                <div className="input-group gap-1">
-                  <input type="password" className="form-control" id="newPassword2" placeholder="새 비밀번호를 다시 입력해주세요."
-                    value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") change(); }} />
-                  <button type="button" className="btn btn-default" onClick={change} disabled={pending}>변경</button>
-                </div>
+            </div>
+            <div className="form-group">
+              <label htmlFor="validationDefault04" className="form-label">새 비밀번호 확인</label>
+              <div className="input-password-hide">
+                <input type={show2 ? "text" : "password"} className="form-control" id="validationDefault04" placeholder="새로운 비밀번호를 입력해주세요."
+                  value={confirm} onChange={(e) => setConfirm(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && pw && confirm) change(); }} />
+                <div className="hide-btn" onClick={() => setShow2(!show2)}><span className="material-symbols-sharp">visibility</span></div>
+                <div id="invfeedb02" className="invalid-feedback" style={{ display: pw && confirm && pw !== confirm ? "block" : "none" }}>비밀번호가 일치하지 않습니다.</div>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+            <button id="checkButton" type="button" disabled={!pw || !confirm || pending} className="full-btn" onClick={change}>확인</button>
+          </div>
+        )}
       </div>
     </div>
   );

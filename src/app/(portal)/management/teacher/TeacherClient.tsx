@@ -15,6 +15,7 @@ const MENU_LIST: [string, string][] = [
   ["student", "학생관리"], ["sms", "홍보/문자 관리"], ["teacher", "교사관리"], ["group", "반관리"],
   ["center", "교실정보관리"], ["money", "수납관리"], ["cal", "정산관리"], ["paper", "문제지 관리"],
   ["allclass", "전체반보기 허용"], ["gradetree", "학년별보기 허용"], ["kmt", "전국학력평가"],
+  ["metabookOrd", "교재주문관리"],
 ];
 /** 원본 검색필터 "메뉴권한" 라디오 (id, value, label) 캡처 마크업 그대로 */
 const PERM_FILTER: [string, string, string][] = [
@@ -29,6 +30,8 @@ const PW_RE = /^[a-zA-Z0-9]{4,12}$/;
 const MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** 원본 등록일 표기 YY.MM.DD */
 const shortDate = fmtShort;
+/** 원본 paginationV2.js pageRange 기본값 */
+const PAGE_RANGE = 5;
 
 type Form = {
   id?: string; f_user_nm: string; p1: string; p2: string; p3: string;
@@ -60,7 +63,19 @@ export function TeacherClient() {
   useEffect(() => { load(); }, []);
 
   const cnt = rows.length;
-  const totalPage = Math.max(1, Math.ceil(cnt / pageView));
+  /** 원본 paginationV2.js 와 동일: totalPages 는 0 이 될 수 있고 페이지 링크는 5개 묶음 */
+  const totalPage = Math.ceil(cnt / pageView);
+  const pageNums = (() => {
+    const startIndex = (Math.ceil(page / PAGE_RANGE) - 1) * PAGE_RANGE + 1;
+    const endIndex = startIndex + PAGE_RANGE > totalPage ? totalPage : startIndex + PAGE_RANGE - 1;
+    const arr: number[] = [];
+    for (let i = startIndex; i <= endIndex; i++) if (i > 0 && i <= totalPage) arr.push(i);
+    if (arr.length === 0) arr.push(1);
+    return arr;
+  })();
+  /** 원본 prevPage/nextPage — 5개 묶음 단위 이동 */
+  const goPrev = () => { const g = Math.ceil(page / PAGE_RANGE); if (page > PAGE_RANGE) setPage(g * PAGE_RANGE - PAGE_RANGE); };
+  const goNext = () => { const g = Math.ceil(page / PAGE_RANGE); if (g < Math.ceil(totalPage / PAGE_RANGE)) setPage(g * PAGE_RANGE + 1); };
   const pageRows = rows.slice((page - 1) * pageView, page * pageView);
   const toggle = (id: string) => setChecked((c) => { const n = new Set(c); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
@@ -105,11 +120,36 @@ export function TeacherClient() {
   const doList = () => { setView("list"); load(); };
 
   return (
-    <div className="contens-body">
-      {view === "list" && (
-        <>
-          <ListTab tabs={MANAGEMENT_TABS} />
-          <div className="listFilter-wrap">
+    <>
+      {/* 원본 teacher.cshtml 의 구버전 헤더 — style-new.css 의 `#contents .contents-header{display:none}` 로 숨겨진다 */}
+      <div id="tempHeader" className="contents-header">
+        <div className="contents-header__wrap">
+          <div id="tempLeftHeader" className="left-area">
+            <span className="material-symbols-sharp">manage_accounts</span>
+            <h2>관리</h2>
+          </div>
+          <div id="leftHeaderForDetail" className="left-area contents-header__detail" style={{ display: "none" }}>
+            <div className="bread-crumbs">
+              <span>관리</span>
+              <span>교사등록</span>
+            </div>
+            <a href="javascript:void(0)" className="back-btn" id="rrbackButton">
+              <img src="/assets/center/images/common/back_header_icon.svg" alt="" />
+            </a>
+            <h2>돌아가기</h2>
+          </div>
+          <div className="right-area">
+            <button type="button" className="button__line button__fill--medium button__fill--red">
+              <i className="fa-sharp fa-regular fa-pencil-mechanical" aria-hidden="true"></i>
+              문제지 만들기
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="contens-body">
+      {view === "list" && <ListTab tabs={MANAGEMENT_TABS} />}
+      {/* 원본: 검색필터는 v-show 라 등록·수정 화면에서도 DOM 에 남아 숨겨진다 */}
+      <div className="listFilter-wrap" style={view === "list" ? undefined : { display: "none" }}>
             <ul>
               <li>
                 <label className="listFilter-title">검색어</label>
@@ -145,8 +185,10 @@ export function TeacherClient() {
                 </div>
               </li>
             </ul>
-          </div>
+      </div>
 
+      {view === "list" && (
+        <>
           <div className="category-btns mt-24 mb-8">
             <div className="left-area">
               <button type="button" className="category-btns-item" onClick={openModalIframe}>일괄 사용권한 변경</button>
@@ -217,11 +259,11 @@ export function TeacherClient() {
               <i className="fa-sharp fa-light fa-arrow-up-to-line" aria-hidden="true"></i><span>Scroll to Top</span>
             </button>
             <div className="pagination"><div className="pagination__wrap">
-              <a href="javascript:void(0);" className={`prev${page <= 1 ? " disabled" : ""}`} onClick={() => page > 1 && setPage(page - 1)}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
-              {Array.from({ length: totalPage }, (_, i) => i + 1).map((n) => (
+              <a href="javascript:void(0);" className={`prev${page === 1 ? " disabled" : ""}`} onClick={goPrev}><i className="fa-light fa-angle-left" aria-hidden="true"></i></a>
+              {pageNums.map((n) => (
                 <a key={n} href="javascript:void(0);" className={page === n ? "active" : ""} onClick={() => setPage(n)}>{n}</a>
               ))}
-              <a href="javascript:void(0);" className={`${page >= totalPage ? "disabled " : ""}next`} onClick={() => page < totalPage && setPage(page + 1)}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
+              <a href="javascript:void(0);" className={`${page === totalPage ? "disabled " : ""}next`} onClick={goNext}><i className="fa-light fa-angle-right" aria-hidden="true"></i></a>
             </div></div>
           </div>
         </>
@@ -237,12 +279,15 @@ export function TeacherClient() {
           onDone={() => { setAbilityModal(false); setChecked(new Set()); load(); }} />
       )}
 
-      <div id="tempGuideUI" className="alert alert-warning alert-dismissible fade show alert-fixed" role="alert">
+      </div>
+
+      {/* 원본: #tempGuideUI 는 .contens-body 형제로 #contents 바로 아래에 있다 */}
+      <div id="tempGuideUI" className="alert alert-warning alert-dismissible fade show alert-fixed" role="alert" style={view === "list" ? undefined : { display: "none" }}>
         <span className="material-symbols-sharp">error</span>
         <div className="msg">목록의 체크박스를 선택하고 액션버튼을 눌러주세요.</div>
         <button id="defabtn0" type="button" className="btn-close"></button>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -254,6 +299,12 @@ function TeacherDetailForm({ mode, form, setForm, dupOk, setDupOk, pending, star
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm({ ...form, [k]: v });
   const allOn = MENU_LIST.every(([k]) => form.f_access_menu[k]);
   const phone = [form.p1, form.p2, form.p3].join("-");
+  /* 원본은 등록/수정 영역이 별도 마크업이라 id·name 이 다르다 */
+  const phoneName = mode === "reg" ? "phonenumber" : "phonenumberonedit";
+  const pid = (base: string) => (mode === "reg" ? base : `edit${base}`);
+  const chkAllId = mode === "reg" ? "chk01" : "chkchkchk";
+  const menuName = mode === "reg" ? "f_check_detail" : "f_check_edit";
+  const menuId = (key: string, index: number) => (mode === "reg" ? `${index}userStatus01` : key);
 
   const doCheckDupWebID = () => {
     start(async () => {
@@ -289,7 +340,7 @@ function TeacherDetailForm({ mode, form, setForm, dupOk, setDupOk, pending, star
     });
   };
 
-  const numOnly = (v: string) => v.replace(/[^0-9]/g, "");
+  const numOnly = (v: string, max: number) => v.replace(/[^0-9]/g, "").slice(0, max);
 
   return (
     <div className="manegment">
@@ -302,39 +353,47 @@ function TeacherDetailForm({ mode, form, setForm, dupOk, setDupOk, pending, star
                 <label htmlFor="fromTel" className="form-label required">교사명</label>
                 <input type="text" className="form-control" id="fromTel" placeholder="교사명을 입력해주세요."
                   value={form.f_user_nm} onChange={(e) => set("f_user_nm", e.target.value)} />
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               <div className="form-group">
                 <label className="form-label required">휴대폰</label>
+                {/* 원본: 등록은 name=phonenumber/#stphone…, 수정은 name=phonenumberonedit/#editstphone… */}
                 <div className="d-flex gap-1">
-                  <input type="tel" name="phonenumber" className="form-control" id="stphone" value={form.p1} onChange={(e) => set("p1", numOnly(e.target.value))} maxLength={3} />
+                  <input type="number" name={phoneName} className="form-control" id={pid("stphone")} value={form.p1} onChange={(e) => set("p1", numOnly(e.target.value, 3))} />
                   <span className="d-flex align-items-center">-</span>
-                  <input type="tel" name="phonenumber" className="form-control" id="midphone" value={form.p2} onChange={(e) => set("p2", numOnly(e.target.value))} maxLength={4} />
+                  <input type="number" name={phoneName} className="form-control" id={pid("midphone")} value={form.p2} onChange={(e) => set("p2", numOnly(e.target.value, 4))} />
                   <span className="d-flex align-items-center">-</span>
-                  <input type="tel" name="phonenumber" className="form-control" id="lastphone" value={form.p3} onChange={(e) => set("p3", numOnly(e.target.value))} maxLength={4} />
+                  <input type="number" name={phoneName} className="form-control" id={pid("lastphone")} value={form.p3} onChange={(e) => set("p3", numOnly(e.target.value, 4))} />
                 </div>
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               <div className="form-group">
                 <label htmlFor="inputEmail" className="form-label required">이메일</label>
                 <input type="email" className="form-control" id="inputEmail" placeholder="meta@email.com"
                   value={form.f_email} onChange={(e) => set("f_email", e.target.value)} />
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               <div className="form-group">
                 <label htmlFor="inputID" className="form-label required">아이디</label>
                 <div className="input-group gap-1">
-                  <input type="text" className="form-control" id="inputID" placeholder="영어소문자, 숫자 4~12자리"
+                  {/* 원본 수정화면 placeholder 는 오타("엉어소문자")라 등록화면 문구로 통일 */}
+                  <input type="tel" className="form-control" id="inputID" placeholder="영어소문자, 숫자 4~12자리"
                     value={form.f_web_id} onChange={(e) => { setDupOk(false); set("f_web_id", e.target.value); }} />
                   <button type="button" className="btn btn-default" onClick={doCheckDupWebID}>중복체크</button>
                 </div>
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               <div className="form-group">
                 <label htmlFor="inputPW" className={mode === "reg" ? "form-label required" : "form-label"}>비밀번호</label>
                 <input type="password" className="form-control" id="inputPW" placeholder="영문, 숫자 4~12자리"
                   value={form.f_web_pw} onChange={(e) => set("f_web_pw", e.target.value)} />
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               <div className="form-group">
                 <label htmlFor="inputPWcheck" className={mode === "reg" ? "form-label required" : "form-label"}>비밀번호 확인</label>
                 <input type="password" className="form-control" id="inputPWcheck" placeholder="영문, 숫자 4~12자리"
                   value={form.f_web_pw2} onChange={(e) => set("f_web_pw2", e.target.value)} />
+                <div className="invalid-feedback">{"{HELP TEXT}"}</div>
               </div>
               {mode === "edit" && (
                 <>
@@ -358,9 +417,9 @@ function TeacherDetailForm({ mode, form, setForm, dupOk, setDupOk, pending, star
             <div className="templete templete-add h-100">
               <div className="d-flex justify-content-between">
                 <div className="form-check">
-                  <input type="checkbox" name="user" className="form-check-input" id="chk01" checked={allOn}
+                  <input type="checkbox" name="user" className="form-check-input" id={chkAllId} checked={allOn}
                     onChange={(e) => set("f_access_menu", e.target.checked ? Object.fromEntries(MENU_LIST.map(([k]) => [k, true])) : {})} />
-                  <label htmlFor="chk01" className="form-check-label d-flex flex-column">전체선택</label>
+                  <label htmlFor={chkAllId} className="form-check-label d-flex flex-column">전체선택</label>
                 </div>
                 <span className="text-help s300 f-12">체크한 메뉴만 사용 권한을 부여합니다.</span>
               </div>
@@ -368,10 +427,10 @@ function TeacherDetailForm({ mode, form, setForm, dupOk, setDupOk, pending, star
                 {MENU_LIST.map(([k, name], index) => (
                   <li key={k}>
                     <div className="form-check">
-                      <input type="checkbox" className="form-check-input" id={`${index}userStatus01`} name="f_check_detail"
+                      <input type="checkbox" className="form-check-input" id={menuId(k, index)} name={menuName}
                         checked={!!form.f_access_menu[k]}
                         onChange={(e) => set("f_access_menu", { ...form.f_access_menu, [k]: e.target.checked })} />
-                      <label className="form-check-label d-flex flex-column" htmlFor={`${index}userStatus01`}>{name}</label>
+                      <label className="form-check-label d-flex flex-column" htmlFor={menuId(k, index)}>{name}</label>
                     </div>
                   </li>
                 ))}

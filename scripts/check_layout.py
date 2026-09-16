@@ -1,5 +1,5 @@
 # 레이아웃 sanity: 본문 폭·좌표, 가로 오버플로, 상단 GNB, 빈 화면 여부
-import time
+import os, time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -8,7 +8,7 @@ ROUTES=["/dashboard","/paper/mypaper","/paper/favorite","/paper/favoritequestion
 "/management/teacher","/management/attendance","/management/book","/management/book/mapping","/management/statistic","/management/individualstdbooks",
 "/management/centerinfo","/mypage/profile","/help/notice","/paper/make"]
 o=Options(); o.add_argument("--headless=new"); o.add_argument("--window-size=1440,1000")
-d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B="http://localhost:3777"
+d=webdriver.Chrome(options=o); d.set_page_load_timeout(60); B=f"http://localhost:{os.environ.get('OURS_PORT','3777')}"
 d.get(B+"/login"); time.sleep(1.5)
 d.find_element(By.CSS_SELECTOR,"input[type=text]").send_keys("admin"); d.find_element(By.CSS_SELECTOR,"input[type=password]").send_keys("admin1"); d.find_element(By.CSS_SELECTOR,"button[type=submit]").click(); time.sleep(3)
 bad=0
