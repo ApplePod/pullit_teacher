@@ -28,7 +28,7 @@ export async function listStudents(search?: string): Promise<StudentRow[]> {
 
 export async function createStudent(input: {
   name: string; grade: string; phone?: string;
-  parent_name?: string; parent_phone?: string; address?: string; memo?: string;
+  parent_name?: string; parent_phone?: string; address?: string; memo?: string; study_level?: string; state?: string;
 }): Promise<{ error?: string; id?: string }> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -40,6 +40,7 @@ export async function createStudent(input: {
     center_id: profile.center_id, name: input.name.trim(), grade: input.grade || "h3",
     phone: input.phone || null, parent_name: input.parent_name || null,
     parent_phone: input.parent_phone || null, address: input.address || null, memo: input.memo || null,
+    study_level: input.study_level || null, state: input.state || "active",
   }).select("id").single();
   if (error) return { error: "학생 등록에 실패했습니다." };
   revalidatePath("/management/student");
@@ -47,7 +48,7 @@ export async function createStudent(input: {
 }
 
 export async function updateStudent(id: string, input: Partial<{
-  name: string; grade: string; phone: string; parent_name: string; parent_phone: string; address: string; memo: string;
+  name: string; grade: string; phone: string; parent_name: string; parent_phone: string; address: string; memo: string; study_level: string; state: string;
 }>): Promise<{ error?: string }> {
   const supabase = await createClient();
   const { error } = await supabase.from("student").update(input).eq("id", id);
