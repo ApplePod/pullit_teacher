@@ -33,6 +33,15 @@ export async function updateSession(request: NextRequest) {
   const user = userId ? { id: userId } : null;
 
   const { pathname } = request.nextUrl;
+
+  // 원본 마크업에 남은 .cshtml 링크는 우리 라우트로 넘긴다
+  const { mapLegacyPath } = await import("@/lib/legacy-routes");
+  const legacy = mapLegacyPath(pathname);
+  if (legacy && legacy !== pathname) {
+    const to = request.nextUrl.clone();
+    to.pathname = legacy;
+    return NextResponse.redirect(to);
+  }
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   if (!user && !isPublic) {
