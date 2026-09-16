@@ -163,3 +163,10 @@ header.detail .logo img { height: 28px; }
 /* 리포트 성취도 바 */
 .report-bar { width: 120px; height: 8px; background: #f1f1f2; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; }
 .report-bar span { display: block; height: 100%; background: #1e85ff; }
+
+/* 학습현황 통계 카드 */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat-card { border: 1px solid #eaeaef; border-radius: 8px; padding: 20px; background: #fff; }
+.stat-card__label { font-size: 13px; color: #97979d; margin-bottom: 8px; }
+.stat-card__value { font-size: 28px; font-weight: 800; color: #1e85ff; }
+@media (max-width: 900px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }

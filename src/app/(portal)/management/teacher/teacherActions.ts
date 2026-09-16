@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { toEmail } from "@/lib/login-id";
-import { MENU_PERMS } from "@/lib/mgmt-consts";
 
 export interface TeacherRow {
   id: string; name: string; email: string | null; phone: string | null;

@@ -111,3 +111,22 @@ export async function studentReport(): Promise<ReportRow[]> {
       avg_score: s.marked ? Math.round(s.sum / s.marked) : null };
   });
 }
+
+export interface ClassMarkRow { class_id: string; class_name: string; total: number; marked: number; avg_score: number | null }
+export async function classMarkSummary(): Promise<ClassMarkRow[]> {
+  const c = await ctx(); if (!c) return [];
+  const { data: classes } = await c.supabase.from("class_group").select("id,name").eq("is_active", true).order("name");
+  const { data: asg } = await c.supabase.from("assignment")
+    .select("class_id,assignment_student(status,score)").not("class_id", "is", null);
+  const byClass = new Map<string, { total: number; marked: number; sum: number }>();
+  (asg ?? []).forEach((a) => {
+    const rows = (a as unknown as { class_id: string; assignment_student?: { status: string; score: number | null }[] });
+    const s = byClass.get(rows.class_id) ?? { total: 0, marked: 0, sum: 0 };
+    (rows.assignment_student ?? []).forEach((x) => { s.total += 1; if (x.status === "marked") { s.marked += 1; s.sum += x.score ?? 0; } });
+    byClass.set(rows.class_id, s);
+  });
+  return (classes ?? []).map((cl) => {
+    const s = byClass.get(cl.id) ?? { total: 0, marked: 0, sum: 0 };
+    return { class_id: cl.id, class_name: cl.name, total: s.total, marked: s.marked, avg_score: s.marked ? Math.round(s.sum / s.marked) : null };
+  });
+}
