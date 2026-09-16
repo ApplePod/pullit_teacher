@@ -1,0 +1,20 @@
+/help/errreport                          1.0  0.73 1.0  1.0  0.93  
+/paper/themecalculationpaper             1.0  0.73 1.0  1.0  0.93  
+/management/statistic                    1.0  0.89 1.0  0.86 0.94  
+/management/centerinfo                   1.0  0.77 1.0  1.0  0.94  
+/clinic/book                             1.0  0.78 1.0  1.0  0.95  
+/clinic/trash                            1.0  0.81 1.0  1.0  0.95  
+/paper/favoritequestion                  1.0  0.81 1.0  1.0  0.95  
+/paper/theme                             1.0  0.81 1.0  1.0  0.95  
+/paper/themepaperforexam                 1.0  0.81 1.0  1.0  0.95  
+/paper/trash                             1.0  0.81 1.0  1.0  0.95  
+/management/book                         1.0  0.82 1.0  1.0  0.95  
+/management/class                        1.0  0.83 1.0  1.0  0.96  
+/management/student                      1.0  0.85 1.0  1.0  0.96  
+/management/payment                      1.0  0.86 1.0  1.0  0.96  
+/management/teacher                      1.0  0.88 1.0  1.0  0.97  
+/paper/share                             1.0  0.89 1.0  1.0  0.97  
+/paper/favorite                          1.0  0.9  1.0  1.0  0.97  
+/paper/mypaper                           1.0  0.9  1.0  1.0  0.97  
+
+평균 일치율: 87.51%  (41개 화면)

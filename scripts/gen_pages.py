@@ -2,7 +2,7 @@ import json, glob, os, re
 SRC="/Users/harry/Desktop/Claude_newlearn/mmath_복원_동적"
 APP="/Users/harry/Desktop/Claude_newlearn/pullit_teacher/src/app/(portal)"
 # 이미 기능 구현된 라우트는 건너뜀
-SKIP_ROUTES={"/dashboard","/paper/mypaper","/paper/make","/mypage/profile","/management/centerinfo"}
+SKIP_ROUTES={"/paper/make"}  # 우리 자체 문제지 만들기만 보존, 나머지는 원본 그대로
 def path_to_route(p):
     m=re.search(r'/Pages/Center/(.+?)\.cshtml', p, re.I)
     if not m:
