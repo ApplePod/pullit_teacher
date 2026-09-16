@@ -1,0 +1,249 @@
+@charset "utf-8";
+/*폰트*/
+@font-face
+{
+	font-family: 'NanumMyeongjo';    
+	font-style: normal;
+	font-weight: 400;
+	src: url('./fonts/nanum/NanumMyeongjo.eot');
+	src: local("나눔명조"),
+	url('./fonts/nanum/NanumMyeongjo.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumMyeongjo.woff') format('woff'),
+	url('./fonts/nanum/NanumMyeongjo.ttf') format('truetype');
+}
+
+@font-face
+{
+	font-family: 'NanumMyeongjo';    
+	font-style: normal;
+	font-weight: 700;
+	src: url('./fonts/nanum/NanumMyeongjoBold.eot');
+	src: local("나눔명조"),
+	url('./fonts/nanum/NanumMyeongjoBold.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumMyeongjoBold.woff') format('woff'),
+	url('./fonts/nanum/NanumMyeongjoBold.ttf') format('truetype');
+}
+
+@font-face
+{
+	font-family: 'NanumGothic';    
+	font-style: normal;
+	font-weight: 400;
+	src: url('./fonts/nanum/NanumGothic.eot');
+	src: local("나눔고딕"),
+	url('./fonts/nanum/NanumGothic.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumGothic.woff') format('woff'),
+	url('./fonts/nanum/NanumGothic.ttf') format('truetype');
+}
+
+@font-face
+{
+	font-family: 'NanumYetMyeongjo';    
+	font-style: normal;
+	font-weight: 400;
+	src: local("나눔명조 옛한글"),
+	url('./fonts/nanum/NanumMyeongjoYetHangul.eot');
+	src: url('./fonts/nanum/NanumMyeongjoYetHangul.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumMyeongjoYetHangul.woff') format('woff'),
+	url('./fonts/nanum/NanumMyeongjoYetHangul.ttf') format('truetype');
+}
+
+
+@font-face
+{
+	font-family: 'NanumYetGothic';    
+	font-style: normal;
+	font-weight: 400;
+	src: local("나눔바른고딕 옛한글"),
+	url('./fonts/nanum/NanumBarunGothicYetHangul.eot');
+	src: url('./fonts/nanum/NanumBarunGothicYetHangul.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumBarunGothicYetHangul.woff') format('woff'),
+	url('./fonts/nanum/NanumBarunGothicYetHangul.ttf') format('truetype');
+}
+
+/*
+@font-face
+{
+	font-family: 'ceq'; 
+	font-style:normal;
+	src: url('./fonts/nanum/ceq.eot');
+	src: url('./fonts/nanum/ceq.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/ceq.woff') format('woff'),
+	url('./fonts/nanum/ceq.ttf')  format('truetype');
+}
+@font-face
+{
+	font-family: 'ceq'; 
+	font-style:italic;
+	src: url('./fonts/nanum/ceq italic.eot');
+	src: url('./fonts/nanum/ceq italic.eot?#iefix') format('embedded-opentype'), 
+	url('./fonts/nanum/ceq italic.woff') format('woff'),
+	url('./fonts/nanum/ceq italic.ttf')  format('truetype');
+}
+*/
+
+
+
+/* https://github.com/UYEONG/NotoSans-subset */
+@font-face {
+	font-family: 'NotoSans';
+	font-style: normal;
+	font-weight: 400;
+	src: url('./fonts/notosans/NotoSans-Regular.eot');
+	src: url('./fonts/notosans/NotoSans-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/notosans/NotoSans-Regular.woff2') format('woff2'),
+		url('./fonts/notosans/NotoSans-Regular.woff') format('woff'),
+		url('./fonts/notosans/NotoSans-Regular.otf') format('opentype');
+}
+
+/* http://fonts.googleapis.com/earlyaccess/notosanskr.css */
+@font-face {
+	font-family: 'NotoSans';
+	font-style: normal;
+	font-weight: 700;
+	src: url('./fonts/notosans/NotoSansKR-Medium.woff2') format('woff2'),
+		url('./fonts/notosans/NotoSansKR-Medium.woff') format('woff'),
+		url('./fonts/notosans/NotoSansKR-Medium.otf') format('opentype'); 
+}
+
+
+
+
+@font-face {
+    font-family: 'GowunBatang';
+    font-weight: 400;
+    font-style: normal;
+	src: local("Gowun Batang"),
+    src: url('./fonts/gowun/GowunBatangRegular.eot');
+    src: url('./fonts/gowun/GowunBatangRegulareot?#iefix') format('embedded-opentype'),
+         url('./fonts/gowun/GowunBatangRegular.woff2') format('woff2'),
+         url('./fonts/gowun/GowunBatangRegular.woff') format('woff'),
+         url('./fonts/gowun/GowunBatangRegular.ttf') format("truetype");
+    font-display: swap;
+} 
+@font-face {
+    font-family: 'GowunBatang';
+    font-weight: 700;
+    font-style: normal;
+	src: local("Gowun Batang"),
+    src: url('./fonts/gowun/GowunBatangBold.eot');
+    src: url('./fonts/gowun/GowunBatangBold.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/gowun/GowunBatangBold.woff2') format('woff2'),
+         url('./fonts/gowun/GowunBatangBold.woff') format('woff'),
+         url('./fonts/gowun/GowunBatangBold.ttf') format("truetype");
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Noto Serif KR';
+    font-weight: 400;
+    font-style: normal;
+    src: url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.eot');
+    src: url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.woff2') format('woff2'),
+         url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.woff') format('woff'),
+         url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.otf') format('otf'),
+         url('./fonts/notosans/NotoSerifCJKkr-Regular-subset.ttf') format("truetype");
+    font-display: swap;
+}
+ 
+@font-face {
+    font-family: 'Noto Serif KR';
+    font-weight: 700;
+    font-style: normal;
+    src: url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.eot');
+    src: url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.woff2') format('woff2'),
+         url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.woff') format('woff'),
+         url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.otf') format('otf'),
+         url('./fonts/notosans/NotoSerifCJKkr-Bold-subset.ttf') format("truetype");
+    font-display: swap;
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* fallback */
+@font-face {
+font-family: 'Material Icons';
+font-style: normal;
+font-weight: 400;
+src: url('./fonts/notosans/MaterialIcons-Regular.eot'),
+	url('./fonts/notosans/MaterialIcons-Regular.woff2') format('woff2'),
+	url('./fonts/notosans/MaterialIcons-Regular.woff') format('woff');
+}
+
+
+
+@font-face{
+	font-family: 'eduedit';
+	font-style:normal;
+	src: url('./fonts/default/eduedit.eot');
+	src: url('./fonts/default/eduedit.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/default/eduedit.otf') format('opentype'),
+		url('./fonts/default/eduedit.woff2') format('woff2');
+		url('./fonts/default/eduedit.woff') format('woff');
+	unicode-range: U+0020;
+}
+
+@font-face{
+	font-family: 'edunedit';
+	font-style:normal;
+	src: url('./fonts/default/edunedit.eot');
+	src: url('./fonts/default/edunedit.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/default/edunedit.otf') format('opentype'),
+		url('./fonts/default/edunedit.woff') format('woff');
+	unicode-range: U+0020;
+}
+
+
+
+@font-face{
+	font-family: 'engnnum2eq';
+	font-style:normal;
+	src: url('./fonts/neq/eot/MathJax_Main-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Regular.woff') format('woff');
+	unicode-range: U+0030-0039, U+0061-007A, U+0041-005A, U+002B-002D, U+0391-03FC, U+2196-2199, U+003C-003E, U+00B0-00B3;
+}
+
+
+
+@font-face{
+	font-family: 'engnnum2eq';
+	font-style:italic;
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Italic.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Italic.woff') format("woff");
+	unicode-range: U+0030-0039, U+0061-007A, U+0041-005A, U+002B-002D, U+0391-03FC, U+2196-2199, U+003C-003E, U+00B0-00B3;
+}
+
+
+
+
+@font-face
+{
+	font-family: 'bfont';    
+	font-style: normal;
+	font-weight: 400;
+	src: url('./fonts/nanum/NanumMyeongjo.eot');
+	src: local("나눔명조"),
+	url('./fonts/nanum/NanumMyeongjo.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/nanum/NanumMyeongjo.woff') format('woff'),
+	url('./fonts/nanum/NanumMyeongjo.ttf') format('truetype');
+	
+	unicode-range: U+AC00-D7A3, U+3260-327B, U+25A0, U+25CF
+}

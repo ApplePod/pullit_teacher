@@ -1,0 +1,771 @@
+/*시험지 템플릿 css*/
+/*-----------------------------------------------------------------------------------------------------*/
+#qrcode img{width:90px; height:90px;}
+
+
+.page{
+	display:inline-block !important;
+	margin:10px;
+	vertical-align:middle;
+}
+.page_template{
+	position:relative;width:840px; height:1195px;
+	border:0px solid #000;
+	font-family:notosans;
+	/*zoom:0.85;*/
+}
+.page_header{
+	height:150px;
+	margin-bottom:5px;border-bottom:0px solid #000;
+	background-color:#fff;
+	z-index:1;
+	zoom:1.176470588
+}
+
+.page_header2{
+	height:40px;margin-bottom:5px;border-bottom:1px solid #000;
+	background-color:#fff;
+	z-index:1;
+}
+.page_footer{
+	position:absolute;left:0;right:0;bottom:0;height:40px;border-top:1px solid #000;
+}
+.page_template:nth-child(odd) .spnpaging, .page_template:nth-child(even) .spnbottomtitle{
+	padding:5px 10px;
+	float:left;
+}
+.page_template:nth-child(odd) .spnbottomtitle, .page_template:nth-child(even) .spnpaging{
+	padding:5px 10px;
+	float:right;
+}		
+.content{
+	text-align:justify;
+}
+.column{
+	width:395px !important;
+	/*margin-left:4px;
+	margin-right:4px;*/
+	position:relative;
+	border:0px solid red;
+}
+
+
+
+[dan="dan480"] .column{
+	width:480px !important;
+}
+
+.last{
+	float:right !important;
+	padding-right:10px;
+}
+
+
+.first{
+	float:left !important;
+	padding-left:10px;
+}
+
+.content > br{
+	display:none;
+}
+/*-----------------------------------------------------------------------------------------------------*/
+
+/*문제 미리보기 영역 css*/
+/*-----------------------------------------------------------------------------------------------------*/
+#div2columnpaper {
+	position: absolute;left: 10px;right: 10px;top: 50px;bottom: 60px;
+	overflow: auto;
+	border: 1px solid silver;padding: 10px;
+	text-align:center;
+}
+
+
+#divbank {
+	visibility:hidden;
+}
+
+#divbottom {
+	position: absolute;left: 0;bottom: 0;height: 40px;right: 0;
+	padding: 10px;text-align: right;
+}
+
+#divbottom input[type='button'] {font-size: 1em;height: 40px;}
+/*문항 바로가기 버튼 css*/
+.spngonum {
+	display: inline-block;
+	height: 40px;
+	line-height: 40px;
+	border: 1px solid #555;
+	text-align: center;
+	width: 2em;
+	border-radius: 3px;
+	margin-right: 2px;
+	cursor: pointer;
+	font-family: NotoSans;
+	font-weight: bold;
+}
+/*문항 바로가기 - 문제 풀이가 되었을 때..*/
+.spngonum[solve='Y'] {
+	color: #fff;
+	background-color: #555;
+}
+/*-----------------------------------------------------------------------------------------------------*/
+
+
+textarea, table{max-width:100% !important;}
+
+/*table td{min-width:auto !important;}*/
+
+#div2columnpapercontent{
+	transform-origin:0 0; 
+}
+
+/* Screen Style Sheet */
+/*-----------------------------------------------------------------------------------------------------*/
+@media screen {
+	#div2columnpaper{background-color:#f2f2f2;}
+	.page_template{margin:30px;border:30px solid #fff;background-color:#fff;
+		box-shadow: 10px 10px 10px silver;
+	}
+
+	
+	.paper_cover {
+		zoom:1.176470588;
+		margin:30px;
+		vertical-align:middle;
+		border:14px solid #fff;
+		box-shadow: 10px 10px 10px silver;
+		
+	}
+
+}
+/*-----------------------------------------------------------------------------------------------------*/
+
+/* Print Style Sheet */ 
+/*-----------------------------------------------------------------------------------------------------*/
+@media print {
+	#divbank, #divtop, #divbottom, #divbnktmp{display:none;}
+	#div2columnpapercontent{
+		zoom:0.82!important;
+		margin-right:0!important;
+		margin-bottom:0!important;
+		transform:scale(0.99, 1.0)!important;
+		width:100%!important;
+		overflow:hidden;
+	}
+	.page_template{
+		margin:0;margin-top:30px;
+		margin-left:15px;
+		overflow:hidden;
+		height:115vh;
+	}
+	.page_template:not(:first-child){page-break-before: always;}
+	
+
+	#div2columnpaper{
+		overflow:hidden;
+		/*display:table-cell;*/
+		position:relative !important;
+		height: auto !important;
+		width: 100%;
+		background-color:#fff;
+		top: 0 !important;
+		left: 0 !important;
+		margin: 0 !important;
+		z-index:999;
+		border:0 !important;;
+		padding:0;
+	}
+}
+/*-----------------------------------------------------------------------------------------------------*/
+
+
+@media print {
+	body[np='Y'] .page{display:none !important;}
+	body[np='Y']{
+		text-align:center;
+		padding-top:120px;
+	}
+	body[np='Y']:before {
+		content: "인쇄 기능은 차단됩니다." !important;
+		font-size:1.9em;
+		text-align:center;
+		padding-top:120px;
+	}
+}
+ 
+
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="g"] .divasking , [fontkind="g"] .divchoice ,
+[fontkind="g"] .divheader , [fontkind="g"] .divheadexplain ,
+[fontkind="g"] .divanswer , [fontkind="g"] .divexplain ,
+[fontkind="g"] .divhint , [fontkind="g"] .divscript, [fontkind="g"] table{
+	font-family: "engnnum2eq", "NanumGothic";
+}
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="g2"] .divasking , [fontkind="g2"] .divchoice ,
+[fontkind="g2"] .divheader , [fontkind="g2"] .divheadexplain ,
+[fontkind="g2"] .divanswer , [fontkind="g2"] .divexplain ,
+[fontkind="g2"] .divhint , [fontkind="mg"] .divscript, [fontkind="mg"] table{
+	font-family: "engnnum2eq", "NotoSans";
+}
+
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="m"] .divasking , [fontkind="m"] .divchoice ,
+[fontkind="m"] .divheader , [fontkind="m"] .divheadexplain ,
+[fontkind="m"] .divanswer , [fontkind="m"] .divexplain ,
+[fontkind="m"] .divhint , [fontkind="m"] .divscript, [fontkind="m"] table{
+	font-family: "engnnum2eq", "NanumMyeongjo";
+}
+
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="m2"] .divasking , [fontkind="m2"] .divchoice ,
+[fontkind="m2"] .divheader , [fontkind="m2"] .divheadexplain ,
+[fontkind="m2"] .divanswer , [fontkind="m2"] .divexplain ,
+[fontkind="m2"] .divhint , [fontkind="m2"] .divscript, [fontkind="m2"] table{
+	font-family: "engnnum2eq", "Noto Serif KR";
+}
+
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="m3"] .divasking , [fontkind="m3"] .divchoice ,
+[fontkind="m3"] .divheader , [fontkind="m3"] .divheadexplain ,
+[fontkind="m3"] .divanswer , [fontkind="m3"] .divexplain ,
+[fontkind="m3"] .divhint , [fontkind="m3"] .divscript, [fontkind="m3"] table{
+	font-family: "engnnum2eq", "GowunBatang";
+}
+
+.divproblem{
+	position:static !important;
+}
+
+[onlyproblem='Y'][probcntpercol="1"] .divproblem:not(:last-child) {margin-bottom:10px !important;}
+
+[onlyproblem='Y'][probcntpercol="1"][colheight="0"] .divproblem{min-height:20px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="50"] .divproblem{min-height:50px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="100"] .divproblem{min-height:100px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="150"] .divproblem{min-height:150px;}
+
+[onlyproblem='Y'][probcntpercol="1"][colheight="200"] .divproblem{min-height:200px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="250"] .divproblem{min-height:250px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="300"] .divproblem{min-height:300px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="350"] .divproblem{min-height:350px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="400"] .divproblem{min-height:400px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="450"] .divproblem{min-height:450px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="500"] .divproblem{min-height:500px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="550"] .divproblem{min-height:550px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="600"] .divproblem{min-height:600px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="650"] .divproblem{min-height:650px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="700"] .divproblem{min-height:700px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="750"] .divproblem{min-height:750px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="800"] .divproblem{min-height:800px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="850"] .divproblem{min-height:850px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="900"] .divproblem{min-height:900px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="950"] .divproblem{min-height:950px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1000"] .divproblem{min-height:1000px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1050"] .divproblem{min-height:1050px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1100"] .divproblem{min-height:1100px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1150"] .divproblem{min-height:1150px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1200"] .divproblem{min-height:1200px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1250"] .divproblem{min-height:1250px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1300"] .divproblem{min-height:1300px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1350"] .divproblem{min-height:1350px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1400"] .divproblem{min-height:1400px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1450"] .divproblem{min-height:1450px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1500"] .divproblem{min-height:1500px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1550"] .divproblem{min-height:1550px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1600"] .divproblem{min-height:1600px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1650"] .divproblem{min-height:1650px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1700"] .divproblem{min-height:1700px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1750"] .divproblem{min-height:1750px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1800"] .divproblem{min-height:1800px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1850"] .divproblem{min-height:1850px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1900"] .divproblem{min-height:1900px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="1950"] .divproblem{min-height:1950px;}
+[onlyproblem='Y'][probcntpercol="1"][colheight="2000"] .divproblem{min-height:2000px;}
+
+
+[onlyproblem='Y'][probcntpercol="2"] .divproblem:not(:last-child) {margin-bottom:50px !important;}
+
+[onlyproblem='Y'][probcntpercol="2"][colheight="0"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="50"] .divproblem{min-height:25px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="100"] .divproblem{min-height:50px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="150"] .divproblem{min-height:75px;}
+
+
+[onlyproblem='Y'][probcntpercol="2"][colheight="200"] .divproblem{min-height:100px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="250"] .divproblem{min-height:125px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="300"] .divproblem{min-height:150px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="350"] .divproblem{min-height:175px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="400"] .divproblem{min-height:200px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="450"] .divproblem{min-height:225px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="500"] .divproblem{min-height:250px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="550"] .divproblem{min-height:275px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="600"] .divproblem{min-height:300px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="650"] .divproblem{min-height:325px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="700"] .divproblem{min-height:350px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="750"] .divproblem{min-height:375px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="800"] .divproblem{min-height:400px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="850"] .divproblem{min-height:425px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="900"] .divproblem{min-height:450px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="950"] .divproblem{min-height:475px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1000"] .divproblem{min-height:500px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1050"] .divproblem{min-height:525px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1100"] .divproblem{min-height:550px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1150"] .divproblem{min-height:575px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1200"] .divproblem{min-height:600px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1250"] .divproblem{min-height:625px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1300"] .divproblem{min-height:650px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1350"] .divproblem{min-height:675px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1400"] .divproblem{min-height:700px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1450"] .divproblem{min-height:725px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1500"] .divproblem{min-height:750px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1550"] .divproblem{min-height:775px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1600"] .divproblem{min-height:800px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1650"] .divproblem{min-height:825px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1700"] .divproblem{min-height:850px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1750"] .divproblem{min-height:875px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1800"] .divproblem{min-height:900px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1850"] .divproblem{min-height:925px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1900"] .divproblem{min-height:950px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="1950"] .divproblem{min-height:975px;}
+[onlyproblem='Y'][probcntpercol="2"][colheight="2000"] .divproblem{min-height:1000px;}
+
+
+[onlyproblem='Y'][probcntpercol="3"] .divproblem {margin-bottom:50px !important;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="0"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="50"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="100"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="150"] .divproblem{min-height:26px;}
+
+[onlyproblem='Y'][probcntpercol="3"][colheight="200"] .divproblem{min-height:43px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="250"] .divproblem{min-height:60px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="300"] .divproblem{min-height:76px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="350"] .divproblem{min-height:93px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="400"] .divproblem{min-height:110px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="450"] .divproblem{min-height:126px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="500"] .divproblem{min-height:143px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="550"] .divproblem{min-height:160px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="600"] .divproblem{min-height:176px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="650"] .divproblem{min-height:193px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="700"] .divproblem{min-height:210px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="750"] .divproblem{min-height:226px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="800"] .divproblem{min-height:243px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="850"] .divproblem{min-height:260px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="900"] .divproblem{min-height:276px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="950"] .divproblem{min-height:293px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1000"] .divproblem{min-height:310px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1050"] .divproblem{min-height:326px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1100"] .divproblem{min-height:343px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1150"] .divproblem{min-height:360px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1200"] .divproblem{min-height:376px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1250"] .divproblem{min-height:393px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1300"] .divproblem{min-height:410px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1350"] .divproblem{min-height:426px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1400"] .divproblem{min-height:443px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1450"] .divproblem{min-height:460px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1500"] .divproblem{min-height:476px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1550"] .divproblem{min-height:493px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1600"] .divproblem{min-height:510px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1650"] .divproblem{min-height:526px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1700"] .divproblem{min-height:543px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1750"] .divproblem{min-height:560px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1800"] .divproblem{min-height:576px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1850"] .divproblem{min-height:593px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1900"] .divproblem{min-height:610px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="1950"] .divproblem{min-height:626px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="2000"] .divproblem{min-height:643px;}
+[onlyproblem='Y'][probcntpercol="3"][colheight="2050"] .divproblem{min-height:660px;}
+
+
+
+
+
+[onlyproblem='Y'][probcntpercol="4"] .divproblem {margin-bottom:50px !important;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="0"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="50"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="100"] .divproblem{min-height:10px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="150"] .divproblem{min-height:26px;}
+
+[onlyproblem='Y'][probcntpercol="4"][colheight="200"] .divproblem{min-height:35px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="250"] .divproblem{min-height:47px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="300"] .divproblem{min-height:60px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="350"] .divproblem{min-height:72px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="400"] .divproblem{min-height:85px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="450"] .divproblem{min-height:97px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="500"] .divproblem{min-height:110px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="550"] .divproblem{min-height:122px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="600"] .divproblem{min-height:135px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="650"] .divproblem{min-height:147px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="700"] .divproblem{min-height:160px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="750"] .divproblem{min-height:172px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="800"] .divproblem{min-height:185px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="850"] .divproblem{min-height:197px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="900"] .divproblem{min-height:210px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="950"] .divproblem{min-height:222px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1000"] .divproblem{min-height:235px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1050"] .divproblem{min-height:247px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1100"] .divproblem{min-height:260px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1150"] .divproblem{min-height:272px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1200"] .divproblem{min-height:285px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1250"] .divproblem{min-height:297px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1300"] .divproblem{min-height:310px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1350"] .divproblem{min-height:322px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1400"] .divproblem{min-height:335px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1450"] .divproblem{min-height:347px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1500"] .divproblem{min-height:360px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1550"] .divproblem{min-height:372px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1600"] .divproblem{min-height:385px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1650"] .divproblem{min-height:397px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1700"] .divproblem{min-height:410px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1750"] .divproblem{min-height:422px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1800"] .divproblem{min-height:435px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1850"] .divproblem{min-height:447px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1900"] .divproblem{min-height:460px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="1950"] .divproblem{min-height:472px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="2000"] .divproblem{min-height:485px;}
+[onlyproblem='Y'][probcntpercol="4"][colheight="2050"] .divproblem{min-height:497px;}
+
+.documentimg { width:100%; }
+
+
+/*문항 번호 위치 저정*/
+/*-----------------------------*/
+[numberingtype="up"] .spnnumberingbox{
+	display:block !important;
+	text-indent:0!important;
+}
+[numberingtype="up"] .numbering{
+	display:inline;
+	margin-left:0;
+	margin-right:0;
+}
+/*2단 조판 문항 번호가 위로 올라갔으므로 ox  결과도 위치 조정*/
+[numberingtype="up"] .spnresult{
+	left:-10px !important; top:-25px !important;
+}
+
+/*문제 해설 힌트 해석 등도 들여쓰기 없애기*/
+[numberingtype="up"] .divproblem, [numberingtype="up"] .divexplain, 
+[numberingtype="up"] .divanswer, [numberingtype="up"] .divhint, .[numberingtype="up"] divscirpt{
+	margin-left:0!important;
+}
+
+[numberingtype="left"] .spnnumberingbox{
+	display:inline-block !important;
+}
+
+[maxnumberlen="0"] .column > div{padding-left: 0em !important;}
+[maxnumberlen="0"] .numbering{
+	display:inline-block;
+	min-width:0em;
+	margin-left:0em;
+	margin-right:0.2em;
+}
+
+[maxnumberlen="1"] .column > div{padding-left: 1.2em !important;}
+[maxnumberlen="1"] .numbering{
+	display:inline-block;
+	min-width:1.0em;
+	margin-left:-1.2em;
+	margin-right:0.2em;
+}
+
+[maxnumberlen="2"] .column > div{padding-left: 2.2em !important;}
+[maxnumberlen="2"] .numbering{
+	display:inline-block;
+	min-width:2.0em;
+	margin-left:-2.2em;
+	margin-right:0.2em;
+}
+
+[maxnumberlen="3"] .column > div{padding-left: 3.2em !important;}
+[maxnumberlen="3"] .numbering{
+	display:inline-block;
+	min-width:3.0em;
+	margin-left:-3.2em;
+	margin-right:0.2em;
+}
+[maxnumberlen="4"] .column > div{padding-left: 3.2em !important;}
+[maxnumberlen="4"] .numbering{
+	display:inline-block;
+	min-width:3.0em;
+	margin-left:-3.2em;
+	margin-right:0.2em;
+}
+
+
+
+[maxnumberlen="9"] .column > div[numlen="1"]{padding-left: 1.2em !important;}
+[maxnumberlen="9"] div[numlen="1"] .numbering{
+	display:inline-block;
+	min-width:1.0em;
+	margin-left:-1.2em;
+	margin-right:0.2em;
+}
+[maxnumberlen="9"] .column > div[numlen="2"]{padding-left: 2.2em !important;}
+[maxnumberlen="9"] div[numlen="2"] .numbering{
+	display:inline-block;
+	min-width:2.0em;
+	margin-left:-2.2em;
+	margin-right:0.2em;
+}
+[maxnumberlen="9"] .column > div[numlen="3"]{padding-left: 3.2em !important;}
+[maxnumberlen="9"] div[numlen="3"] .numbering{
+	display:inline-block;
+	min-width:3.0em;
+	margin-left:-3.2em;
+	margin-right:0.2em;
+}
+[maxnumberlen="9"] .column > div[numlen="4"]{padding-left: 3.2em !important;}
+[maxnumberlen="9"] div[numlen="4"] .numbering{
+	display:inline-block;
+	min-width:3.0em;
+	margin-left:-3.2em;
+	margin-right:0.2em;
+	letter-spacing:-3px;
+}
+/*-----------------------------*/
+
+.divproblem:not(:last-child) {margin-bottom:100px;}
+
+
+[onlysolution="Y"] .divproblem:not(:last-child) {margin-bottom:20px;}
+
+
+
+
+
+.blankpage{display:none !important;}
+[prntwoside='Y'] .blankpage{display:inline-block !important;}
+
+
+
+/*빠른 정답용 */
+[quickans="Y"] .spnnumberingbox{text-indent:0 !important;}
+[quickans="Y"] .numbering{font-size:1.3em; display:inline; margin-left:0;margin-right:0.3em;}
+[quickans="Y"] .divproblem{display:inline-block;min-width:95px; margin-bottom:0 !important;}
+[quickans="Y"] .divanswer{margin-top:0 !important;border:0 !important;padding:0 !important;margin-bottom:0 !important;margin-left:0.2em;margin-right:0.3em;}
+[quickans="Y"] .divanswer::before{display:none !important;}
+[quickans="Y"] .divcontent:not(:last-child){margin-bottom: 0px !important;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[quickans="Y"] .divproblem[ptype='89']{display:none;}
+
+
+
+[letterspacing="wide1"] .divproblem{
+	letter-spacing :0.02em  
+}
+
+
+[letterspacing="wide2"] .divproblem{
+	letter-spacing :0.025em  
+}
+
+[letterspacing="narrow1"] .divproblem{
+	letter-spacing :-0.02em  
+}
+
+[letterspacing="narrow2"] .divproblem{
+	letter-spacing :-0.05em  
+}
+
+[iscover='Y'][view='N']{    display: none !important;}
+
+
+[problemsolution='Y'] .divanswer,
+[problemsolution='Y'] .divexplain,
+[problemsolution='Y'] .divscript,
+[problemsolution='Y'] .divhint,
+[problemsolution='Y'] .divheadexplain {
+	border: 0px solid silver;
+	padding: 0px;
+	margin-bottom: 2em;
+	position: relative;
+	margin-top: 0px;
+	min-height: 1.2em;
+}
+
+[problemsolution='Y'] .divanswer{
+	margin-top: 40px; margin-bottom:0;
+}
+
+[problemsolution='Y'] .divanswer>.edkparagraph:before {
+	content: "[정답] " !important;
+	font-size:0.9em;'
+	min-width:2em;
+	margin-right:2px;
+}
+[problemsolution='Y'] .divexplain:before {
+	content: "";
+}
+
+[problemsolution='Y'] .divhint:before {
+	content: "힌트";
+}
+
+[problemsolution='Y'] .divscript:before {
+	content: "해석";
+}
+
+[problemsolution='Y'] .divheadexplain:before {
+	content: "지문해설";
+}
+
+
+
+[problemsolution='Y'] .split:before {
+	content: "";
+} 
+
+.divscript:empty{display:none;}
+.divhint:empty{display:none;}
+.divheadexplain:empty{display:none;}
+
+
+.divexplain > .edkparagraph{margin-left:0 !important;text-indent:0!important;}
+
+
+[maxnumberlen="1"] .column > .divproblem[ptype='89'], 
+[maxnumberlen="1"] .column > .divnotice,
+[maxnumberlen="2"] .column > .divproblem[ptype='89'], 
+[maxnumberlen="2"] .column > .divnotice,
+[maxnumberlen="3"] .column > .divproblem[ptype='89'], 
+[maxnumberlen="3"] .column > .divnotice,
+[maxnumberlen="4"] .column > .divproblem[ptype='89'], 
+[maxnumberlen="4"] .column > .divnotice {padding-left:0!important;}
+
+.documentframex{border:0 !important;}
+.documentqrcode{right:25px !important;top:42px !important;}
+
+
+
+
+.divproblem[multiline='Y']{
+	display:block !important;
+}
+
+
+
+
+
+
+
+
+
+[quickans="Y"] .divanswer{margin-left:3.2em;}
+[quickans="Y"] .divanswer .spnnumberingbox {
+    text-indent: -3em !important;
+    text-align: center;
+}
+
+
+
+
+
+
+
+ 
+#div2columnpapercontent[class*="t_type"] [quickans="Y"] .divproblem{
+	min-width: 95px !important;
+}
+[quickans="Y"] .divanswer[xwidth='80'],  [quickans="Y"] .divanswer[xwidth='90'], 
+[quickans="Y"] .divanswer[xwidth='100'], [quickans="Y"] .divanswer[xwidth='110'], 
+[quickans="Y"] .divanswer[xwidth='120'], [quickans="Y"] .divanswer[xwidth='130'],
+[quickans="Y"] .divanswer[xwidth='140'], [quickans="Y"] .divanswer[xwidth='150']{
+	width:140px !important; 
+}
+
+
+[quickans="Y"] .divanswer[xwidth='160'], [quickans="Y"] .divanswer[xwidth='170'], 
+[quickans="Y"] .divanswer[xwidth='180'], [quickans="Y"] .divanswer[xwidth='190'],
+[quickans="Y"] .divanswer[xwidth='200'], [quickans="Y"] .divanswer[xwidth='210'], 
+[quickans="Y"] .divanswer[xwidth='220'], [quickans="Y"] .divanswer[xwidth='230'],
+[quickans="Y"] .divanswer[xwidth='240']{
+	width:236px !important; 
+}
+
+[quickans="Y"] .divanswer[xwidth='250'], [quickans="Y"] .divanswer[xwidth='260'],
+[quickans="Y"] .divanswer[xwidth='270'], [quickans="Y"] .divanswer[xwidth='280'], 
+[quickans="Y"] .divanswer[xwidth='290'], [quickans="Y"] .divanswer[xwidth='300'], 
+[quickans="Y"] .divanswer[xwidth='310'], [quickans="Y"] .divanswer[xwidth='320'], 
+[quickans="Y"] .divanswer[xwidth='330'], [quickans="Y"] .divanswer[xwidth='340'], 
+[quickans="Y"] .divanswer[xwidth='350'], [quickans="Y"] .divanswer[xwidth='360'], 
+[quickans="Y"] .divanswer[xwidth='370'], [quickans="Y"] .divanswer[xwidth='380'], 
+[quickans="Y"] .divanswer[xwidth='390'], [quickans="Y"] .divanswer[xwidth='400'], 
+[quickans="Y"] .divanswer[xwidth='410'], [quickans="Y"] .divanswer[xwidth='420'], 
+[quickans="Y"] .divanswer[xwidth='430'], [quickans="Y"] .divanswer[xwidth='440'], 
+[quickans="Y"] .divanswer[xwidth='450'], [quickans="Y"] .divanswer[xwidth='460'], 
+[quickans="Y"] .divanswer[xwidth='470']{
+	display:block !important;
+}
+
+/*quick answer 구획화*/
+/*===================================================/
+#div2columnpapercontent[class*="t_type"] [quickans="Y"] .divproblem
+{
+	min-width: 0px !important;
+}
+
+[quickans="Y"] .divproblem{display:inline-block;}
+
+[quickans="Y"] .divproblem{min-width:0;}
+[quickans="Y"] .divanswer{margin-left:0;margin-right:0;}
+
+.divanswer[xwidth='10'], .divanswer[xwidth='20'], 
+.divanswer[xwidth='30'], .divanswer[xwidth='40'],
+.divanswer[xwidth='50'], .divanswer[xwidth='60'], 
+.divanswer[xwidth='70'], .divanswer[xwidth='80'],
+.divanswer[xwidth='90']{
+	width:25% !important; 
+}
+.divanswer[xwidth='100'], .divanswer[xwidth='110'], .divanswer[xwidth='120'], .divanswer[xwidth='130'],
+.divanswer[xwidth='140'], .divanswer[xwidth='150'], .divanswer[xwidth='160'], .divanswer[xwidth='170'],
+.divanswer[xwidth='180']{
+	width:50% !important; 
+}
+.divanswer[xwidth='190'],
+.divanswer[xwidth='200'], .divanswer[xwidth='210'], .divanswer[xwidth='220'], .divanswer[xwidth='230'],
+.divanswer[xwidth='240'], .divanswer[xwidth='250'], .divanswer[xwidth='260'], .divanswer[xwidth='270']{
+	width:75% !important; 
+}
+
+.divanswer[xwidth='280'], .divanswer[xwidth='290'], .divanswer[xwidth='300'], .divanswer[xwidth='310'],
+.divanswer[xwidth='320'], .divanswer[xwidth='330'], .divanswer[xwidth='340'], .divanswer[xwidth='350'],
+.divanswer[xwidth='360'], .divanswer[xwidth='370'], .divanswer[xwidth='380'], .divanswer[xwidth='390'],
+.divanswer[xwidth='400'], .divanswer[xwidth='410'], .divanswer[xwidth='420'], .divanswer[xwidth='430'],
+.divanswer[xwidth='440'], .divanswer[xwidth='450'], .divanswer[xwidth='460'], .divanswer[xwidth='470']{
+	width:100% !important; 
+}
+/*===================================================*/
+
+

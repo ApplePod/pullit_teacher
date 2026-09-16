@@ -1,0 +1,257 @@
+@charset "utf-8";
+
+/*---------------------------------------------------------------------
+폰트 설정
+---------------------------------------------------------------------*/
+
+span, div{
+	/*font-family: "NotoSans";*/
+}
+
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+.divasking , .divchoice ,
+.divheader , .divheadexplain ,
+.divanswer , .divexplain ,
+.divhint , .divscript, table{
+	font-family: "engnnum2eq", "NanumYetMyeongjo";
+	/*font-stretch : condensed;*/
+	font-size:12pt;
+}
+
+
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="m2"] .divasking , [fontkind="m2"] .divchoice ,
+[fontkind="m2"] .divheader , [fontkind="m2"] .divheadexplain ,
+[fontkind="m2"] .divanswer , [fontkind="m2"] .divexplain ,
+[fontkind="m2"] .divhint , [fontkind="m2"] .divscript, [fontkind="m2"] table{
+	font-family: "engnnum2eq", "Noto Serif KR";
+}
+
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="m3"] .divasking , [fontkind="m3"] .divchoice ,
+[fontkind="m3"] .divheader , [fontkind="m3"] .divheadexplain ,
+[fontkind="m3"] .divanswer , [fontkind="m3"] .divexplain ,
+[fontkind="m3"] .divhint , [fontkind="m3"] .divscript, [fontkind="m3"] table{
+	font-family: "engnnum2eq", "GowunBatang";
+}
+
+		
+/*문제은행 기본 폰트 크기와 폰트 종류 설정*/
+[fontkind="g2"] .divasking , [fontkind="g2"] .divchoice ,
+[fontkind="g2"] .divheader , [fontkind="g2"] .divheadexplain ,
+[fontkind="g2"] .divanswer , [fontkind="g2"] .divexplain ,
+[fontkind="g2"] .divhint , [fontkind="g2"] .divscript, [fontkind="g2"] table{
+	font-family: "engnnum2eq", "NotoSans";
+}
+
+/*웹에디터에서의 폰트*/
+/*웹에디터에서는 조판 부호 보기 등의 옵션이 있으므르 스페이스나 엔터가 조판부호로 보여지는 폰트 edunedit 폰트를 가장 먼저 두어야 함*/
+[contentEditable="true"] div, [contentEditable="true"] span {
+	font-family: "edunedit", "engnnum2eq","NanumYetMyeongjo" !important;
+}
+
+[vieweditsymbol="Y"] [contentEditable="true"] div, [vieweditsymbol="Y"] [contentEditable="true"] span {
+	font-family: "eduedit", "engnnum2eq","NanumYetMyeongjo" !important;
+}
+
+/*초등 폰트 크기*/
+[emh='E0'] .divasking , [emh='E0'] .divchoice  , 
+[emh='E0'] .divheader , [emh='E0'] .divheadexplain ,
+[emh='E0'] .divanswer , [emh='E0'] .divexplain ,
+[emh='E0'] .divhint , [emh='E0'] .divscript ,
+[emh='E0'] #divchocie1,[emh='E0'] #divchoice2, [emh='E0'] #divchoice3, [emh='E0'] #divchoice4, [emh='E0'] #divchoice5,
+[emh='E0'] table, [emh='E0'] .edkparaframe{
+	font-size:13pt;
+}
+
+/*초등 폰트 크기*/
+[emh='E0'] [fontxsize="1"] .divasking , [emh='E0'] [fontxsize="1"] .divchoice  , 
+[emh='E0'] [fontxsize="1"] .divheader , [emh='E0'] [fontxsize="1"] .divheadexplain ,
+[emh='E0'] [fontxsize="1"] .divanswer , [emh='E0'] [fontxsize="1"] .divexplain ,
+[emh='E0'] [fontxsize="1"] .divhint , [emh='E0'] [fontxsize="1"] .divscript ,
+[emh='E0'] [fontxsize="1"] #divchocie1,[emh='E0'] [fontxsize="1"] #divchoice2, [emh='E0'] [fontxsize="1"] #divchoice3, [emh='E0'] [fontxsize="1"] #divchoice4, [emh='E0'] [fontxsize="1"] #divchoice5,
+[emh='E0'] [fontxsize="1"] table, [emh='E0'] [fontxsize="1"] .edkparaframe{
+	font-size:12.5pt;
+}
+/*초등 폰트 크기*/
+[emh='E0'] [fontxsize="2"] .divasking , [emh='E0'] [fontxsize="2"] .divchoice  , 
+[emh='E0'] [fontxsize="2"] .divheader , [emh='E0'] [fontxsize="2"] .divheadexplain ,
+[emh='E0'] [fontxsize="2"] .divanswer , [emh='E0'] [fontxsize="2"] .divexplain ,
+[emh='E0'] [fontxsize="2"] .divhint , [emh='E0'] [fontxsize="2"] .divscript ,
+[emh='E0'] [fontxsize="2"] #divchocie1,[emh='E0'] [fontxsize="2"] #divchoice2, [emh='E0'] [fontxsize="2"] #divchoice3, [emh='E0'] [fontxsize="2"] #divchoice4, [emh='E0'] [fontxsize="2"] #divchoice5,
+[emh='E0'] [fontxsize="2"] table, [emh='E0'] [fontxsize="2"] .edkparaframe{
+	font-size:12pt;
+}
+
+
+
+/*초등 폰트 크기*/
+[fontxsize="1"] [emh='E0'] .divasking , [fontxsize="1"] [emh='E0'] .divchoice  , 
+[fontxsize="1"] [emh='E0'] .divheader , [fontxsize="1"] [emh='E0'] .divheadexplain ,
+[fontxsize="1"] [emh='E0'] .divanswer , [fontxsize="1"] [emh='E0'] .divexplain ,
+[fontxsize="1"] [emh='E0'] .divhint , [fontxsize="1"] [emh='E0'] .divscript ,
+[fontxsize="1"] [emh='E0'] #divchocie1,[fontxsize="1"] [emh='E0'] #divchoice2, [fontxsize="1"] [emh='E0'] #divchoice3, [fontxsize="1"] [emh='E0'] #divchoice4, [fontxsize="1"] [emh='E0'] #divchoice5,
+[fontxsize="1"] [emh='E0'] table, [fontxsize="1"] [emh='E0'] .edkparaframe{
+	font-size:12.5pt;
+}
+/*초등 폰트 크기*/
+[fontxsize="2"] [emh='E0'] .divasking , [fontxsize="2"] [emh='E0'] .divchoice  , 
+[fontxsize="2"] [emh='E0'] .divheader , [fontxsize="2"] [emh='E0'] .divheadexplain ,
+[fontxsize="2"] [emh='E0'] .divanswer , [fontxsize="2"] [emh='E0'] .divexplain ,
+[fontxsize="2"] [emh='E0'] .divhint , [fontxsize="2"] [emh='E0'] .divscript ,
+[fontxsize="2"] [emh='E0'] #divchocie1,[fontxsize="2"] [emh='E0'] #divchoice2, [fontxsize="2"] [emh='E0'] #divchoice3, [fontxsize="2"] [emh='E0'] #divchoice4, [fontxsize="2"] [emh='E0'] #divchoice5,
+[fontxsize="2"] [emh='E0'] table, [fontxsize="2"] [emh='E0'] .edkparaframe{
+	font-size:12pt;
+}
+
+
+
+
+
+/*중 고등 폰트 크기*/
+[emh='M0'] .divasking , [emh='M0'] .divchoice  , 
+[emh='M0'] .divheader , [emh='M0'] .divheadexplain ,
+[emh='M0'] .divanswer , [emh='M0'] .divexplain ,
+[emh='M0'] .divhint , [emh='M0'] .divscript  ,
+[emh='M0'] #divchocie1,[emh='M0'] #divchoice2, [emh='M0'] #divchoice3, [emh='M0'] #divchoice4, [emh='M0'] #divchoice5,
+[emh='M0'] table, [emh='M0'] .edkparaframe, 
+[emh='H0'] .divasking , [emh='H0'] .divchoice  , 
+[emh='H0'] .divheader , [emh='H0'] .divheadexplain ,
+[emh='H0'] .divanswer , [emh='H0'] .divexplain ,
+[emh='H0'] .divhint , [emh='H0'] .divscript  ,
+[emh='H0'] #divchocie1,[emh='H0'] #divchoice2, [emh='H0'] #divchoice3, [emh='H0'] #divchoice4, [emh='H0'] #divchoice5,
+[emh='H0'] table, [emh='H0'] .edkparaframe{
+		font-size:12pt;
+}
+
+ 
+/*중 고등 폰트 크기*/
+[emh='M0'] [fontxsize="1"] .divasking , [emh='M0'] [fontxsize="1"] .divchoice  , 
+[emh='M0'] [fontxsize="1"] .divheader , [emh='M0'] [fontxsize="1"] .divheadexplain ,
+[emh='M0'] [fontxsize="1"] .divanswer , [emh='M0'] [fontxsize="1"] .divexplain ,
+[emh='M0'] [fontxsize="1"] .divhint , [emh='M0'] [fontxsize="1"] .divscript ,
+[emh='M0'] [fontxsize="1"] #divchocie1,[emh='M0'] [fontxsize="1"] #divchoice2, [emh='M0'] [fontxsize="1"] #divchoice3, [emh='M0'] [fontxsize="1"] #divchoice4, [emh='M0'] [fontxsize="1"] #divchoice5,
+[emh='M0'] [fontxsize="1"] table, [emh='M0'] [fontxsize="1"] .edkparaframe,
+[emh='H0'] [fontxsize="1"] .divasking , [emh='H0'] [fontxsize="1"] .divchoice  , 
+[emh='H0'] [fontxsize="1"] .divheader , [emh='H0'] [fontxsize="1"] .divheadexplain ,
+[emh='H0'] [fontxsize="1"] .divanswer , [emh='H0'] [fontxsize="1"] .divexplain ,
+[emh='H0'] [fontxsize="1"] .divhint , [emh='H0'] [fontxsize="1"] .divscript ,
+[emh='H0'] [fontxsize="1"] #divchocie1,[emh='H0'] [fontxsize="1"] #divchoice2, [emh='H0'] [fontxsize="1"] #divchoice3, [emh='H0'] [fontxsize="1"] #divchoice4, [emh='H0'] [fontxsize="1"] #divchoice5,
+[emh='H0'] [fontxsize="1"] table, [emh='H0'] [fontxsize="1"] .edkparaframe{
+	font-size:11.7pt;
+}
+
+ 
+/*중 고등 폰트 크기*/
+[emh='M0'] [fontxsize="2"] .divasking , [emh='M0'] [fontxsize="2"] .divchoice  , 
+[emh='M0'] [fontxsize="2"] .divheader , [emh='M0'] [fontxsize="2"] .divheadexplain ,
+[emh='M0'] [fontxsize="2"] .divanswer , [emh='M0'] [fontxsize="2"] .divexplain ,
+[emh='M0'] [fontxsize="2"] .divhint , [emh='M0'] [fontxsize="2"] .divscript ,
+[emh='M0'] [fontxsize="2"] #divchocie1,[emh='M0'] [fontxsize="2"] #divchoice2, [emh='M0'] [fontxsize="2"] #divchoice3, [emh='M0'] [fontxsize="2"] #divchoice4, [emh='M0'] [fontxsize="2"] #divchoice5,
+[emh='M0'] [fontxsize="2"] table, [emh='M0'] [fontxsize="2"] .edkparaframe,
+[emh='H0'] [fontxsize="2"] .divasking , [emh='H0'] [fontxsize="2"] .divchoice  , 
+[emh='H0'] [fontxsize="2"] .divheader , [emh='H0'] [fontxsize="2"] .divheadexplain ,
+[emh='H0'] [fontxsize="2"] .divanswer , [emh='H0'] [fontxsize="2"] .divexplain ,
+[emh='H0'] [fontxsize="2"] .divhint , [emh='H0'] [fontxsize="2"] .divscript ,
+[emh='H0'] [fontxsize="2"] #divchocie1,[emh='H0'] [fontxsize="2"] #divchoice2, [emh='H0'] [fontxsize="2"] #divchoice3, [emh='H0'] [fontxsize="2"] #divchoice4, [emh='H0'] [fontxsize="2"] #divchoice5,
+[emh='H0'] [fontxsize="2"] table, [emh='H0'] [fontxsize="2"] .edkparaframe{
+	font-size:11.4pt;
+}
+
+/*중 고등 폰트 크기*/
+[fontxsize="1"] [emh='M0'] .divasking , [fontxsize="1"] [emh='M0'] .divchoice  , 
+[fontxsize="1"] [emh='M0'] .divheader , [fontxsize="1"] [emh='M0'] .divheadexplain ,
+[fontxsize="1"] [emh='M0'] .divanswer , [fontxsize="1"] [emh='M0'] .divexplain ,
+[fontxsize="1"] [emh='M0'] .divhint , [fontxsize="1"] [emh='M0'] .divscript ,
+[fontxsize="1"] [emh='M0'] #divchocie1,[fontxsize="1"] [emh='M0'] #divchoice2, [fontxsize="1"] [emh='M0'] #divchoice3, [fontxsize="1"] [emh='M0'] #divchoice4, [fontxsize="1"] [emh='M0'] #divchoice5,
+[fontxsize="1"] [emh='M0'] table, [fontxsize="1"] [emh='M0'] .edkparaframe,
+[fontxsize="1"] [emh='H0'] .divasking , [fontxsize="1"] [emh='H0'] .divchoice  , 
+[fontxsize="1"] [emh='H0'] .divheader , [fontxsize="1"] [emh='H0'] .divheadexplain ,
+[fontxsize="1"] [emh='H0'] .divanswer , [fontxsize="1"] [emh='H0'] .divexplain ,
+[fontxsize="1"] [emh='H0'] .divhint , [fontxsize="1"] [emh='H0'] .divscript ,
+[fontxsize="1"] [emh='H0'] #divchocie1,[fontxsize="1"] [emh='H0'] #divchoice2, [fontxsize="1"] [emh='H0'] #divchoice3, [fontxsize="1"] [emh='H0'] #divchoice4, [fontxsize="1"] [emh='H0'] #divchoice5,
+[fontxsize="1"] [emh='H0'] table, [fontxsize="1"] [emh='H0'] .edkparaframe{
+	font-size:11.7pt;
+}
+ 
+/*중 고등 폰트 크기*/
+[fontxsize="2"] [emh='M0'] .divasking , [fontxsize="2"] [emh='M0'] .divchoice  , 
+[fontxsize="2"] [emh='M0'] .divheader , [fontxsize="2"] [emh='M0'] .divheadexplain ,
+[fontxsize="2"] [emh='M0'] .divanswer , [fontxsize="2"] [emh='M0'] .divexplain ,
+[fontxsize="2"] [emh='M0'] .divhint , [fontxsize="2"] [emh='M0'] .divscript ,
+[fontxsize="2"] [emh='M0'] #divchocie1,[fontxsize="2"] [emh='M0'] #divchoice2, [fontxsize="2"] [emh='M0'] #divchoice3, [fontxsize="2"] [emh='M0'] #divchoice4, [fontxsize="2"] [emh='M0'] #divchoice5,
+[fontxsize="2"] [emh='M0'] table, [fontxsize="2"] [emh='M0'] .edkparaframe,
+[fontxsize="2"] [emh='H0'] .divasking , [fontxsize="2"] [emh='H0'] .divchoice  , 
+[fontxsize="2"] [emh='H0'] .divheader , [fontxsize="2"] [emh='H0'] .divheadexplain ,
+[fontxsize="2"] [emh='H0'] .divanswer , [fontxsize="2"] [emh='H0'] .divexplain ,
+[fontxsize="2"] [emh='H0'] .divhint , [fontxsize="2"] [emh='H0'] .divscript ,
+[fontxsize="2"] [emh='H0'] #divchocie1,[fontxsize="2"] [emh='H0'] #divchoice2, [fontxsize="2"] [emh='H0'] #divchoice3, [fontxsize="2"] [emh='H0'] #divchoice4, [fontxsize="2"] [emh='H0'] #divchoice5,
+[fontxsize="2"] [emh='H0'] table, [fontxsize="2"] [emh='H0'] .edkparaframe{
+	font-size:11.4pt;
+}
+
+
+/*해답 해설 힌트 폰트*/
+.divexplain, .divexplain table, .divhint, .divhint table{
+	font-size:13px !important;
+}
+
+.divanswer, .divanswer table{
+	font-size:14px !important;
+}
+
+/*문항 번호 스트일*/
+.spnnumbering{
+	font-weight: bold;
+	font-size: 30px;
+}
+
+.spnansnumbering{
+	font-weight: bold;
+	font-size: 25px;
+	margin-right: 0.2em;
+}
+
+.numbering{
+
+	font-size:1.4em; 
+	font-weight:bold;
+	/*font-size:1.5em; */
+	/*font-style: italic;*/
+
+
+	display:inline-block;
+	min-width:2.1em;
+	text-align:right;
+	margin-left:-2.2em;
+	margin-right:0.2em;
+	font-family: 'Noto Sans';
+
+}
+
+
+#eqlayer{height:350px!important;}
+
+@media(max-width:999px){
+	#eqlayer{height:380px!important;}
+}
+
+
+
+/* 소문자만 이탤릭으로 표현하는 가장 정확한 CSS (폰트 설정 활용) */
+@font-face {
+  font-family: 'MathItalicSmall'; 
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Italic.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Italic.woff') format("woff");
+  unicode-range: U+0061-007A; /* a-z (소문자 유니코드 범위) */
+}
+
+.katex .mathrm {
+  font-family: 'MathItalicSmall', 'KaTeX_Main', serif;
+}

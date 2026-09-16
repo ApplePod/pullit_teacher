@@ -8,7 +8,7 @@ import type { Problem } from "@/components/ProblemView";
 
 export default async function PaperDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await requireUser();
+  const { center } = await requireUser();
   const supabase = await createClient();
   const { data: paper } = await supabase.from("paper").select("id,name,subject,problem_count").eq("id", id).maybeSingle();
   if (!paper) notFound();
@@ -29,7 +29,7 @@ export default async function PaperDetailPage({ params }: { params: Promise<{ id
           <Link href="/paper/mypaper" className="btn btn-default">목록으로</Link>
         </div>
       </div>
-      <PaperPreview title={paper.name} problems={ordered} />
+      <PaperPreview meta={{ title: paper.name, studyName: "교과학습", paperId: String(paper.id).slice(0, 8), logoUrl: center?.logo_url ?? null }} problems={ordered} />
     </div>
   );
 }

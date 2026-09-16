@@ -1,0 +1,542 @@
+@charset "utf-8";
+
+
+
+
+@font-face
+{
+	font-family: 'ceq'; 
+	font-style:normal;
+	src: url('./fonts/default/ceq.eot');
+	src: url('./fonts/default/ceq.eot?#iefix') format('embedded-opentype'),
+	url('./fonts/default/ceq.woff') format('woff'),
+	url('./fonts/default/ceq.ttf')  format('truetype');
+
+
+}
+@font-face
+{
+	font-family: 'ceq'; 
+	font-style:italic;
+	src: url('./fonts/default/ceq italic.eot');
+	src: url('./fonts/default/ceq italic.eot?#iefix') format('embedded-opentype'), 
+	url('./fonts/default/ceq italic.woff') format('woff'),
+	url('./fonts/default/ceq italic.ttf')  format('truetype');
+} 
+
+
+@font-face 
+{
+	font-family: 'AP';
+	src: url('./fonts/notosans/NotoSans-Regular.eot');
+	src: url('./fonts/notosans/NotoSans-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/notosans/NotoSans-Regular.woff2') format('woff2'),
+		url('./fonts/notosans/NotoSans-Regular.woff') format('woff'),
+		url('./fonts/notosans/NotoSans-Regular.otf') format('opentype');
+	unicode-range: U+0027;
+}
+
+
+@font-face 
+{
+	font-family: 'NM2';
+	src: url('./fonts/neq/eot/MathJax_Size2-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Size2-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Size2-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Size2-Regular.woff') format("woff");
+}
+
+@font-face 
+{
+	font-family: 'NM3';
+	src: url('./fonts/neq/eot/MathJax_Size3-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Size3-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Size3-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Size3-Regular.woff') format("woff");
+}
+@font-face 
+{
+	font-family: 'NM4';
+	src: url('./fonts/neq/eot/MathJax_Size4-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Size4-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Size4-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Size4-Regular.woff') format("woff");
+}
+
+@font-face
+{
+	font-family: 'NM1';
+	font-style:normal;
+	src: url('./fonts/neq/eot/MathJax_Main-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Regular.woff') format('woff');
+}
+
+@font-face
+{
+	font-family: 'NM1';
+	font-style:italic;
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Italic.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Italic.woff') format("woff");
+}
+
+
+@font-face
+{
+	font-family: 'CM1';
+	font-style:normal;
+	src: url('./fonts/neq/eot/MathJax_AMS-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_AMS-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_AMS-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_AMS-Regular.woff') format('woff');
+}
+
+.edkeqation{white-space: nowrap;}
+@font-face
+{
+	font-family: 'CM2';
+	font-style:normal;
+	src: url('./fonts/neq/eot/MathJax_Math-Regular.eot');
+	src: url('./fonts/neq/eot/MathJax_Math-Regular.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Math-Regular.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Math-Regular.woff') format('woff');
+}
+
+.cd{font-family:'돋움','dotum';}
+.cd2{font-family:'돋움','dotum';font-style:italic;}
+.ci{font-family:'NM1' !important; font-style:italic;margin-left:0.35em;}
+.ci2{font-family:'CM1' !important;font-style:italic;margin-left:-0.13em;margin-right:0.1em;vertical-align:0.2em;}
+.cm{font-family:'CM1' !important;}
+.cb{font-family:'CM1' !important;position:relative;/*top:0.35em;*/}
+.cs{font-family:'CM1' !important;padding:0 0.2em;} 
+.cp{font-family:'NM1' !important;padding:0 0.2em;} 
+.cpm{font-family:'NM1' !important;} 
+.c2{font-family:'CM2' !important;}
+
+.neq_parallel{
+	margin-right: 0.35em;
+	letter-spacing: -0.25em;
+	vertical-align: 0.1em;
+	font-family: NM1, 'ceq'
+}
+
+.neq_basefont{line-height:1;padding:0;font-family: 'NM1','ceq','Times New Roman' !important;}
+
+.neq_control, .neq_eqstring, .eqctrl, .eqctrl > span
+{
+	text-indent:0 !important;
+	font-size:1em;
+	display:inline-block;
+	position:relative; 
+	font-family: 'NM1','ceq','Times New Roman',Times,serif !important;letter-spacing:0.01em;
+	border:0px solid blue;
+	text-align:center;
+	line-height:1.0;
+	box-sizing:content-box ;
+	white-space: nowrap;
+}
+ 
+
+.neq_eqstring
+{
+	/*margin:0.25em 0.001em;*/
+	margin:0.1em 0.001em;
+}
+
+.neq_edit > .txtinput3
+{
+	position:absolute;left:-2px;right:0;top:0;bottom:0;
+}
+
+
+@font-face
+{
+	font-family: 'eqinput';
+	font-style:italic;
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot');
+	src: url('./fonts/neq/eot/MathJax_Main-Italic.eot?#iefix') format('embedded-opentype'),
+		url('./fonts/neq/otf/MathJax_Main-Italic.otf') format('opentype'),
+		url('./fonts/neq/woff/MathJax_Main-Italic.woff') format("woff");
+	unicode-range:  U+0061-007A ;
+}
+
+.eqinput
+{
+	text-align:center;
+	border:1px dotted red;
+	font-size:0.8em;
+	font-family: "eqinput",'NM1','ceq','Times New Roman'; 
+	width:1em;
+	min-width:1.0em;
+}
+
+.nobreqinput{width:100%;} 
+
+.neq_char
+{
+	font-family: 'NM1','ceq','Times New Roman',Times,serif !important;letter-spacing:0.01em;
+	vertical-align:0.1em;
+}
+.neq_const
+{
+	font-family: 'NM1','ceq','Times New Roman',Times,serif !important;letter-spacing:0.01em;
+	vertical-align:0.1em;
+	display:inline-block;
+}
+
+/*간격 유지*/
+.neq_spc1, .neq_spc2{display:inline-block;}
+.neq_spc1 > img{height:1px; width:0.10em;max-width:none;}
+.neq_spc2 > img{height:1px; width:0.2em;max-width:none;}
+
+/*콘텐츠 영역*/
+.neq_edit
+{
+	display:block;
+	white-space: nowrap;
+	border:0px solid red;
+	vertical-align:middle;
+}
+
+.neq_over > .neq_edit
+{
+	margin:0 0.2em;
+}
+
+.neq_over > .neq_hsvgline {margin-top: -0.02em;}
+
+.neq_over[kind='atop']> .neq_edit:first-child{margin-bottom:-0.12em;}
+.neq_over[kind='atop']> .neq_edit:last-child{margin-top:-0.12em;}
+
+.neq_pad
+{
+	margin-left:0.2em; margin-right:0.2em;
+}
+
+.neq_char2{font-family: 'NM2' !important;}
+.neq_ovrblank{display:inline-block;position:relative;width:0.5em;height:0px;border:0px solid red;}
+.neq_ovrblank .neq_char2{position:absolute;left:-0.15em;top:-0.5em;}
+.neq_over2>.neq_edit{display:inline-block !important;}
+
+
+/*글자 위 선,화살표*/
+.neq_hblank{position:relative;display:block;margin:0.1em 0;width:100%;height:0.035em;min-height:1px;}
+.neq_hline
+{
+	position:relative;display:block;
+	margin:0.1em 0;
+	width:100%;
+	height:0.055em;min-height:1.1px;
+	background:currentColor;
+}
+.neq_hsvgline
+{
+	position:relative;display:block;
+	margin:0.1em 0;
+	width:100%;
+	height:0.055em;min-height:1px;
+}
+.neq_hsvgline svg{position:absolute;left:0;top:0;right:0;bottom:0;}
+
+.neq_hline[kind='dyad'], .neq_hline[kind='vec'], .neq_hsvgline[kind='dyad'], .neq_hsvgline[kind='vec']
+{
+	margin-bottom:0.2em;
+}
+.neq_hline2
+{
+	position:relative;display:block;margin:0.1em 0;
+	width:100%;
+	height:0.055em;min-height:1.1px;background:currentColor;
+}
+.neq_arrowleft{position:absolute;left:0.2em;top:-0.21em;padding-top:1px;}
+.neq_arrowright{position:absolute;right:0.2em;top:-0.21em;padding-top:1px;} 
+.neq_arrowleft img, .neq_arrowright img{position:absolute;left:-2px;top:1px;height:0.35em;max-width:none;}
+.neq_arrowleft>span, .neq_arrowright>span{
+	position:absolute;display:block;left:-0.2em;top:0.07em;height:0.35em;width:0.45em;
+	max-width:none;
+} 
+
+
+/*SUM*/
+/*----------------------------------------*/
+.neq_limitsymbolbox{display:block;line-height:1.0; padding-right:0.2em;}
+.neq_sumsymbolbox{display:block;line-height:1.5;}
+.neq_sumsymbolchar{font-family:NM2 !important;}
+.neq_sumsub{font-size:0.7em;}
+/*----------------------------------------*/
+
+/*subsup*/
+/*----------------------------------------*/
+.neq_supsub{margin-top:-0.1em;}
+.neq_superscript, .neq_subscript{display:block;font-size:0.65em;text-align:left !important;margin-left:0.1em;}
+.neq_superscript input, .neq_subscript input{font-size:0.65em !important;}
+
+.neq_superscript{margin-top:0.3em;}
+.neq_supnsubvs{display:block;margin-top:-0.65em;margin-bottom:-0.55em;}
+.neq_supnsubcontent{display:inline-block;}
+/*----------------------------------------*/
+
+
+
+/*root관련*/
+/*----------------------------------------*/
+.neq_sqrtsymbol{display:block;position:absolute;right:100%;width:0.85em;top:0.1em;bottom:0;}
+.neq_sqrtsymbol > img
+{
+	width:100%;height:100%;max-width:none;
+	position:absolute;left:0;top:0;
+}
+
+.neq_sqrtcontent{display:inline-block;position:relative;margin-left:1.0em;}
+.neq_sqrtsubbox{display:inline-block;margin-right:-0.6em;min-width:0.6em;}
+.neq_sqrtsubcontent{font-size:0.7em;}
+
+.neq_sqrtsymbol svg polygon{stroke:none !important;}
+.neq_sqrt{margin-right:0.1em;}
+/*----------------------------------------*/
+
+
+
+
+
+
+
+/*인티그랄*/
+/*----------------------------------------*/
+.neq_intsymbol1{font-family:NM2 !important;padding-top:0.25em;width:0.9em;height:1.65em;vertical-align: 0.2em;}
+.neq_intsymbol2{font-family:NM2 !important;padding-top:0.25em;width:1.45em;height:1.65em;vertical-align: 0.2em;}
+.neq_intsymbol3{font-family:NM2 !important;padding-top:0.25em;width:2.0em;height:1.65em;vertical-align: 0.2em;} 
+
+.neq_integral>.neq_control>.neq_superscript {margin-bottom:-0.9em;margin-left:0.6em;}
+.neq_integral>.neq_control>.neq_subscript {margin-top:-0.7em;margin-left:0;}
+/*----------------------------------------*/
+
+/*괄호 관련*/
+/*----------------------------------------*/
+/*
+box1, box2 : top+mid+bot,
+box3 : top + bot
+box4 : 
+*/
+.neq_vbracketframe{display:inline-block;position:relative;}
+.neq_vbracketltop{position:absolute;width:0.5em;height:0.5em;left:0;top:0.2em;}
+.neq_vbracketlmid{position:absolute;width:0.5em;height:0.5em;left:0;top:50%;margin-top:-0.25em;z-index:9;}
+.neq_vbracketlbot{position:absolute;width:0.5em;height:0.5em;left:0;bottom:0.2em;}
+.neq_vbracketlbox1{position:absolute;width: 0.5em;left:0;top:0.7em;bottom:50%;}
+.neq_vbracketlbox2{position:absolute;width: 0.5em;left:0;top:50%;bottom:0.7em;}
+.neq_vbracketlbox3{position:absolute;width: 0.5em;left:0;top:0.6em;bottom:0.6em;}
+
+.neq_vbracketlbox4{position:absolute;width: 0.3em;left:0;top:0;bottom:0;}
+
+.neq_vbracketlbox1 > img{margin-top:-0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox2 > img{margin-top:0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox3 > img, .neq_vbracketlbox4 > img{width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox3 > img{position:absolute;top:0;bottom:0;left:0;}
+
+
+.neq_vbracketlbox1 > svg{margin-top:-0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox2 > svg{margin-top:0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox3 > svg, .neq_vbracketlbox4 > svg{width:100%;height:100%;max-width:none;}
+.neq_vbracketlbox3 > svg{position:absolute;top:0;bottom:0;left:0;}
+
+.neq_vbracketrtop{position:absolute;width:0.5em;height:0.5em;right:0;top:0.2em;}
+.neq_vbracketrmid{position:absolute;width:0.5em;height:0.5em;right:0;top:50%;margin-top:-0.25em;z-index:9;}
+.neq_vbracketrbot{position:absolute;width:0.5em;height:0.5em;right:0;bottom:0.2em;}
+.neq_vbracketrbox1{position:absolute;width: 0.5em;right:0;top:0.7em;bottom:50%;}
+.neq_vbracketrbox2{position:absolute;width: 0.5em;right:0;top:50%;bottom:0.7em;}
+.neq_vbracketrbox3{position:absolute;width: 0.5em;right:0;top:0.6em;bottom:0.6em;}
+.neq_vbracketrbox4{position:absolute;width: 0.3em;right:0;top:0;bottom:0;}
+.neq_vbracketrbox1 > img{margin-top:-0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox2 > img{margin-top:0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox3 > img, .neq_vbracketrbox4 > img{width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox3 > img{position:absolute;top:0;bottom:0;left:0;}
+
+
+
+.neq_vbracketrbox1 > svg{margin-top:-0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox2 > svg{margin-top:0.25em;width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox3 > svg, .neq_vbracketrbox4 > svg{width:100%;height:100%;max-width:none;}
+.neq_vbracketrbox3 > svg{position:absolute;top:0;bottom:0;left:0;}
+
+.neq_vbraccontent{min-height:1em;}
+.neq_vbracketframe > span{display:inline-block !important;min-height:1em;line-height:1.5; margin-left: 0.1em;margin-right: 0.1em;} 
+
+
+.neq_vbracketframe[eqkind='abs'] > .neq_vbraccontent{padding-right:0.18em;}
+
+/*||의 높이가 높고, 안쪽 여백이 많아서 조정*/
+.neq_vbracketframe[eqkind='abs'] > span{min-height:0.8em;line-height:1.0;margin-left: 0.02em;margin-right: 0.02em;}
+.neq_vbracketframe[eqkind='abs'] > .neq_vbracketboxleft{width:0.3em !important;}
+.neq_vbracketframe[eqkind='abs'] > .neq_vbracketboxright{width:0.3em !important;}
+
+
+
+.neq_vbracketframe[eqkind='para2'] > .neq_vbracketboxleft{margin-right:-0.05em !important;}
+.neq_vbracketframe[eqkind='para2'] > .neq_vbracketboxright{margin-left:-0.05em !important;}
+
+.neq_vbracketframe[eqkind='abs2'] > .neq_vbracketboxleft{margin-right:-0.19em !important;}
+.neq_vbracketframe[eqkind='abs2'] > .neq_vbracketboxright{margin-left:-0.01em !important;}
+
+
+.neq_vbracketframe[eqkind='para3'] > .neq_vbracketboxleft{margin-right:-0.18em !important;}
+.neq_vbracketframe[eqkind='para3'] > .neq_vbracketboxright{margin-left:-0.02em !important;}
+
+/*----------------------------------------*/
+
+/*box*/
+/*----------------------------------------*/
+.neq_box{margin-bottom:0.08em;margin-top:-0.02em;}
+.neq_boxline
+{
+	padding:0.1em;
+	border: 0.05em solid currentColor;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+/*----------------------------------------*/
+
+
+/*brace 관련*/
+/*----------------------------------------*/
+.neq_hbractop, .neq_hbracbottom{position:relative;display:block;width:0.3em;height:0.4em;margin:0.1em 0; width:100%;}
+.neq_hbractop img, .neq_hbracbottom img{height:0.4em;max-width:none;}
+.neq_hbractop svg, .neq_hbracbottom svg{height:0.4em;max-width:none;}
+.neq_hbracbox{display:inline-block;}
+.neq_hbracbak{position:absolute;left:0.2em;top:0;right:0.2em;bottom:0;}
+.neq_hbracbak > img{width:100%;max-width:none;}
+.neq_hbracbak > svg{width:100%;max-width:none;}
+
+.neq_hbraclef{position:absolute;left:0;top:0;}
+.neq_hbracrig{position:absolute;right:0;top:0;}
+.neq_hbracmid{position:absolute;display:block;top:0;left:50%;margin-left:-0.25em;z-index:1;}
+/*----------------------------------------*/
+
+
+
+/*dot*/
+/*----------------------------------------*/
+/*.neq_dot{display:block;width:100%;text-align:center;margin:0 -0.2em -0.7em -0.0em;}*/
+.neq_dotbox{padding-top:0.13em;}
+.neq_dot{display:block;position:absolute;left:0;right:0;top:-0.13em;text-align:center;font-family:NM1 !important;}
+
+.neq_archbox{padding-top:0.35em;}
+.neq_arch{display:block;position:absolute;left:0;right:0;top:0;text-align:center;}
+.neq_arch > svg{width:calc(90% - 0.1em);height:0.3em; max-width:1.8em;height:0.35em;}
+
+
+/*
+.neq_arch {display:block;position:relative;text-align:center;width:100%;height:0.4em;}
+.neq_arch > span{position:absolute;left:10%;right:10%;top:0;bottom:0;}
+.neq_arch > span > svg{height:100%;width:100%;margin-top:0.0em;max-width:2em;}
+.neq_arch > span > img{height:100%;width:100%;max-width:2em;margin-top:-0.5em;}
+*/
+
+.neq_hat{display:block;position:relative;text-align:center;width:100%;height:0.3em;}
+.neq_hat > span{position:absolute;left:20%;right:20%;top:0;bottom:0;}
+.neq_hat > span > svg{height:100%;width:100%;max-width:1em;margin-top:-0.1em;}
+.neq_hat > span > img{height:100%;width:100%;max-width:1em;}
+/*----------------------------------------*/
+
+/*not*/
+/*----------------------------------------*/
+.neq_not{display:block;margin-bottom:-1.05em;font-family:NM2 !important;margin-left:-0.5em;margin-right:-0.5em;}
+.neq_not2{display:block;z-index:1;margin-bottom:-0.95em; height:0.95em; background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cline%20x1%3D%220%22%20y1%3D%22100%25%22%20x2%3D%22100%25%22%20y2%3D%220%22%20stroke%3D%22currentColor%22%20%2F%3E%3C%2Fsvg%3E');}
+/*----------------------------------------*/
+
+
+/*행렬*/
+/*----------------------------------------*/
+.neq_matrix{display: table;}
+.neq_matrow{display: table-row;}
+.neq_matcol
+{
+	padding-bottom:0.2em;
+	padding-right:0.1em;
+	display: table-cell;
+	vertical-align: middle;
+}
+/*----------------------------------------*/
+
+
+.neq_supnsubvs[kind='supsub']{
+	margin-top:-1.2em;
+	min-height:1.65em;
+}
+.neq_supnsubcontent[supnsub='true']{
+	margin-top:-0.1em;
+}
+
+
+
+/*IE8이하 핵*/
+@media \0screen\,screen\9 
+{
+	.neq_eqstring
+	{
+		margin:0;
+	} 
+
+}
+
+
+.neq_edit .spninputeq
+{
+	position:absolute;left:0;right:0;top:0;bottom:0; 
+}
+
+
+
+/*수식 입력 장치 관련*/
+/*.spninputbox>nobr {max-height:100% !important;}*/
+.spnelement[eqbox=Y]{height:100% !important;}
+.diveqcontent{height:100% !important;}
+.diveqcontent:before{content:'';display:inline-block;width:1px;height:100%;vertical-align:middle;}
+
+
+#spncursor{display:inline-block;width:1px;height:0.75em;margin:0;margin-top:0.0em;text-indent:0;}
+.spninputbox{margin:0;text-indent:0; }
+
+.eqinput
+{
+	border:1px solid transparent !important;
+	font-size:1em !important;
+	min-height:1em;
+}
+.diveqcontent{
+	display:inline-block;
+	text-align:center;
+	font-size:1.0em;
+	font-family: "eqinput",'NM1','ceq','Times New Roman' !important; 
+	width:300px;
+	min-height:40px;
+	background-image: url('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+	margin:0;
+	text-indent:0; 
+	max-height: 120px;
+}
+
+.inputcursor
+{
+	position:absolute;
+	margin-top:-1000px;width:1px;height:1px;border:0;
+}
+
+.neq_eqstring em{
+	display:inline-block;
+	margin-top:0.01em;
+	margin-right:1px;
+}
+
+
+.neq_eqstring svg, .neq_control svg{vertical-align:top;}
+
+em:has(+.ci2){
+	margin-right:0.1em;
+}
+
+.neq_vbracketboxright{margin-right:-0.1em !important;}
+.neq_vbracketframe[eqkind='para2'] > .neq_vbracketboxright{margin-right:0em !important;}
