@@ -18,7 +18,7 @@ body { background-color: #f6f6f9; }
 .contents-header__gnb a.active { color: #1e85ff; }
 .contents-header__gnb a.active::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; background: #1e85ff; }
 .contents-header .right-area { display: flex; align-items: center; gap: 8px; }
-#contents { width: 100%; max-width: 1216px; margin: 0 auto; }
+#contents { width: 100%; max-width: 1216px; margin: 0 auto !important; padding: 0 !important; }
 
 /* 폼·메시지 보정 */
 .form-message { font-size: 13px; padding: 10px 12px; border-radius: 6px; margin: 8px 0; }
