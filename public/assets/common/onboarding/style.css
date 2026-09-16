@@ -1,0 +1,136 @@
+@charset "UTF-8";
+
+.onboarding__wrap{
+ display: flex;
+}
+.onboarding__left {
+  width: 265px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: baseline;
+  gap: 8px;
+  height: calc(100% - 72px - 66px);
+  transition: gap 0.2s ease-in-out;
+  position: sticky;
+  top:0;
+  z-index: 9;
+}
+.onboarding__left >ul{
+  display: flex;
+  flex-direction: column;
+  gap:8px;
+}
+.onboarding__left a{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 240px;
+  height: 40px;
+  padding: 0 12px;
+}
+.onboarding__left a.active,
+.onboarding__left a:hover { 
+  border-radius: 4px;
+  background-color: #e9f3ff;
+  color: #1e85ff;
+  font-weight: 600;
+}
+.onboarding__body {
+  flex-grow: 1;
+  padding-left: 40px;
+  position: relative;
+}
+.onboarding__headline{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  position: sticky;
+  background-color: #fff;
+  top:0;
+}
+.onboarding__stitle{
+  display: flex;
+  justify-content: center;
+  padding-bottom: 16px;
+  font-weight: 700;
+}
+.onboarding__content {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.onboarding__content > section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-bottom: 40px;
+}
+.onboarding__content article{
+  padding:0 3vw;
+  margin: 40px 0;
+}
+.onboarding__content article:nth-child(even) {
+  border-left:1px solid #ddd;
+}
+.onboarding__title{
+ font-size: 18px;
+ font-weight: 700;
+}
+.onboarding__title3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.onboarding__info{
+  font-size: 15px;
+  font-weight: 400;
+  margin: 8px 0 40px;
+  letter-spacing: -0.5px;
+}
+.onboarding__img img{
+  width: 100%;
+  max-width: 620px;
+}
+.onboarding__img .img-origin{
+  width: inherit;
+}
+
+.modal.max-full .modal-dialog {
+  max-width: calc(1920px - 80px);
+  min-width:768px;
+}
+.onboarding{
+  max-height: calc(100vh - 240px) !important;
+}
+@media screen and (min-width: 1840px) {
+  .onboarding__img img {
+      width: inherit;
+      max-width: inherit;
+    }
+}
+@media screen and (max-width: 1280px) {
+  .onboarding__left {
+      width: 160px;
+  }
+    .onboarding__left a{
+      font-size:12px;
+    }
+    .onboarding__left a {
+      width: 160px;
+      height: 40px;
+      line-height: 1.2;
+    }
+    .onboarding__body {
+      padding-left: 20px;
+    }
+    .onboarding__title{
+      font-size: 16px;
+    }
+    .onboarding__info {
+      font-size: 11px;
+    }
+    .onboarding__left>ul {
+      gap: 2px;
+    }
+    .onboarding__content>section {
+      padding-bottom: 20px;
+    }
+}

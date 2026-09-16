@@ -8,7 +8,7 @@ http://meyerweb.com/eric/tools/css/reset/
 */
 @import "https://cdn.jsdelivr.net/gh/sunn-us/SUITE/fonts/static/woff2/SUITE.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.7/static/pretendard.css";
-/* 제거: SF Pro Display 는 이 CSS 어디에서도 font-family 로 쓰이지 않는데 첫 렌더를 300ms 잡고 있었음 */
+/* 제거: 어떤 규칙도 SF Pro Display 를 쓰지 않는데 외부 요청으로 첫 렌더를 300ms 잡음 */
 
 html,
 body,
@@ -19697,4 +19697,164 @@ td.text-wrap{
 
 .range-slider__value-box {
   -moz-appearance: textfield;
+}
+
+/* 2026-0818 - 100문항 추가 */
+.range-slider__input--100::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right, 
+    #3b82f6 0%, 
+    #3b82f6 calc(((var(--value) - 5) / 95) * 100%), 
+    #e2e8f0 calc(((var(--value) - 5) / 95) * 100%), 
+    #e2e8f0 100%
+  );
+}
+
+.range-slider__input--100::-moz-range-track {
+  background: linear-gradient(
+    to right, 
+    #3b82f6 0%, 
+    #3b82f6 calc(((var(--value) - 5) / 95) * 100%), 
+    #e2e8f0 calc(((var(--value) - 5) / 95) * 100%), 
+    #e2e8f0 100%
+  );
+}
+
+
+/* 2026-0723 필터영역 수정 */
+.border-th{
+  border:none !important;
+  position: relative;
+}
+.border-th::before{
+  content: "";
+  display: block;
+  border-bottom: 1px solid #f1f1f2;
+  position: absolute;
+  width:100px;
+  height: 1px;
+  left:0px;
+  bottom: 0;
+  z-index: 1;
+}
+
+.btn-search{
+  position:absolute;
+  top:0; 
+  height: 86px; 
+  z-index: 1;
+}
+
+
+/* 2026-0728 문제지 만들기 레이아웃 수정 */
+/* 가로형 레이아웃 */
+.accordion-row{
+	display:flex;
+	align-items:stretch;
+}
+.accordion-row > .accordion-header{
+	flex:0 0 152px;
+	display:flex;
+	align-items:center;
+	margin:0;
+}
+.accordion-row > .accordion-header > .accordion-button{
+	width:100%;
+	text-align:left;
+}
+.accordion-row > .accordion-header > .accordion-button::after{
+	display:none;
+}
+.accordion-row > .accordion-collapse{
+	flex:1 1 auto;
+	min-width:0;
+	border-left:1px solid #e6e6e6;
+}
+.accordion-row .accordion-body{
+	border-top:none;
+}
+
+/* 2026-0813 문제지 만들기 학생 선택 필수 주석 추가 */
+.has-student-required > label {
+  position: relative;
+}
+
+.has-student-required > label:nth-last-of-type(3)::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -1px;
+  right: 0;
+  height: 12px;
+  border-top: 1px solid #dedede;
+  border-left: 1px solid #dedede;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.has-student-required > label:nth-last-of-type(2)::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #dedede;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.has-student-required > label:nth-last-of-type(2)::before {
+  content: '학생 선택 필수';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background-color: #ffffff;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 300;
+  color: #c5c5c9;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.has-student-required > label:nth-last-of-type(1)::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: -1px;
+  height: 12px;
+  border-top: 1px solid #dedede;
+  border-right: 1px solid #dedede;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+/* 2026-0729 사이드바 그룹핑 */
+.right-tab .right-tab__wrap{
+  border-left: 1px solid #dcdcde;
+  border-right: 1px solid #dcdcde;
+}
+.tab__group{
+  background-color: #f6f6f9;
+  padding: 8px;
+}
+.tab__group--inner {
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 4px;
+}
+.tab__group + .tab__group {
+  padding-top: 4px;
+}
+
+/* 2026-0815 필터영역 2열 분기 */
+.listFilter-items__half{
+  position: absolute; 
+  left:50%; top:0px;  
+  height: 54px;
+  padding-left: 116px; 
+  padding-top: 8px;
 }
