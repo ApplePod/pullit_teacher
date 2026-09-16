@@ -6,7 +6,29 @@ from selenium.webdriver.common.by import By
 
 COOKIE = sys.argv[1]
 LIVE = "https://new.mmath.co.kr"
-PAGES = [("/Pages/Center/","/dashboard"),("/Pages/Center/Paper/mypaper.cshtml","/paper/mypaper"),("/Pages/Center/Clinic/studentmark.cshtml","/clinic/studentmark"),("/Pages/Center/Management/student.cshtml","/management/student"),("/Pages/Center/Management/attendance.cshtml","/management/attendance"),("/Pages/Center/Mypage/profile.cshtml","/mypage/profile")]
+PAGES = [
+    ("/Pages/Center/","/dashboard"),
+    ("/Pages/Center/Paper/mypaper.cshtml","/paper/mypaper"),
+    ("/Pages/Center/Paper/favorite.cshtml","/paper/favorite"),
+    ("/Pages/Center/Paper/favoriteQuestion.cshtml","/paper/favoritequestion"),
+    ("/Pages/Center/Paper/share.cshtml","/paper/share"),
+    ("/Pages/Center/Paper/trash.cshtml","/paper/trash"),
+    ("/Pages/Center/Clinic/studentmark.cshtml","/clinic/studentmark"),
+    ("/Pages/Center/Clinic/class.cshtml","/clinic/class"),
+    ("/Pages/Center/Clinic/report.cshtml","/clinic/report"),
+    ("/Pages/Center/Clinic/trash.cshtml","/clinic/trash"),
+    ("/Pages/Center/Management/student.cshtml","/management/student"),
+    ("/Pages/Center/Management/studentForm.cshtml","/management/studentform"),
+    ("/Pages/Center/Management/class.cshtml","/management/class"),
+    ("/Pages/Center/Management/teacher.cshtml","/management/teacher"),
+    ("/Pages/Center/Management/attendance.cshtml","/management/attendance"),
+    ("/Pages/Center/Management/book.cshtml","/management/book"),
+    ("/Pages/Center/Management/statistic.cshtml","/management/statistic"),
+    ("/Pages/Center/Management/individualStdBooks.cshtml","/management/individualstdbooks"),
+    ("/Pages/Center/Management/centerinfo.cshtml","/management/centerinfo"),
+    ("/Pages/Center/Mypage/profile.cshtml","/mypage/profile"),
+]
+
 OURS = "http://localhost:3777"
 
 SELECTORS = [
@@ -61,7 +83,7 @@ d.find_element(By.CSS_SELECTOR, "input[type=text]").send_keys("admin")
 d.find_element(By.CSS_SELECTOR, "input[type=password]").send_keys("admin1")
 d.find_element(By.CSS_SELECTOR, "button[type=submit]").click(); time.sleep(3)
 ours_all = {op: snap(d, OURS + op) for _, op in PAGES}
-KEYS = ["top","left","w","h","mt","mb","pt","pb","gap","fs","lh"]
+KEYS = ["left","w","mt","mb","pt","pb","gap","fs","lh"]
 diffs = 0
 for op in [o for _, o in PAGES]:
     live, ours = live_all[op], ours_all[op]

@@ -73,7 +73,8 @@ export function StudentFormClient({ student }: { student: StudentRow | null }) {
 
   return (
     <div ref={host} className="studentform-host">
-      <div className="contens-body" dangerouslySetInnerHTML={{ __html: STUDENT_FORM_HTML }} />
+      {/* 캡처 HTML 안에 이미 <div class="contens-body mt-20"> 가 있어 덧씌우지 않는다 */}
+      <div dangerouslySetInnerHTML={{ __html: STUDENT_FORM_HTML }} />
       {pending && <p className="f-12 bw5" style={{ padding: "8px 0" }}>저장 중…</p>}
     </div>
   );
