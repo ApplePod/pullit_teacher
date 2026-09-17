@@ -4,6 +4,7 @@ import { RawHtml } from "@/components/RawHtml";
 import { Fragment, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { searchProblems, createPaper } from "../actions";
+import { listSimilarProblems } from "../similarActions";
 import { ProblemView, type Problem } from "@/components/ProblemView";
 import { PaperSheet } from "@/components/PaperSheet";
 import { STEP1_AUTO, STEP1_DIRECT, STEP1_BOOK, STEP2_TYPES, STEP3_PRINT } from "./steps/wizardHtml";
@@ -65,6 +66,13 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   const [created, setCreated] = useState<{ id: string; name: string } | null>(null);
   const [autoCount, setAutoCount] = useState(30);          // 원본 '문항수' 슬라이더 값
   const [autoDiff, setAutoDiff] = useState("");            // 자동 출제 난이도(선택 시)
+  // 원본 자동 출제 조건: 교육단계(GRE/GRM/GRH) · 학년(GRH1~3) · 학기(TR01/TR02) · 문항형태
+  const [autoBand, setAutoBand] = useState("");
+  const [autoGrade, setAutoGrade] = useState(0);
+  const [autoTerm, setAutoTerm] = useState(0);
+  const [autoShort, setAutoShort] = useState(false);       // 단답형 포함 여부
+  const [answerType, setAnswerType] = useState<string>("");  // 직접 출제 문항형태 필터
+  const [twins, setTwins] = useState<{ code: string; items: Problem[] } | null>(null);   // 쌍둥이 문항 보기
   const [pending, start] = useTransition();
 
   // 원본 마크업 안의 출제방식 라디오·아코디언·프린트 설정 탭을 React 상태와 연결
@@ -109,6 +117,14 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
         setAutoCount(v);
         return;
       }
+      // 교육단계 / 학년 / 학기 (원본 id: filterEMH_*, filterGrade_*, filterTerm_*)
+      if (el?.id?.startsWith("filterEMH_")) {
+        const v = el.value || "";
+        setAutoBand(v === "GRE" ? "elementary" : v === "GRM" ? "middle" : v === "GRH" ? "high" : "");
+        return;
+      }
+      if (el?.id?.startsWith("filterGrade_")) { setAutoGrade(Number((el.value || "").replace(/\D/g, "")) || 0); return; }
+      if (el?.id?.startsWith("filterTerm_")) { setAutoTerm(el.value === "TR01" ? 1 : el.value === "TR02" ? 2 : 0); return; }
       // 자동 출제 난이도 라디오(원본 id: s1_diff…)
       if (el?.id?.startsWith("s1_diff") || el?.id?.startsWith("filterDiff")) {
         const label = root.querySelector(`label[for="${el.id}"]`)?.textContent?.trim() ?? "";
@@ -154,7 +170,7 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   }, [options, step]);
 
   const subjectUnits = units.filter((u) => u.subject === subject);
-  const doSearch = (p = 1) => { setPage(p); start(async () => setResult(await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: difficulty || undefined, page: p }))); };
+  const doSearch = (p = 1) => { setPage(p); start(async () => setResult(await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: difficulty || undefined, answer_type: answerType || undefined, page: p }))); };
   const toggle = (pb: Problem) => setSelected((c) => c.some((x) => x.problem_code === pb.problem_code) ? c.filter((x) => x.problem_code !== pb.problem_code) : [...c, pb]);
   const isSel = (code: string) => selected.some((x) => x.problem_code === code);
   const paperInput = (status: "draft" | "ready", codes?: string[]) => ({
@@ -167,11 +183,16 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
   /** 자동 출제·교재매칭: 조건에 맞는 문항을 문항수만큼 뽑는다 */
   const pickAuto = async (): Promise<Problem[]> => {
     const size = 20;
-    const first = await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: autoDiff || undefined, page: 1 });
+    const cond = {
+      subject, unit_code: unitCode || undefined, difficulty: autoDiff || undefined,
+      grade_band: autoBand || undefined, grade: autoGrade || undefined, semester: autoTerm || undefined,
+      answer_type: autoShort ? undefined : "multiple_choice",   // 기본은 객관식, '단답형 포함' 선택 시 전체
+    } as const;
+    const first = await searchProblems({ ...cond, page: 1 });
     const pool: Problem[] = [...first.items];
     const pages = Math.min(Math.ceil(first.total / size), Math.ceil(autoCount / size) + 2);
     for (let p = 2; p <= pages && pool.length < autoCount * 2; p++) {
-      const r = await searchProblems({ subject, unit_code: unitCode || undefined, difficulty: autoDiff || undefined, page: p });
+      const r = await searchProblems({ ...cond, page: p });
       pool.push(...r.items);
     }
     // 고르게 섞어서 앞에서부터 문항수만큼
@@ -271,6 +292,11 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
                       {([["", "전체"], ["basic", "하"], ["normal", "중"], ["advanced", "상"]] as const).map(([v, l]) => (<span key={v}><input type="radio" name="ddiff" id={`dd-${v}`} checked={difficulty === v} onChange={() => setDifficulty(v)} /><label htmlFor={`dd-${v}`}>{l}</label></span>))}
                     </div>
                   )}
+                  <div className="filter-radio">
+                    {([["", "전체"], ["multiple_choice", "객관식"], ["short_answer", "단답형"]] as const).map(([v, l]) => (
+                      <span key={v}><input type="radio" name="dtype" id={`dt-${v || "all"}`} checked={answerType === v} onChange={() => setAnswerType(v)} /><label htmlFor={`dt-${v || "all"}`}>{l}</label></span>
+                    ))}
+                  </div>
                   <button type="button" className="button__line button__line--xsmall button__fill--red" onClick={() => doSearch(1)} disabled={pending}>검색</button>
                   <span className="f-12 bw5">검색 결과 <b>{result.total.toLocaleString()}</b>건 · 선택 <b>{selected.length}</b></span>
                 </div>
@@ -285,11 +311,33 @@ export function MakeClient({ units, popup = false }: { units: Unit[]; popup?: bo
                       <div className="marsonry-question-header">
                         <input className="form-check-input" type="checkbox" checked={isSel(pb.problem_code)} onChange={() => toggle(pb)} />
                         <div className="marsonry-question-badge"><span className="blue">{({ basic: "하", normal: "중", advanced: "상" } as Record<string, string>)[pb.difficulty ?? ""] ?? "-"}</span>{pb.concept && <span>{pb.concept}</span>}</div>
+                        <button type="button" className="button__fill button__line--xsmall button__line--white bw10" style={{ marginLeft: "auto" }}
+                          onClick={() => start(async () => setTwins({ code: pb.problem_code, items: await listSimilarProblems(pb.problem_code, "twin", 6) }))}>쌍둥이 문항</button>
                       </div>
                       <div className="marsonry-question-wrap"><div className="marsonry-question-body"><ProblemView problem={pb} /></div></div>
                     </div>
                   ))}
                   {result.items.length === 0 && <p className="f-12 bw5" style={{ padding: 24 }}>단원·난이도를 고르고 검색을 눌러주세요.</p>}
+                {twins && (
+                  <div className="accordion-item mt-8">
+                    <h2 className="accordion-header"><div className="accordion-button">쌍둥이 문항 · {twins.items.length}개
+                      <button type="button" className="button__fill button__line--xsmall button__line--white bw10" style={{ marginLeft: "auto" }} onClick={() => setTwins(null)}>닫기</button></div></h2>
+                    <div className="accordion-body">
+                      {twins.items.length === 0 && <p className="f-12 bw5">연결된 쌍둥이 문항이 없습니다.</p>}
+                      <div className="marsonry-question-list item-1">
+                        {twins.items.map((pb) => (
+                          <div key={pb.problem_code} className={`marsonry-question-item footer-none${isSel(pb.problem_code) ? " active" : ""}`}>
+                            <div className="marsonry-question-header">
+                              <input className="form-check-input" type="checkbox" checked={isSel(pb.problem_code)} onChange={() => toggle(pb)} />
+                              <div className="marsonry-question-badge"><span className="blue">{({ basic: "하", normal: "중", advanced: "상" } as Record<string, string>)[pb.difficulty ?? ""] ?? "-"}</span>{pb.concept && <span>{pb.concept}</span>}</div>
+                            </div>
+                            <div className="marsonry-question-wrap"><div className="marsonry-question-body"><ProblemView problem={pb} /></div></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 </div>
                 {totalPages > 1 && (<div className="d-flex gap-2 justify-content-center mt-12"><button className="btn btn-default btn-sm" disabled={page <= 1 || pending} onClick={() => doSearch(page - 1)}>이전</button><span className="f-12">{page} / {totalPages}</span><button className="btn btn-default btn-sm" disabled={page >= totalPages || pending} onClick={() => doSearch(page + 1)}>다음</button></div>)}
               </div>

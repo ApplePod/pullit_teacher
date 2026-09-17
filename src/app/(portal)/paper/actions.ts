@@ -9,21 +9,35 @@ export interface SearchFilter {
   subject: "math" | "english";
   unit_code?: string;
   difficulty?: string;
+  /** 원본 자동 출제 조건 — 교육단계(고등)·학년·학기 */
+  grade_band?: string;
+  grade?: number;
+  semester?: number;
+  /** multiple_choice | short_answer */
+  answer_type?: string;
+  concept_id?: string;
   page?: number;
+  size?: number;
 }
 
 export async function searchProblems(filter: SearchFilter): Promise<{ items: Problem[]; total: number }> {
   const supabase = await createClient();
   const page = filter.page ?? 1;
-  const size = 20;
+  const size = filter.size ?? 20;
   let q = supabase
     .from("problem")
-    .select("problem_code,subject,unit_code,question,choices,answer_index,answer_text,difficulty,score,concept", { count: "exact" })
+    .select("problem_code,subject,unit_code,question,choices,answer_index,answer_text,answer_value,answer_type,difficulty,score,concept,concept_id,grade_band,grade_min,grade_max,semester", { count: "exact" })
     .eq("subject", filter.subject)
     .order("problem_code")
     .range((page - 1) * size, page * size - 1);
   if (filter.unit_code) q = q.eq("unit_code", filter.unit_code);
   if (filter.difficulty) q = q.eq("difficulty", filter.difficulty);
+  if (filter.grade_band) q = q.eq("grade_band", filter.grade_band);
+  // 학년은 범위(grade_min~grade_max)에 포함되는 문항
+  if (filter.grade) q = q.lte("grade_min", filter.grade).gte("grade_max", filter.grade);
+  if (filter.semester) q = q.eq("semester", filter.semester);
+  if (filter.answer_type) q = q.eq("answer_type", filter.answer_type);
+  if (filter.concept_id) q = q.eq("concept_id", filter.concept_id);
   const { data, count, error } = await q;
   if (error) return { items: [], total: 0 };
   return { items: (data ?? []) as Problem[], total: count ?? 0 };

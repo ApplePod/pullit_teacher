@@ -16,6 +16,14 @@ export interface Problem {
   score: number | null;
   concept: string | null;
   explanation?: ExplSection[] | null;
+  /** multiple_choice | short_answer */
+  answer_type?: string | null;
+  /** 단답형 정답 */
+  answer_value?: string | null;
+  grade_band?: string | null;
+  grade_min?: number | null;
+  grade_max?: number | null;
+  semester?: number | null;
 }
 
 declare global { interface Window { katex?: { renderToString(tex: string, opts?: object): string } } }

@@ -31,12 +31,19 @@ function problemHtml(p: Problem, no: number, ready: boolean, mode: SheetMode) {
   }).join("");
   const n = (p.choices || []).length;
   const choices = n ? `<ol class="divchoice dontsplit" count="${n}" array="0" autoarray="" valign="top">${(p.choices || []).map((c, i) => `<li num="${i + 1}"><span class="edkitempointbox"><span class="edkitempoint" group="1" num="${i + 1}"> </span></span><div class="edkparagraph" align="justify"><span class="edkchar">${tex(c, ready)}</span></div></li>`).join("")}</ol>` : "";
-  const ans = p.answer_index ? ["①", "②", "③", "④", "⑤"][p.answer_index - 1] ?? String(p.answer_index) : (p.answer_text ?? "");
+  const isShort = (p.answer_type ?? (p.choices?.length ? "multiple_choice" : "short_answer")) === "short_answer";
+  const ans = p.answer_index
+    ? ["①", "②", "③", "④", "⑤"][p.answer_index - 1] ?? String(p.answer_index)
+    : (p.answer_value ?? p.answer_text ?? "");
+  // 단답형: 보기가 없으므로 원본처럼 답 쓰는 자리를 둔다(문제지 모드에서만)
+  const writeArea = isShort && mode === "problem"
+    ? `<div class="divanswer" style="margin-top:8px;"><div class="edkparagraph"><span class="edkchar">답 <span style="display:inline-block;min-width:120px;border-bottom:1px solid #000;">&nbsp;</span></span></div></div>`
+    : "";
   const TITLE: Record<string, string> = { insight: "핵심", solution: "풀이", diagnosis: "오답 진단" };
   const expl = mode === "solution" ? `<div class="divexplain"><div class="edkparagraph"><span class="edkchar"><b>정답 ${esc(ans)}</b></span></div>${(p.explanation || []).map((s) => `<div class="edkparagraph"><span class="edkchar"><b>[${TITLE[s.type ?? ""] ?? s.type ?? "해설"}]</b></span></div>${(s.blocks || []).map((b) => `<div class="edkparagraph"><span class="edkchar">${tex(b.text ?? "", ready)}</span></div>`).join("")}`).join("")}</div>` : "";
   const answerOnly = mode === "answer" ? `<div class="divanswer"><div class="edkparagraph"><span class="edkchar"><span class="numbering">${no}</span>&nbsp;${esc(ans)}</span></div></div>` : "";
   if (mode === "answer") return `<div class="divproblem dontsplit" ptype="50" headerid="N" numlen="1" style="height:auto;margin-bottom:12px;">${answerOnly}</div>`;
-  return `<div class="divproblem dontsplit" ptype="50" headerid="N" numlen="1" area="MA" style="height:auto;margin-bottom:28px;"><div class="divtophtml"></div><div class="divheader"></div><div class="divheadhtml dontsplit"></div><div class="divquestion dontsplit"><div class="divasking">${paras}</div>${choices}</div>${expl}<div class="divtailhtml dontsplit"></div></div>`;
+  return `<div class="divproblem dontsplit" ptype="50" headerid="N" numlen="1" area="MA" style="height:auto;margin-bottom:28px;"><div class="divtophtml"></div><div class="divheader"></div><div class="divheadhtml dontsplit"></div><div class="divquestion dontsplit"><div class="divasking">${paras}</div>${choices}${writeArea}</div>${expl}<div class="divtailhtml dontsplit"></div></div>`;
 }
 
 /** 대략적 높이 추정(px) — 2단·페이지 분배용 */
@@ -46,7 +53,8 @@ function estimate(p: Problem, mode: SheetMode) {
   const lines = Math.ceil(chars / 38) + (p.question?.length ?? 1);
   const ch = (p.choices || []).reduce((a, c) => a + Math.max(1, Math.ceil(c.length / 34)), 0);
   const ex = mode === "solution" ? (p.explanation || []).reduce((a, s) => a + (s.blocks || []).reduce((x, b) => x + Math.ceil((b.text?.length ?? 0) / 38), 1), 0) : 0;
-  return 24 * (lines + ch + ex) + 40;
+  const shortSpace = !(p.choices?.length) && mode === "problem" ? 2 : 0;   // 단답형 답란
+  return 24 * (lines + ch + ex + shortSpace) + 40;
 }
 
 const SHEET_CSS = [

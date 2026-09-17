@@ -232,10 +232,137 @@ export async function cancelMarking(asIds: string[]): Promise<{ error?: string; 
   return { count: asIds.length };
 }
 
+/* ------------------------------------------------------------------ *
+ * 개념(concept) 기반 대체 문항 고르기 — 오답 재출제 · 마법사 공용
+ *
+ * 폴백 체인 (앞에서부터 하나라도 후보가 있으면 거기서 뽑는다)
+ *   1) 같은 개념(concept_id) + 같은 난이도 + 같은 문항유형(객관식/단답형)
+ *   2) 같은 개념 + 같은 난이도
+ *   3) 같은 개념 (난이도 무관)
+ *   4) 같은 단원(unit_code) + 같은 난이도
+ *   5) 같은 단원 (난이도 무관)
+ *   6) 그래도 없으면 원본 문항 — 빈 문제지는 절대 만들지 않는다
+ * 제외 대상: 학생이 이번에 틀린 문항들 + 이미 배정받은 적 있는 모든 문항 + 이번 문제지에 이미 담은 문항
+ * ------------------------------------------------------------------ */
+type Sb = Awaited<ReturnType<typeof createClient>>;
+
+/** 대체 문항 후보 1건 (문제은행에서 고를 때 필요한 최소 정보) */
+interface BankItem { problem_code: string; unit_code: string; concept_id: string | null; difficulty: string | null; answer_type: string | null }
+
+/** 문항 코드 기준 고정 시드 — 같은 오답이면 항상 같은 대체 문항이 나오도록(재현 가능) */
+function seedOf(code: string): number {
+  let h = 0;
+  for (let i = 0; i < code.length; i += 1) h = (h * 31 + code.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** 후보 목록에서 제외 대상을 걸러내고 시드로 한 건 고른다 */
+function pickFrom(cands: BankItem[], used: Set<string>, exclude: Set<string>, seed: number): string | null {
+  const ok = cands.filter((b) => !used.has(b.problem_code) && !exclude.has(b.problem_code));
+  if (!ok.length) return null;
+  ok.sort((a, b) => (a.problem_code < b.problem_code ? -1 : a.problem_code > b.problem_code ? 1 : 0));
+  return ok[seed % ok.length].problem_code;
+}
+
+/** 오답 1건 → 대체 문항 1건 (위 폴백 체인) */
+function pickAlternative(src: BankItem, pool: BankItem[], used: Set<string>, exclude: Set<string>): string {
+  const seed = seedOf(src.problem_code);
+  const sameConcept = src.concept_id ? pool.filter((b) => b.concept_id === src.concept_id) : [];
+  const sameUnit = pool.filter((b) => b.unit_code === src.unit_code);
+  const byDiff = (l: BankItem[]) => l.filter((b) => b.difficulty === src.difficulty);
+  const byType = (l: BankItem[]) => l.filter((b) => b.answer_type === src.answer_type);
+  return pickFrom(byType(byDiff(sameConcept)), used, exclude, seed)
+    ?? pickFrom(byDiff(sameConcept), used, exclude, seed)
+    ?? pickFrom(sameConcept, used, exclude, seed)
+    ?? pickFrom(byDiff(sameUnit), used, exclude, seed)
+    ?? pickFrom(sameUnit, used, exclude, seed)
+    ?? src.problem_code;
+}
+
+/** 문항 메타(단원·개념·난이도·문항유형)를 코드로 조회 */
+async function loadBankItems(supabase: Sb, codes: string[]): Promise<Map<string, BankItem>> {
+  if (!codes.length) return new Map();
+  const { data } = await supabase.from("problem").select("problem_code,unit_code,concept_id,difficulty,answer_type").in("problem_code", codes);
+  return new Map((data ?? []).map((p) => [p.problem_code as string, p as BankItem]));
+}
+
+/** 단원 단위 후보 풀 — 개념 폴백·단원 폴백을 같은 풀에서 처리한다 (PostgREST 1000행 제한이라 페이징) */
+async function loadBankPool(supabase: Sb, unitCodes: string[]): Promise<BankItem[]> {
+  const units = [...new Set(unitCodes)].filter(Boolean);
+  if (!units.length) return [];
+  const out: BankItem[] = [];
+  const page = 1000;
+  for (let from = 0; ; from += page) {
+    const { data, error } = await supabase.from("problem")
+      .select("problem_code,unit_code,concept_id,difficulty,answer_type").in("unit_code", units)
+      .order("problem_code").range(from, from + page - 1);
+    if (error) break;
+    const rows = (data ?? []) as BankItem[];
+    out.push(...rows);
+    if (rows.length < page) break;
+  }
+  return out;
+}
+
+/** 학생이 이미 배정받은 적 있는 문항 코드 (재출제에서 제외) */
+async function loadAssignedCodes(supabase: Sb, studentIds: string[]): Promise<Map<string, Set<string>>> {
+  const byStudent = new Map<string, Set<string>>();
+  studentIds.forEach((sid) => byStudent.set(sid, new Set()));
+  if (!studentIds.length) return byStudent;
+  const { data: ast } = await supabase.from("assignment_student")
+    .select("student_id,assignment:assignment_id(paper_id)").in("student_id", studentIds);
+  const papers = new Map<string, string[]>();              // paper_id → 해당 문제지를 받은 학생들
+  (ast ?? []).forEach((raw) => {
+    const x = raw as unknown as { student_id: string; assignment?: { paper_id: string } | null };
+    const pid = x.assignment?.paper_id; if (!pid) return;
+    const l = papers.get(pid) ?? []; l.push(x.student_id); papers.set(pid, l);
+  });
+  const paperIds = [...papers.keys()];
+  if (!paperIds.length) return byStudent;
+  const page = 1000;                                        // PostgREST 기본 1000행 제한 → 페이징
+  for (let from = 0; ; from += page) {
+    const { data: pp, error } = await supabase.from("paper_problem")
+      .select("paper_id,problem_code").in("paper_id", paperIds).order("paper_id").order("ord").range(from, from + page - 1);
+    if (error) break;
+    const rows = pp ?? [];
+    rows.forEach((row) => {
+      (papers.get(row.paper_id as string) ?? []).forEach((sid) => byStudent.get(sid)?.add(row.problem_code as string));
+    });
+    if (rows.length < page) break;
+  }
+  return byStudent;
+}
+
+/**
+ * 개념 기준 대체 문항 코드 N개 — 3단계(문항 관계) 에이전트와 문제지 마법사가 공용으로 쓴다.
+ * @param problem_code 기준 문항
+ * @param limit        뽑을 개수 (기본 3)
+ * @param exclude      추가로 빼고 싶은 문항 코드
+ * 후보가 모자라면 폴백 체인을 따라 내려가고, 그래도 없으면 반환 개수가 limit 보다 적을 수 있다.
+ */
+export async function listAlternativeProblems(problem_code: string, limit = 3, exclude: string[] = []): Promise<string[]> {
+  const c = await ctx(); if (!c || !problem_code || limit <= 0) return [];
+  const srcMap = await loadBankItems(c.supabase, [problem_code]);
+  const src = srcMap.get(problem_code); if (!src) return [];
+  const pool = await loadBankPool(c.supabase, [src.unit_code]);
+  const skip = new Set<string>([problem_code, ...exclude]);
+  const used = new Set<string>();
+  const out: string[] = [];
+  for (let i = 0; i < limit; i += 1) {
+    const pickSeed: BankItem = { ...src, problem_code: `${problem_code}#${i}` };   // 회차마다 다른 후보가 나오도록 시드만 흔든다
+    const code = pickAlternative(pickSeed, pool, used, skip);
+    if (code === pickSeed.problem_code) break;                                     // 남은 후보 없음
+    used.add(code); out.push(code);
+  }
+  return out;
+}
+
 /**
  * 오답모음생성 / 오답출제
- * 선택한 채점 결과의 오답 문항으로 학생별 오답 문제지를 만들고(오답모음),
- * assign=true 면 그 문제지를 해당 학생에게 바로 배정한다(오답출제).
+ * - assign=false (오답모음생성): 실제로 틀린 문항 그대로 모은 문제지를 만든다. (기존 동작 유지)
+ * - assign=true  (오답출제):     틀린 문항과 "같은 개념"의 다른 문항으로 바꾼 재시험지를 만들어 바로 배정한다.
+ *                               문항 수는 그대로, 이미 틀린 문항·이미 배정받은 문항은 제외.
+ * 두 경우 모두 오답 기록(wrong_answer_set/item)에는 실제로 틀린 문항을 남긴다.
  */
 export async function makeWrongPaper(asIds: string[], assign = false): Promise<{ error?: string; created: number; skipped: number }> {
   const c = await ctx(); if (!c) return { error: "로그인이 필요합니다.", created: 0, skipped: 0 };
@@ -243,26 +370,57 @@ export async function makeWrongPaper(asIds: string[], assign = false): Promise<{
   const { data: ast } = await c.supabase.from("assignment_student")
     .select("id,student_id,status,student:student_id(name),assignment:assignment_id(paper_id,paper:paper_id(name,subject))").in("id", asIds);
   const { data: mk } = await c.supabase.from("marking").select("assignment_student_id,problem_code,is_correct").in("assignment_student_id", asIds);
+
+  interface AstRow { id: string; student_id: string; status: string; student?: { name: string };
+    assignment?: { paper_id: string; paper?: { name: string; subject: string } } }
+  const rows = (ast ?? []) as unknown as AstRow[];
+  const wrongOf = (id: string) => (mk ?? []).filter((m) => m.assignment_student_id === id && m.is_correct === false).map((m) => m.problem_code as string);
+
+  // 재출제(assign)일 때만 문제은행 후보 풀·배정 이력을 한 번에 미리 읽는다
+  let srcMeta = new Map<string, BankItem>();
+  let pool: BankItem[] = [];
+  let assignedBy = new Map<string, Set<string>>();
+  if (assign) {
+    const allWrong = [...new Set(rows.flatMap((r) => wrongOf(r.id)))];
+    srcMeta = await loadBankItems(c.supabase, allWrong);
+    pool = await loadBankPool(c.supabase, [...srcMeta.values()].map((b) => b.unit_code));
+    assignedBy = await loadAssignedCodes(c.supabase, [...new Set(rows.map((r) => r.student_id))]);
+  }
+
   let created = 0, skipped = 0;
-  for (const raw of (ast ?? [])) {
-    const r = raw as unknown as { id: string; student_id: string; status: string; student?: { name: string };
-      assignment?: { paper_id: string; paper?: { name: string; subject: string } } };
-    const codes = (mk ?? []).filter((m) => m.assignment_student_id === r.id && m.is_correct === false).map((m) => m.problem_code as string);
+  for (const r of rows) {
+    const codes = wrongOf(r.id);
     if (r.status !== "marked" || codes.length === 0) { skipped += 1; continue; }
-    const name = `${r.assignment?.paper?.name ?? "문제지"} 오답모음`;
+
+    // 재출제면 같은 개념의 다른 문항으로 교체, 오답모음이면 틀린 문항 그대로
+    let paperCodes = codes;
+    if (assign) {
+      const exclude = new Set<string>([...codes, ...(assignedBy.get(r.student_id) ?? [])]);
+      const used = new Set<string>();
+      paperCodes = codes.map((code) => {
+        const src = srcMeta.get(code);
+        const next = src ? pickAlternative(src, pool, used, exclude) : code;
+        used.add(next);
+        return next;
+      });
+    }
+
+    const name = `${r.assignment?.paper?.name ?? "문제지"} ${assign ? "오답 재출제" : "오답모음"}`;
     const { data: paper, error: pe } = await c.supabase.from("paper").insert({
       center_id: c.center_id, created_by: c.user.id, name, subject: r.assignment?.paper?.subject ?? "math",
-      paper_type: "custom", status: "ready", problem_count: codes.length, tags: ["오답클리닉"],
+      paper_type: "custom", status: "ready", problem_count: paperCodes.length, tags: ["오답클리닉"],
     }).select("id").single();
     if (pe || !paper) { skipped += 1; continue; }
-    await c.supabase.from("paper_problem").insert(codes.map((code, i) => ({ paper_id: paper.id, center_id: c.center_id, ord: i + 1, problem_code: code })));
+    await c.supabase.from("paper_problem").insert(paperCodes.map((code, i) => ({ paper_id: paper.id, center_id: c.center_id, ord: i + 1, problem_code: code })));
     const { data: set } = await c.supabase.from("wrong_answer_set").insert({
       center_id: c.center_id, student_id: r.student_id, name: `${r.student?.name ?? ""} ${name}`.trim(), paper_id: paper.id, created_by: c.user.id,
     }).select("id").single();
+    // 오답 기록은 항상 "실제로 틀린 문항" 기준 (오답출제 완료 여부 판정용)
     if (set) await c.supabase.from("wrong_answer_item").insert(codes.map((code) => ({ set_id: set.id, center_id: c.center_id, problem_code: code, source_assignment_student_id: r.id })));
     if (assign) {
       const { data: asg } = await c.supabase.from("assignment").insert({ center_id: c.center_id, paper_id: paper.id, assigned_by: c.user.id }).select("id").single();
       if (asg) await c.supabase.from("assignment_student").insert({ center_id: c.center_id, assignment_id: asg.id, student_id: r.student_id, status: "assigned" });
+      paperCodes.forEach((code) => assignedBy.get(r.student_id)?.add(code));   // 같은 실행 안에서 중복 배정 방지
     }
     created += 1;
   }
