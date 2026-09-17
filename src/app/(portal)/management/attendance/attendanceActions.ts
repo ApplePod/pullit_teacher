@@ -41,7 +41,7 @@ export async function loadMonth(ym: string, opts?: { key?: string; keyword?: str
   const c = await ctx(); if (!c) return { students: [], records: [] };
   const { first, last } = range(ym);
   const { data: rawStudents } = await c.supabase.from("student")
-    .select("id,name,grade,class_student(class_id,class_group(name))").neq("state", "left").order("name");
+    .select("id,name,grade,class_student(class_id,class_group(name))").neq("state", "left").is("deleted_at", null).order("name");
   let students: AttStudent[] = (rawStudents ?? []).map((r) => {
     const cs = (r as unknown as { class_student?: { class_id: string; class_group?: { name?: string } | null }[] }).class_student ?? [];
     return {

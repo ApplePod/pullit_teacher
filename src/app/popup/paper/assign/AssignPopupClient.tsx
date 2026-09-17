@@ -20,7 +20,7 @@ export function AssignPopupClient({ paperIds }: { paperIds: string[] }) {
   const [send, setSend] = useState(false); const [sendDt, setSendDt] = useState(fmtISO()); const [view2, setView2] = useState("N");
   const [busy, setBusy] = useState(false);
   useEffect(() => { listStudentsForAssign().then((r) => { setAll(r.students); setGroups(r.groups); setOpen(new Set(r.groups.map((g) => g.id))); }); }, []);
-  const list = useMemo(() => all.filter((s) => (state === "MS10" ? s.state !== "paused" : s.state === "paused") && (!grade || s.grade === grade) && (!q || s.name.includes(q))), [all, state, grade, q]);
+  const list = useMemo(() => all.filter((s) => (state === "MS10" ? s.state === "active" : s.state === "paused") && (!grade || s.grade === grade) && (!q || s.name.includes(q))), [all, state, grade, q]);
   const cList = useMemo(() => list.filter((s) => s.group_id), [list]);
   const submit = async () => {
     const ids = tab === "student" ? [...chk] : [...cChk];

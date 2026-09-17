@@ -20,7 +20,7 @@ export async function listStudents(search?: string): Promise<StudentRow[]> {
   let q = supabase
     .from("student")
     .select("id,name,grade,phone,parent_name,parent_phone,state,study_level,entered_at,created_at")
-    .neq("state", "left")
+    .is("deleted_at", null)   // 휴회(left)는 목록에 남고, 삭제된 학생만 제외한다
     .order("created_at", { ascending: false });
   if (search?.trim()) q = q.ilike("name", `%${search.trim()}%`);
   const { data } = await q;
@@ -60,7 +60,7 @@ export async function updateStudent(id: string, input: Partial<{
 
 export async function deleteStudents(ids: string[]): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase.from("student").update({ state: "left" }).in("id", ids);
+  const { error } = await supabase.from("student").update({ deleted_at: new Date().toISOString() }).in("id", ids);
   if (error) return { error: "삭제에 실패했습니다." };
   revalidatePath("/management/student");
   return {};

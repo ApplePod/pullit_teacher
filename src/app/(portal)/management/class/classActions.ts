@@ -115,7 +115,7 @@ export async function listAssignableStudents(classId: string): Promise<ClassStud
   const { data: inClass } = await c.supabase.from("class_student").select("student_id").eq("class_id", classId);
   const has = new Set((inClass ?? []).map((r) => r.student_id as string));
   const { data } = await c.supabase.from("student")
-    .select("id,name,grade,study_level,state").neq("state", "left").order("name");
+    .select("id,name,grade,study_level,state").neq("state", "left").is("deleted_at", null).order("name");
   return ((data ?? []) as ClassStudentRow[]).filter((s) => !has.has(s.id));
 }
 

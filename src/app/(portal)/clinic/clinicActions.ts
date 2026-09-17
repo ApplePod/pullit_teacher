@@ -343,7 +343,7 @@ export async function saveMarking(as_id: string, results: { problem_code: string
 
 export async function listAssignableStudents(): Promise<{ id: string; name: string; grade: string }[]> {
   const c = await ctx(); if (!c) return [];
-  const { data } = await c.supabase.from("student").select("id,name,grade").neq("state", "left").order("name");
+  const { data } = await c.supabase.from("student").select("id,name,grade").neq("state", "left").is("deleted_at", null).order("name");
   return (data ?? []) as { id: string; name: string; grade: string }[];
 }
 
@@ -353,7 +353,7 @@ export async function listAssignableStudents(): Promise<{ id: string; name: stri
 export interface ReportRow { student_id: string; student_name: string; grade: string; marked: number; assigned: number; avg_score: number | null }
 export async function studentReport(): Promise<ReportRow[]> {
   const c = await ctx(); if (!c) return [];
-  const { data: students } = await c.supabase.from("student").select("id,name,grade").neq("state", "left").order("name");
+  const { data: students } = await c.supabase.from("student").select("id,name,grade").neq("state", "left").is("deleted_at", null).order("name");
   const { data: asg } = await c.supabase.from("assignment_student").select("student_id,status,score").is("deleted_at", null);
   const byStudent = new Map<string, { marked: number; assigned: number; sum: number }>();
   (asg ?? []).forEach((a) => {
